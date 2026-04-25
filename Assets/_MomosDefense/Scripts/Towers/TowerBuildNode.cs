@@ -1,4 +1,5 @@
 using MomosDefense.Core;
+using MomosDefense.UI;
 using UnityEngine;
 
 namespace MomosDefense.Towers
@@ -12,6 +13,7 @@ namespace MomosDefense.Towers
 
         private bool hasTower;
         private Renderer nodeRenderer;
+        private PrototypeHud hud;
         private Color availableColor;
         private Color occupiedColor = new Color(0.28f, 0.28f, 0.28f);
 
@@ -23,6 +25,8 @@ namespace MomosDefense.Towers
             {
                 availableColor = nodeRenderer.material.color;
             }
+
+            hud = FindFirstObjectByType<PrototypeHud>();
         }
 
         private void OnMouseDown()
@@ -32,14 +36,28 @@ namespace MomosDefense.Towers
 
         public void TryBuildTower()
         {
-            if (hasTower || towerPrefab == null || gameState == null || !gameState.SpendGold(buildCost))
+            if (hasTower)
             {
+                hud?.ShowMessage("This build node is occupied.");
+                return;
+            }
+
+            if (towerPrefab == null || gameState == null)
+            {
+                hud?.ShowMessage("Cannot build here yet.");
+                return;
+            }
+
+            if (!gameState.SpendGold(buildCost))
+            {
+                hud?.ShowMessage($"Need {buildCost} gold to build.");
                 return;
             }
 
             Instantiate(towerPrefab, transform.position + towerOffset, Quaternion.identity);
             hasTower = true;
             SetNodeColor(occupiedColor);
+            hud?.ShowMessage($"Built starter tower (-{buildCost} gold).");
         }
 
         private void SetNodeColor(Color color)

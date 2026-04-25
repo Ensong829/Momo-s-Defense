@@ -63,6 +63,7 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Tower targets and damages nearby enemies.
 - Build nodes added to the prototype map.
 - Player can click a build node to spend gold and place a starter tower.
+- HUD shows feedback for successful builds, occupied nodes, and insufficient gold.
 - Build nodes mark themselves as occupied after use.
 - Clicking build nodes no longer moves Momo.
 
@@ -74,16 +75,14 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Add tower placement feedback for insufficient gold and occupied nodes.
-2. Add one tower upgrade step.
-3. Add one second enemy type.
-4. Improve mobile aspect ratio framing.
-5. Manual playtest pass in Unity Editor.
-6. Optional Android build smoke test.
+1. Add one tower upgrade step.
+2. Add one second enemy type.
+3. Improve mobile aspect ratio framing.
+4. Manual playtest pass in Unity Editor.
+5. Optional Android build smoke test.
 
 ## Remaining Phase 1 Tasks
 
-- Better tower build feedback.
 - At least one tower upgrade.
 - At least one additional enemy type.
 - Basic tutorial prompts or minimal guidance.

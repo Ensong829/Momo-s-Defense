@@ -19,9 +19,12 @@ namespace MomosDefense.UI
         [SerializeField] private Button momoPopButton;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
+        [SerializeField] private Text messageText;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Text restartText;
+
+        private float messageTimer;
 
         private void Awake()
         {
@@ -84,6 +87,7 @@ namespace MomosDefense.UI
 
             UpdateMomoPop();
             UpdateStartWave();
+            UpdateMessage();
 
             bool isDefeat = gameState.IsGameOver;
             bool isVictory = waveSpawner != null && waveSpawner.IsComplete;
@@ -166,6 +170,32 @@ namespace MomosDefense.UI
             if (startWaveText != null)
             {
                 startWaveText.text = waveSpawner.CurrentWave == 0 ? "Start Wave" : "Next Wave";
+            }
+        }
+
+        public void ShowMessage(string message, float duration = 2f)
+        {
+            if (messageText == null)
+            {
+                return;
+            }
+
+            messageText.text = message;
+            messageTimer = duration;
+        }
+
+        private void UpdateMessage()
+        {
+            if (messageText == null || messageTimer <= 0f)
+            {
+                return;
+            }
+
+            messageTimer -= Time.deltaTime;
+
+            if (messageTimer <= 0f)
+            {
+                messageText.text = string.Empty;
             }
         }
 

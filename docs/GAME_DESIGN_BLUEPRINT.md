@@ -303,6 +303,7 @@ The first playable should include:
 - [x] Basic Android aspect-ratio UI.
 - [x] Momo's first active skill.
 - [x] Tower build nodes.
+- [x] Tower placement feedback.
 - [x] Wave-start control.
 - [ ] Tower upgrade step.
 - [ ] Second enemy type.

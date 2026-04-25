@@ -211,6 +211,7 @@ namespace MomosDefense.Editor
             Text livesText = CreateHudText(canvasObject.transform, "Lives Text", "Lives: 20", new Vector2(16f, -16f), TextAnchor.UpperLeft, font);
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
+            Text messageText = CreateHudText(canvasObject.transform, "Message Text", string.Empty, new Vector2(0f, -18f), TextAnchor.UpperCenter, font);
             Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
@@ -223,6 +224,14 @@ namespace MomosDefense.Editor
             startWaveRect.anchorMax = new Vector2(1f, 0f);
             startWaveRect.pivot = new Vector2(1f, 0f);
             startWaveRect.anchoredPosition = new Vector2(-16f, 16f);
+
+            RectTransform messageRect = messageText.GetComponent<RectTransform>();
+            messageRect.anchorMin = new Vector2(0.5f, 1f);
+            messageRect.anchorMax = new Vector2(0.5f, 1f);
+            messageRect.pivot = new Vector2(0.5f, 1f);
+            messageRect.anchoredPosition = new Vector2(0f, -18f);
+            messageRect.sizeDelta = new Vector2(520f, 48f);
+            messageText.color = new Color(1f, 0.95f, 0.55f);
 
             RectTransform resultRect = resultText.GetComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0f, 0f);
@@ -250,6 +259,7 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("momoPopButton").objectReferenceValue = momoPopButton;
             serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
             serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
+            serializedHud.FindProperty("messageText").objectReferenceValue = messageText;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
             serializedHud.FindProperty("restartText").objectReferenceValue = restartText;

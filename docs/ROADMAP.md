@@ -53,6 +53,7 @@ Deliverables:
 - [x] Win/loss condition.
 - [x] Minimal mobile HUD.
 - [x] Tower build nodes.
+- [x] Tower placement feedback.
 - [x] Momo's first active skill.
 - [x] Wave-start control.
 - [ ] Tower upgrade step.
