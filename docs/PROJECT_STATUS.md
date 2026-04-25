@@ -91,6 +91,10 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Manual playtest pass in Unity Editor.
 - Phase 1 balance pass after playtest.
 
+Playtest checklist:
+
+- `docs/PLAYTEST_CHECKLIST.md`
+
 ## Later Scope
 
 ### Phase 2: Three-Hero Vertical Slice

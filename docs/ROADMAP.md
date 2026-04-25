@@ -62,6 +62,7 @@ Deliverables:
 - [x] Mobile landscape framing.
 - [x] Basic guidance prompt.
 - [x] Android smoke build.
+- [x] Playtest checklist.
 - [ ] Manual playtest and balance pass.
 
 Done when:
