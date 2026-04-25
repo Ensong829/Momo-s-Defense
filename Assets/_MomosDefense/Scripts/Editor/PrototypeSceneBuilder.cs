@@ -56,7 +56,7 @@ namespace MomosDefense.Editor
             cameraObject.transform.position = new Vector3(0f, 14f, -12f);
             cameraObject.transform.rotation = Quaternion.Euler(55f, 0f, 0f);
             camera.orthographic = true;
-            camera.orthographicSize = 7.2f;
+            camera.orthographicSize = 7.8f;
         }
 
         private static void CreateLight()
@@ -231,7 +231,11 @@ namespace MomosDefense.Editor
             GameObject canvasObject = new GameObject("Prototype HUD");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvasObject.AddComponent<CanvasScaler>();
+            CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0.5f;
             canvasObject.AddComponent<GraphicRaycaster>();
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -239,6 +243,7 @@ namespace MomosDefense.Editor
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
             Text messageText = CreateHudText(canvasObject.transform, "Message Text", string.Empty, new Vector2(0f, -18f), TextAnchor.UpperCenter, font);
+            Text objectiveText = CreateHudText(canvasObject.transform, "Objective Text", "Build towers. Start waves. Defend the path.", new Vector2(0f, 18f), TextAnchor.LowerCenter, font);
             Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
@@ -259,6 +264,15 @@ namespace MomosDefense.Editor
             messageRect.anchoredPosition = new Vector2(0f, -18f);
             messageRect.sizeDelta = new Vector2(520f, 48f);
             messageText.color = new Color(1f, 0.95f, 0.55f);
+
+            RectTransform objectiveRect = objectiveText.GetComponent<RectTransform>();
+            objectiveRect.anchorMin = new Vector2(0.5f, 0f);
+            objectiveRect.anchorMax = new Vector2(0.5f, 0f);
+            objectiveRect.pivot = new Vector2(0.5f, 0f);
+            objectiveRect.anchoredPosition = new Vector2(0f, 18f);
+            objectiveRect.sizeDelta = new Vector2(720f, 48f);
+            objectiveText.fontSize = 22;
+            objectiveText.color = new Color(0.92f, 1f, 0.9f);
 
             RectTransform resultRect = resultText.GetComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0f, 0f);

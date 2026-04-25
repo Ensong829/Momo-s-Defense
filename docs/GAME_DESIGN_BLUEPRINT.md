@@ -307,6 +307,8 @@ The first playable should include:
 - [x] Wave-start control.
 - [x] Tower upgrade step.
 - [x] Second enemy type.
+- [x] Mobile landscape framing.
+- [x] Basic guidance prompt.
 
 The prototype is successful when:
 

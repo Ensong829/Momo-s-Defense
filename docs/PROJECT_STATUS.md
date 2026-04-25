@@ -26,6 +26,7 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Prototype scene created: `Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity`.
 - Graybox map created.
 - Classic fixed/orthographic camera created.
+- Camera widened for landscape mobile framing.
 - Readable placeholder colors/materials added.
 - Visible enemy path added.
 - Scene can be regenerated from `Momo's Defense > Build Prototype Scene`.
@@ -47,6 +48,8 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Defeat appears when lives reach zero.
 - Restart button appears after victory or defeat.
 - Restart reloads the prototype scene.
+- Compact objective prompt added for first-play guidance.
+- HUD uses a 1920x1080 reference resolution for mobile landscape scaling.
 
 ### Momo
 
@@ -79,16 +82,15 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Improve mobile aspect ratio framing.
-2. Add basic tutorial prompts or minimal guidance.
-3. Manual playtest pass in Unity Editor.
-4. Optional Android build smoke test.
+1. Manual playtest pass in Unity Editor.
+2. Optional Android build smoke test.
+3. Phase 1 balance pass after playtest.
 
 ## Remaining Phase 1 Tasks
 
-- Basic tutorial prompts or minimal guidance.
 - Manual playtest pass in Unity Editor.
 - Optional Android build smoke test.
+- Phase 1 balance pass after playtest.
 
 ## Later Scope
 

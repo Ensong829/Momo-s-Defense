@@ -59,6 +59,8 @@ Deliverables:
 - [x] Tower upgrade step.
 - [x] Second enemy type.
 - [x] Restart flow.
+- [x] Mobile landscape framing.
+- [x] Basic guidance prompt.
 
 Done when:
 
