@@ -54,6 +54,7 @@ Deliverables:
 - [x] Minimal mobile HUD.
 - [x] Tower build nodes.
 - [x] Momo's first active skill.
+- [x] Wave-start control.
 - [ ] Tower upgrade step.
 - [ ] Second enemy type.
 - [x] Restart flow.

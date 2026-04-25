@@ -36,6 +36,8 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Basic `Health` component.
 - Enemy path follower.
 - Wave spawner.
+- Waves wait for player input before starting.
+- HUD has Start Wave / Next Wave control.
 - Enemy leaks reduce lives.
 - Defeated enemies grant gold.
 - HUD shows lives, gold, wave state, and result text.
@@ -72,12 +74,12 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Add wave-start control instead of auto-starting immediately.
-2. Add tower placement feedback for insufficient gold and occupied nodes.
-3. Add one tower upgrade step.
-4. Add one second enemy type.
-5. Improve mobile aspect ratio framing.
-6. Manual playtest pass in Unity Editor.
+1. Add tower placement feedback for insufficient gold and occupied nodes.
+2. Add one tower upgrade step.
+3. Add one second enemy type.
+4. Improve mobile aspect ratio framing.
+5. Manual playtest pass in Unity Editor.
+6. Optional Android build smoke test.
 
 ## Remaining Phase 1 Tasks
 
@@ -128,3 +130,4 @@ Before each committed checkpoint:
 - `dd62f0c` - Add prototype HUD and readability pass.
 - `7aa2514` - Add Momo Pop prototype skill.
 - `fd646a0` - Add prototype tower build nodes.
+- `7c7a51b` - Add prototype win loss restart flow.

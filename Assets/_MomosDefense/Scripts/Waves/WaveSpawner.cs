@@ -16,43 +16,46 @@ namespace MomosDefense.Waves
         [SerializeField] private float timeBetweenWaves = 4f;
 
         private int aliveEnemies;
+        private bool isSpawningWave;
 
         public int CurrentWave { get; private set; }
         public int TotalWaves => totalWaves;
-        public bool IsSpawningComplete { get; private set; }
-        public bool IsComplete => IsSpawningComplete && aliveEnemies == 0;
+        public bool IsWaveInProgress => isSpawningWave || aliveEnemies > 0;
+        public bool CanStartNextWave => !IsComplete && !IsWaveInProgress && (gameState == null || !gameState.IsGameOver);
+        public bool IsComplete => CurrentWave >= totalWaves && !IsWaveInProgress;
 
-        private void Start()
+        public void StartNextWave()
         {
-            StartCoroutine(SpawnWaves());
+            if (!CanStartNextWave)
+            {
+                return;
+            }
+
+            StartCoroutine(SpawnWave(CurrentWave + 1));
         }
 
-        private IEnumerator SpawnWaves()
+        private IEnumerator SpawnWave(int waveNumber)
         {
-            for (int wave = 0; wave < totalWaves; wave++)
+            isSpawningWave = true;
+            CurrentWave = waveNumber;
+
+            for (int enemy = 0; enemy < enemiesPerWave; enemy++)
             {
                 if (gameState != null && gameState.IsGameOver)
                 {
                     break;
                 }
 
-                CurrentWave = wave + 1;
-
-                for (int enemy = 0; enemy < enemiesPerWave; enemy++)
-                {
-                    if (gameState != null && gameState.IsGameOver)
-                    {
-                        break;
-                    }
-
-                    SpawnEnemy();
-                    yield return new WaitForSeconds(timeBetweenEnemies);
-                }
-
-                yield return new WaitForSeconds(timeBetweenWaves);
+                SpawnEnemy();
+                yield return new WaitForSeconds(timeBetweenEnemies);
             }
 
-            IsSpawningComplete = true;
+            isSpawningWave = false;
+
+            if (!IsComplete && timeBetweenWaves > 0f)
+            {
+                yield return new WaitForSeconds(timeBetweenWaves);
+            }
         }
 
         private void SpawnEnemy()
@@ -68,13 +71,13 @@ namespace MomosDefense.Waves
 
             if (enemy.TryGetComponent(out MomosDefense.Combat.Health health))
             {
-                health.Died.AddListener(_ => aliveEnemies--);
+                health.Died.AddListener(_ => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
             }
 
             EnemyPathFollower follower = enemy.GetComponent<EnemyPathFollower>();
             if (follower != null)
             {
-                follower.ReachedGoal.AddListener(() => aliveEnemies--);
+                follower.ReachedGoal.AddListener(() => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
             }
         }
     }

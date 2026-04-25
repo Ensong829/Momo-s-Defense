@@ -212,9 +212,17 @@ namespace MomosDefense.Editor
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
             Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
+            Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
             resultText.fontSize = 42;
+            startWaveText.text = "Start Wave";
+
+            RectTransform startWaveRect = startWaveButton.GetComponent<RectTransform>();
+            startWaveRect.anchorMin = new Vector2(1f, 0f);
+            startWaveRect.anchorMax = new Vector2(1f, 0f);
+            startWaveRect.pivot = new Vector2(1f, 0f);
+            startWaveRect.anchoredPosition = new Vector2(-16f, 16f);
 
             RectTransform resultRect = resultText.GetComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0f, 0f);
@@ -240,6 +248,8 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("waveText").objectReferenceValue = waveText;
             serializedHud.FindProperty("momoPopText").objectReferenceValue = momoPopText;
             serializedHud.FindProperty("momoPopButton").objectReferenceValue = momoPopButton;
+            serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
+            serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
             serializedHud.FindProperty("restartText").objectReferenceValue = restartText;

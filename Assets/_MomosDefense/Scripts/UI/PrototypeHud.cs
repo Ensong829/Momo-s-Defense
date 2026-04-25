@@ -17,6 +17,8 @@ namespace MomosDefense.UI
         [SerializeField] private Text waveText;
         [SerializeField] private Text momoPopText;
         [SerializeField] private Button momoPopButton;
+        [SerializeField] private Text startWaveText;
+        [SerializeField] private Button startWaveButton;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Text restartText;
@@ -40,6 +42,11 @@ namespace MomosDefense.UI
                 restartButton.onClick.AddListener(RestartScene);
                 restartButton.gameObject.SetActive(false);
             }
+
+            if (startWaveButton != null)
+            {
+                startWaveButton.onClick.AddListener(StartNextWave);
+            }
         }
 
         private void OnDestroy()
@@ -52,6 +59,11 @@ namespace MomosDefense.UI
             if (restartButton != null)
             {
                 restartButton.onClick.RemoveListener(RestartScene);
+            }
+
+            if (startWaveButton != null)
+            {
+                startWaveButton.onClick.RemoveListener(StartNextWave);
             }
         }
 
@@ -71,6 +83,7 @@ namespace MomosDefense.UI
             }
 
             UpdateMomoPop();
+            UpdateStartWave();
 
             bool isDefeat = gameState.IsGameOver;
             bool isVictory = waveSpawner != null && waveSpawner.IsComplete;
@@ -108,6 +121,11 @@ namespace MomosDefense.UI
             momoHero?.TryUseMomoPop();
         }
 
+        private void StartNextWave()
+        {
+            waveSpawner?.StartNextWave();
+        }
+
         private void RestartScene()
         {
             Scene activeScene = SceneManager.GetActiveScene();
@@ -130,6 +148,24 @@ namespace MomosDefense.UI
             if (restartText != null)
             {
                 restartText.text = "Restart";
+            }
+        }
+
+        private void UpdateStartWave()
+        {
+            if (startWaveButton == null || waveSpawner == null)
+            {
+                return;
+            }
+
+            bool canStart = waveSpawner.CanStartNextWave && !gameState.IsGameOver;
+            bool shouldShow = !waveSpawner.IsComplete && !gameState.IsGameOver;
+            startWaveButton.gameObject.SetActive(shouldShow);
+            startWaveButton.interactable = canStart;
+
+            if (startWaveText != null)
+            {
+                startWaveText.text = waveSpawner.CurrentWave == 0 ? "Start Wave" : "Next Wave";
             }
         }
 
