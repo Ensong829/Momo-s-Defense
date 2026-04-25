@@ -11,7 +11,7 @@ namespace MomosDefense.Combat
         public int MaxHealth => maxHealth;
         public bool IsAlive => CurrentHealth > 0;
 
-        public UnityEvent<Health> Died;
+        public UnityEvent<Health> Died = new UnityEvent<Health>();
 
         private void Awake()
         {
@@ -35,4 +35,3 @@ namespace MomosDefense.Combat
         }
     }
 }
-

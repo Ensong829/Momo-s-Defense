@@ -50,6 +50,7 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Restart reloads the prototype scene.
 - Compact objective prompt added for first-play guidance.
 - HUD uses a 1920x1080 reference resolution for mobile landscape scaling.
+- Runtime enemy death/leak events are initialized defensively to avoid null listener issues during wave cleanup.
 
 ### Momo
 
@@ -73,6 +74,7 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - HUD shows feedback for successful builds, occupied nodes, and insufficient gold.
 - Build nodes mark themselves as occupied after use.
 - Clicking build nodes no longer moves Momo.
+- Build and upgrade attempts are blocked after the battle ends.
 
 ## In Progress
 
@@ -142,6 +144,14 @@ Latest Android smoke build:
 - Output: `Builds/Android/MomosDefensePrototype.apk`
 - Result: succeeded
 - Size: about 29 MB
+
+Latest automated scene generation:
+
+- Date: 2026-04-25
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Notes: Unity still prints known `abort_threads` shutdown noise in batch mode.
 
 ## Recent Stable Checkpoints
 

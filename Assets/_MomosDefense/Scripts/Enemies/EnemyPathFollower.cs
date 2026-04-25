@@ -20,7 +20,7 @@ namespace MomosDefense.Enemies
         private float slowMultiplier = 1f;
 
         public int GoldReward => goldReward;
-        public UnityEvent ReachedGoal;
+        public UnityEvent ReachedGoal = new UnityEvent();
 
         private void Awake()
         {

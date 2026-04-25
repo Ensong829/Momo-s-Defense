@@ -52,6 +52,8 @@ Read these before coding:
 
 Phase 1 first playable prototype is implemented enough for manual playtest.
 
+Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
+
 Current prototype scene:
 
 - `Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity`
@@ -90,11 +92,13 @@ Android smoke build output:
 - Lives and gold.
 - Victory/defeat states.
 - Restart button.
+- Enemy death/leak events initialized defensively.
 - Build nodes.
 - Tower placement.
 - Tower placement feedback.
 - One starter tower.
 - One tower upgrade step.
+- Tower build and upgrade attempts are blocked after the battle ends.
 
 ### Momo
 
@@ -214,4 +218,3 @@ Only after that, add the second and third placeholder heroes.
 - Premium or cosmetics-first monetization, not pay-to-win.
 - Upgrade systems are very important: heroes, towers, and equipment.
 - User is okay with placeholder assets while gameplay is proven.
-

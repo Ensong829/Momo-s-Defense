@@ -37,6 +37,12 @@ namespace MomosDefense.Towers
 
         public void TryBuildTower()
         {
+            if (gameState != null && gameState.IsGameOver)
+            {
+                hud?.ShowMessage("Battle is over.");
+                return;
+            }
+
             if (hasTower)
             {
                 TryUpgradeTower();
