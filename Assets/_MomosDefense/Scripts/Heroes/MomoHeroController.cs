@@ -2,12 +2,14 @@ using MomosDefense.Combat;
 using MomosDefense.Enemies;
 using MomosDefense.Towers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace MomosDefense.Heroes
 {
     public sealed class MomoHeroController : MonoBehaviour
     {
         [SerializeField] private Camera worldCamera;
+        [SerializeField] private GameObject selectionIndicator;
         [SerializeField] private LayerMask groundMask = ~0;
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float attackRange = 2f;
@@ -22,15 +24,18 @@ namespace MomosDefense.Heroes
         private Vector3 destination;
         private float attackTimer;
         private float momoPopCooldownRemaining;
+        private bool isSelected = true;
 
         public float MomoPopCooldownRemaining => momoPopCooldownRemaining;
         public float MomoPopCooldown => momoPopCooldown;
         public bool CanUseMomoPop => momoPopCooldownRemaining <= 0f;
+        public bool IsSelected => isSelected;
 
         private void Awake()
         {
             destination = transform.position;
             worldCamera = worldCamera == null ? Camera.main : worldCamera;
+            UpdateSelectionVisual();
         }
 
         private void Update()
@@ -48,7 +53,7 @@ namespace MomosDefense.Heroes
 
         private void ReadMoveInput()
         {
-            if (worldCamera == null || !Input.GetMouseButtonDown(0))
+            if (!isSelected || worldCamera == null || !Input.GetMouseButtonDown(0) || IsPointerOverUi())
             {
                 return;
             }
@@ -137,12 +142,54 @@ namespace MomosDefense.Heroes
             momoPopCooldownRemaining = momoPopCooldown;
         }
 
+        public void SetSelected(bool selected)
+        {
+            if (isSelected == selected)
+            {
+                return;
+            }
+
+            isSelected = selected;
+            UpdateSelectionVisual();
+        }
+
         private void UpdateCooldowns()
         {
             if (momoPopCooldownRemaining > 0f)
             {
                 momoPopCooldownRemaining = Mathf.Max(0f, momoPopCooldownRemaining - Time.deltaTime);
             }
+        }
+
+        private void UpdateSelectionVisual()
+        {
+            if (selectionIndicator != null)
+            {
+                selectionIndicator.SetActive(isSelected);
+            }
+        }
+
+        private static bool IsPointerOverUi()
+        {
+            if (EventSystem.current == null)
+            {
+                return false;
+            }
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return true;
+            }
+
+            for (int touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+            {
+                if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(touchIndex).fingerId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

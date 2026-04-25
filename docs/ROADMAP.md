@@ -74,14 +74,14 @@ Done when:
 
 ## Phase 2: Three-Hero Vertical Slice
 
-Status: not started.
+Status: started.
 
 Goal: Prove the special identity of the game.
 
 Deliverables:
 
 - Three controllable heroes.
-- Hero selection portraits.
+- Hero selection portraits. Momo-only foundation started.
 - Hero movement and targeting.
 - One active skill per hero.
 - Three tower families.

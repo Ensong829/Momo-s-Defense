@@ -9,6 +9,7 @@ using MomosDefense.Waves;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -39,9 +40,11 @@ namespace MomosDefense.Editor
             GameObject toughEnemyPrefab = CreateToughEnemyPrefab();
             GameObject towerPrefab = CreateTowerPrefab();
             MomoHeroController momo = CreateMomo();
+            HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo);
             CreateBuildNodes(gameState, towerPrefab);
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, path, gameState);
-            CreateHud(gameState, waveSpawner, momo);
+            CreateEventSystem();
+            CreateHud(gameState, waveSpawner, momo, heroSelection);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -169,7 +172,36 @@ namespace MomosDefense.Editor
             momo.transform.position = new Vector3(-5f, 1f, 0f);
             momo.transform.localScale = new Vector3(0.9f, 1.1f, 0.9f);
             AssignMaterial(momo, "Prototype_Momo", new Color(0.95f, 0.58f, 0.74f));
-            return momo.AddComponent<MomoHeroController>();
+
+            GameObject selectionRing = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            selectionRing.name = "Selection Ring";
+            selectionRing.transform.SetParent(momo.transform);
+            selectionRing.transform.localPosition = new Vector3(0f, -0.92f, 0f);
+            selectionRing.transform.localScale = new Vector3(1.55f, 0.025f, 1.55f);
+            AssignMaterial(selectionRing, "Prototype_MomoSelection", new Color(1f, 0.94f, 0.35f));
+            Object.DestroyImmediate(selectionRing.GetComponent<Collider>());
+
+            MomoHeroController controller = momo.AddComponent<MomoHeroController>();
+            SerializedObject serializedMomo = new SerializedObject(controller);
+            serializedMomo.FindProperty("selectionIndicator").objectReferenceValue = selectionRing;
+            serializedMomo.ApplyModifiedPropertiesWithoutUndo();
+
+            return controller;
+        }
+
+        private static HeroSelectionManager CreateHeroSelectionManager(MomoHeroController momo)
+        {
+            GameObject selectionObject = new GameObject("Hero Selection Manager");
+            HeroSelectionManager selectionManager = selectionObject.AddComponent<HeroSelectionManager>();
+
+            SerializedObject serializedSelection = new SerializedObject(selectionManager);
+            SerializedProperty heroesProperty = serializedSelection.FindProperty("heroes");
+            heroesProperty.arraySize = 1;
+            heroesProperty.GetArrayElementAtIndex(0).objectReferenceValue = momo;
+            serializedSelection.FindProperty("startingHero").objectReferenceValue = momo;
+            serializedSelection.ApplyModifiedPropertiesWithoutUndo();
+
+            return selectionManager;
         }
 
         private static GameObject CreateTowerPrefab()
@@ -226,7 +258,14 @@ namespace MomosDefense.Editor
             return spawner;
         }
 
-        private static void CreateHud(GameState gameState, WaveSpawner waveSpawner, MomoHeroController momo)
+        private static void CreateEventSystem()
+        {
+            GameObject eventSystemObject = new GameObject("EventSystem");
+            eventSystemObject.AddComponent<EventSystem>();
+            eventSystemObject.AddComponent<StandaloneInputModule>();
+        }
+
+        private static void CreateHud(GameState gameState, WaveSpawner waveSpawner, MomoHeroController momo, HeroSelectionManager heroSelection)
         {
             GameObject canvasObject = new GameObject("Prototype HUD");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
@@ -245,11 +284,18 @@ namespace MomosDefense.Editor
             Text messageText = CreateHudText(canvasObject.transform, "Message Text", string.Empty, new Vector2(0f, -18f), TextAnchor.UpperCenter, font);
             Text objectiveText = CreateHudText(canvasObject.transform, "Objective Text", "Build towers. Start waves. Defend the path.", new Vector2(0f, 18f), TextAnchor.LowerCenter, font);
             Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
+            Button momoPortraitButton = CreateHudButton(canvasObject.transform, "Momo Portrait Button", new Vector2(16f, 82f), font, out Text momoPortraitText);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
             resultText.fontSize = 42;
+            momoPortraitText.text = "Momo*";
             startWaveText.text = "Start Wave";
+
+            RectTransform momoPortraitRect = momoPortraitButton.GetComponent<RectTransform>();
+            momoPortraitRect.sizeDelta = new Vector2(150f, 54f);
+            Image momoPortraitImage = momoPortraitButton.GetComponent<Image>();
+            momoPortraitImage.color = new Color(1f, 0.7f, 0.88f, 0.95f);
 
             RectTransform startWaveRect = startWaveButton.GetComponent<RectTransform>();
             startWaveRect.anchorMin = new Vector2(1f, 0f);
@@ -298,12 +344,16 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("waveText").objectReferenceValue = waveText;
             serializedHud.FindProperty("momoPopText").objectReferenceValue = momoPopText;
             serializedHud.FindProperty("momoPopButton").objectReferenceValue = momoPopButton;
+            serializedHud.FindProperty("momoPortraitText").objectReferenceValue = momoPortraitText;
+            serializedHud.FindProperty("momoPortraitButton").objectReferenceValue = momoPortraitButton;
+            serializedHud.FindProperty("momoPortraitImage").objectReferenceValue = momoPortraitImage;
             serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
             serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
             serializedHud.FindProperty("messageText").objectReferenceValue = messageText;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
             serializedHud.FindProperty("restartText").objectReferenceValue = restartText;
+            serializedHud.FindProperty("heroSelection").objectReferenceValue = heroSelection;
             serializedHud.ApplyModifiedPropertiesWithoutUndo();
         }
 

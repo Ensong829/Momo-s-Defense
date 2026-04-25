@@ -17,12 +17,16 @@ namespace MomosDefense.UI
         [SerializeField] private Text waveText;
         [SerializeField] private Text momoPopText;
         [SerializeField] private Button momoPopButton;
+        [SerializeField] private Text momoPortraitText;
+        [SerializeField] private Button momoPortraitButton;
+        [SerializeField] private Image momoPortraitImage;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
         [SerializeField] private Text messageText;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Text restartText;
+        [SerializeField] private HeroSelectionManager heroSelection;
 
         private float messageTimer;
 
@@ -33,11 +37,21 @@ namespace MomosDefense.UI
                 momoHero = FindFirstObjectByType<MomoHeroController>();
             }
 
+            if (heroSelection == null)
+            {
+                heroSelection = FindFirstObjectByType<HeroSelectionManager>();
+            }
+
             EnsureMomoPopButton();
 
             if (momoPopButton != null)
             {
                 momoPopButton.onClick.AddListener(UseMomoPop);
+            }
+
+            if (momoPortraitButton != null)
+            {
+                momoPortraitButton.onClick.AddListener(SelectMomo);
             }
 
             if (restartButton != null)
@@ -57,6 +71,11 @@ namespace MomosDefense.UI
             if (momoPopButton != null)
             {
                 momoPopButton.onClick.RemoveListener(UseMomoPop);
+            }
+
+            if (momoPortraitButton != null)
+            {
+                momoPortraitButton.onClick.RemoveListener(SelectMomo);
             }
 
             if (restartButton != null)
@@ -86,6 +105,7 @@ namespace MomosDefense.UI
             }
 
             UpdateMomoPop();
+            UpdateMomoPortrait();
             UpdateStartWave();
             UpdateMessage();
 
@@ -123,6 +143,34 @@ namespace MomosDefense.UI
         private void UseMomoPop()
         {
             momoHero?.TryUseMomoPop();
+        }
+
+        private void SelectMomo()
+        {
+            if (heroSelection != null && momoHero != null)
+            {
+                heroSelection.SelectHero(momoHero);
+            }
+        }
+
+        private void UpdateMomoPortrait()
+        {
+            if (momoHero == null)
+            {
+                return;
+            }
+
+            if (momoPortraitText != null)
+            {
+                momoPortraitText.text = momoHero.IsSelected ? "Momo*" : "Momo";
+            }
+
+            if (momoPortraitImage != null)
+            {
+                momoPortraitImage.color = momoHero.IsSelected
+                    ? new Color(1f, 0.7f, 0.88f, 0.95f)
+                    : new Color(0.42f, 0.36f, 0.42f, 0.9f);
+            }
         }
 
         private void StartNextWave()

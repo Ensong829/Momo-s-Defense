@@ -4,7 +4,7 @@
 
 Prove the signature identity of Momo's Defense: a classic tower defense battle where the player controls three heroes at once.
 
-Phase 2 should begin only after Phase 1 passes a manual playtest and balance pass.
+Phase 2 has started with a Momo-only selection foundation. A manual playtest is still needed before adding the second and third heroes.
 
 ## Target Experience
 
@@ -66,11 +66,12 @@ Design purpose:
 
 ### Slice 1: Hero Selection Foundation
 
-- Refactor current Momo-only control into a selectable hero control pattern.
-- Add selected/unselected visual state.
-- Add UI portrait buttons.
-- Only selected hero receives move commands.
-- Keep Momo fully functional after the refactor.
+- [x] Refactor current Momo-only control into a selectable hero control pattern.
+- [x] Add selected/unselected visual state.
+- [x] Add UI portrait button for Momo.
+- [x] Only selected hero receives move commands.
+- [x] Keep Momo fully functional after the refactor in automated scene generation.
+- [ ] Confirm Momo remains fully functional in a manual Unity Editor playtest.
 
 ### Slice 2: Three Placeholder Heroes
 
@@ -113,4 +114,3 @@ Design purpose:
 - Momo Pop still works after the selection refactor.
 - No Console errors during a full match.
 - HUD remains readable at 16:9 landscape.
-
