@@ -50,13 +50,13 @@ Deliverables:
 - [x] Momo as the first controllable hero.
 - [x] Basic player lives.
 - [x] Basic gold.
-- [ ] Win/loss condition.
+- [x] Win/loss condition.
 - [x] Minimal mobile HUD.
 - [x] Tower build nodes.
 - [x] Momo's first active skill.
 - [ ] Tower upgrade step.
 - [ ] Second enemy type.
-- [ ] Restart flow.
+- [x] Restart flow.
 
 Done when:
 

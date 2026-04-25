@@ -212,6 +212,7 @@ namespace MomosDefense.Editor
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
             Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
+            Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
             resultText.fontSize = 42;
 
@@ -220,6 +221,14 @@ namespace MomosDefense.Editor
             resultRect.anchorMax = new Vector2(1f, 1f);
             resultRect.offsetMin = Vector2.zero;
             resultRect.offsetMax = Vector2.zero;
+
+            RectTransform restartRect = restartButton.GetComponent<RectTransform>();
+            restartRect.anchorMin = new Vector2(0.5f, 0.5f);
+            restartRect.anchorMax = new Vector2(0.5f, 0.5f);
+            restartRect.pivot = new Vector2(0.5f, 0.5f);
+            restartRect.anchoredPosition = new Vector2(0f, -72f);
+            restartText.text = "Restart";
+            restartButton.gameObject.SetActive(false);
 
             PrototypeHud hud = canvasObject.AddComponent<PrototypeHud>();
             SerializedObject serializedHud = new SerializedObject(hud);
@@ -232,6 +241,8 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("momoPopText").objectReferenceValue = momoPopText;
             serializedHud.FindProperty("momoPopButton").objectReferenceValue = momoPopButton;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
+            serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
+            serializedHud.FindProperty("restartText").objectReferenceValue = restartText;
             serializedHud.ApplyModifiedPropertiesWithoutUndo();
         }
 

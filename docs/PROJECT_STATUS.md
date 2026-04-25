@@ -39,6 +39,10 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Enemy leaks reduce lives.
 - Defeated enemies grant gold.
 - HUD shows lives, gold, wave state, and result text.
+- Victory appears when all waves are cleared.
+- Defeat appears when lives reach zero.
+- Restart button appears after victory or defeat.
+- Restart reloads the prototype scene.
 
 ### Momo
 
@@ -68,17 +72,15 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Add win/loss flow with restart button.
-2. Add wave-start control instead of auto-starting immediately.
-3. Add tower placement feedback for insufficient gold and occupied nodes.
-4. Add one tower upgrade step.
-5. Add one second enemy type.
-6. Improve mobile aspect ratio framing.
+1. Add wave-start control instead of auto-starting immediately.
+2. Add tower placement feedback for insufficient gold and occupied nodes.
+3. Add one tower upgrade step.
+4. Add one second enemy type.
+5. Improve mobile aspect ratio framing.
+6. Manual playtest pass in Unity Editor.
 
 ## Remaining Phase 1 Tasks
 
-- Win/loss restart flow.
-- Clear victory and defeat states.
 - Better tower build feedback.
 - At least one tower upgrade.
 - At least one additional enemy type.
@@ -126,4 +128,3 @@ Before each committed checkpoint:
 - `dd62f0c` - Add prototype HUD and readability pass.
 - `7aa2514` - Add Momo Pop prototype skill.
 - `fd646a0` - Add prototype tower build nodes.
-

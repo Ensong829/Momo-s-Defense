@@ -299,7 +299,7 @@ The first playable should include:
 - [x] 1 hero.
 - [x] 3-5 waves.
 - [x] Basic gold economy.
-- [ ] Basic win/loss.
+- [x] Basic win/loss.
 - [x] Basic Android aspect-ratio UI.
 - [x] Momo's first active skill.
 - [x] Tower build nodes.

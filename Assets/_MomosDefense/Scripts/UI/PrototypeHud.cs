@@ -2,6 +2,7 @@ using MomosDefense.Core;
 using MomosDefense.Heroes;
 using MomosDefense.Waves;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace MomosDefense.UI
@@ -17,6 +18,8 @@ namespace MomosDefense.UI
         [SerializeField] private Text momoPopText;
         [SerializeField] private Button momoPopButton;
         [SerializeField] private Text resultText;
+        [SerializeField] private Button restartButton;
+        [SerializeField] private Text restartText;
 
         private void Awake()
         {
@@ -31,6 +34,12 @@ namespace MomosDefense.UI
             {
                 momoPopButton.onClick.AddListener(UseMomoPop);
             }
+
+            if (restartButton != null)
+            {
+                restartButton.onClick.AddListener(RestartScene);
+                restartButton.gameObject.SetActive(false);
+            }
         }
 
         private void OnDestroy()
@@ -38,6 +47,11 @@ namespace MomosDefense.UI
             if (momoPopButton != null)
             {
                 momoPopButton.onClick.RemoveListener(UseMomoPop);
+            }
+
+            if (restartButton != null)
+            {
+                restartButton.onClick.RemoveListener(RestartScene);
             }
         }
 
@@ -58,11 +72,14 @@ namespace MomosDefense.UI
 
             UpdateMomoPop();
 
-            if (gameState.IsGameOver)
+            bool isDefeat = gameState.IsGameOver;
+            bool isVictory = waveSpawner != null && waveSpawner.IsComplete;
+
+            if (isDefeat)
             {
                 resultText.text = "Defeat";
             }
-            else if (waveSpawner != null && waveSpawner.IsComplete)
+            else if (isVictory)
             {
                 resultText.text = "Victory";
             }
@@ -70,6 +87,8 @@ namespace MomosDefense.UI
             {
                 resultText.text = string.Empty;
             }
+
+            UpdateRestart(isDefeat || isVictory);
         }
 
         private void UpdateMomoPop()
@@ -87,6 +106,31 @@ namespace MomosDefense.UI
         private void UseMomoPop()
         {
             momoHero?.TryUseMomoPop();
+        }
+
+        private void RestartScene()
+        {
+            Scene activeScene = SceneManager.GetActiveScene();
+            string sceneToReload = string.IsNullOrEmpty(activeScene.path) ? activeScene.name : activeScene.path;
+            SceneManager.LoadScene(sceneToReload);
+        }
+
+        private void UpdateRestart(bool shouldShow)
+        {
+            if (restartButton == null)
+            {
+                return;
+            }
+
+            if (restartButton.gameObject.activeSelf != shouldShow)
+            {
+                restartButton.gameObject.SetActive(shouldShow);
+            }
+
+            if (restartText != null)
+            {
+                restartText.text = "Restart";
+            }
         }
 
         private void EnsureMomoPopButton()
@@ -131,6 +175,12 @@ namespace MomosDefense.UI
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
+        }
+
+        public void SetRestartControls(Button button, Text label)
+        {
+            restartButton = button;
+            restartText = label;
         }
     }
 }

@@ -31,10 +31,20 @@ namespace MomosDefense.Waves
         {
             for (int wave = 0; wave < totalWaves; wave++)
             {
+                if (gameState != null && gameState.IsGameOver)
+                {
+                    break;
+                }
+
                 CurrentWave = wave + 1;
 
                 for (int enemy = 0; enemy < enemiesPerWave; enemy++)
                 {
+                    if (gameState != null && gameState.IsGameOver)
+                    {
+                        break;
+                    }
+
                     SpawnEnemy();
                     yield return new WaitForSeconds(timeBetweenEnemies);
                 }
