@@ -83,13 +83,12 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 ## Next Up
 
 1. Manual playtest pass in Unity Editor.
-2. Optional Android build smoke test.
-3. Phase 1 balance pass after playtest.
+2. Phase 1 balance pass after playtest.
+3. Decide whether Phase 1 is ready to call the first playable prototype.
 
 ## Remaining Phase 1 Tasks
 
 - Manual playtest pass in Unity Editor.
-- Optional Android build smoke test.
 - Phase 1 balance pass after playtest.
 
 ## Later Scope
@@ -125,6 +124,12 @@ Before each committed checkpoint:
 - Prototype scene generation must run if the scene builder was touched.
 - Current Unity logs must be checked for compile errors and blocking runtime errors.
 - Blocking errors must be fixed before moving to the next feature.
+
+Latest Android smoke build:
+
+- Output: `Builds/Android/MomosDefensePrototype.apk`
+- Result: succeeded
+- Size: about 29 MB
 
 ## Recent Stable Checkpoints
 

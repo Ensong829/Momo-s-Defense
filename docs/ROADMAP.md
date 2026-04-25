@@ -61,6 +61,8 @@ Deliverables:
 - [x] Restart flow.
 - [x] Mobile landscape framing.
 - [x] Basic guidance prompt.
+- [x] Android smoke build.
+- [ ] Manual playtest and balance pass.
 
 Done when:
 
