@@ -1,5 +1,7 @@
 # Production Roadmap v0.1
 
+Status dashboard: see `docs/PROJECT_STATUS.md`.
+
 ## Recommended Scope Strategy
 
 The long-term goal is a commercial Android game, but the working path should be:
@@ -13,16 +15,18 @@ This keeps the dream large while making the next step small enough to actually f
 
 ## Phase 0: Setup and Planning
 
+Status: mostly complete.
+
 Goal: Prepare the project so development does not become chaotic later.
 
 Deliverables:
 
-- Unity project created with Android target.
-- Version control configured.
-- Folder structure created.
-- Basic coding conventions.
-- Living design docs.
-- Placeholder asset policy.
+- [x] Unity project created with Android target.
+- [x] Version control configured.
+- [x] Folder structure created.
+- [x] Basic coding conventions.
+- [x] Living design docs.
+- [x] Placeholder asset policy.
 
 Done when:
 
@@ -32,20 +36,27 @@ Done when:
 
 ## Phase 1: First Playable Prototype
 
+Status: in progress.
+
 Goal: Prove the basic tower defense loop.
 
 Deliverables:
 
-- One graybox map.
-- One enemy path.
-- Enemy spawner and wave manager.
-- One enemy type.
-- One tower type.
-- Momo as the first controllable hero.
-- Basic player lives.
-- Basic gold.
-- Win/loss condition.
-- Minimal mobile HUD.
+- [x] One graybox map.
+- [x] One enemy path.
+- [x] Enemy spawner and wave manager.
+- [x] One enemy type.
+- [x] One tower type.
+- [x] Momo as the first controllable hero.
+- [x] Basic player lives.
+- [x] Basic gold.
+- [ ] Win/loss condition.
+- [x] Minimal mobile HUD.
+- [x] Tower build nodes.
+- [x] Momo's first active skill.
+- [ ] Tower upgrade step.
+- [ ] Second enemy type.
+- [ ] Restart flow.
 
 Done when:
 
@@ -55,6 +66,8 @@ Done when:
 - The prototype runs in a mobile-shaped resolution.
 
 ## Phase 2: Three-Hero Vertical Slice
+
+Status: not started.
 
 Goal: Prove the special identity of the game.
 
@@ -79,6 +92,8 @@ Done when:
 
 ## Phase 3: RPG Progression Foundation
 
+Status: not started.
+
 Goal: Add the progression systems that make the game sticky.
 
 Deliverables:
@@ -101,6 +116,8 @@ Done when:
 
 ## Phase 4: Content Pipeline
 
+Status: not started.
+
 Goal: Make it easy to add more game content.
 
 Deliverables:
@@ -119,6 +136,8 @@ Done when:
 - Balance values can be changed quickly.
 
 ## Phase 5: Demo Content
+
+Status: not started.
 
 Goal: Build a small but polished demo.
 
@@ -143,6 +162,8 @@ Done when:
 - It runs smoothly on a mid-range Android phone.
 
 ## Phase 6: Commercial Expansion
+
+Status: not started.
 
 Goal: Expand from demo to release candidate.
 

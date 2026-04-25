@@ -1,5 +1,7 @@
 # Game Design Blueprint v0.1
 
+Implementation status dashboard: see `docs/PROJECT_STATUS.md`.
+
 ## Working Title
 
 Momo's Defense
@@ -291,14 +293,18 @@ Initial Unity systems:
 
 The first playable should include:
 
-- 1 test level.
-- 1 enemy path.
-- 1 tower type.
-- 1 hero.
-- 3-5 waves.
-- Basic gold economy.
-- Basic win/loss.
-- Basic Android aspect-ratio UI.
+- [x] 1 test level.
+- [x] 1 enemy path.
+- [x] 1 tower type.
+- [x] 1 hero.
+- [x] 3-5 waves.
+- [x] Basic gold economy.
+- [ ] Basic win/loss.
+- [x] Basic Android aspect-ratio UI.
+- [x] Momo's first active skill.
+- [x] Tower build nodes.
+- [ ] Tower upgrade step.
+- [ ] Second enemy type.
 
 The prototype is successful when:
 
