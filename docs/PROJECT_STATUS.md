@@ -61,6 +61,8 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 - Starter tower prefab created.
 - Tower targets and damages nearby enemies.
+- Starter towers can be upgraded once by clicking the occupied build node.
+- Upgraded towers gain damage, range, attack speed, size, and a color change.
 - Build nodes added to the prototype map.
 - Player can click a build node to spend gold and place a starter tower.
 - HUD shows feedback for successful builds, occupied nodes, and insufficient gold.
@@ -75,15 +77,13 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Add one tower upgrade step.
-2. Add one second enemy type.
-3. Improve mobile aspect ratio framing.
-4. Manual playtest pass in Unity Editor.
-5. Optional Android build smoke test.
+1. Add one second enemy type.
+2. Improve mobile aspect ratio framing.
+3. Manual playtest pass in Unity Editor.
+4. Optional Android build smoke test.
 
 ## Remaining Phase 1 Tasks
 
-- At least one tower upgrade.
 - At least one additional enemy type.
 - Basic tutorial prompts or minimal guidance.
 - Manual playtest pass in Unity Editor.

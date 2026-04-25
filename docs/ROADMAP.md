@@ -56,7 +56,7 @@ Deliverables:
 - [x] Tower placement feedback.
 - [x] Momo's first active skill.
 - [x] Wave-start control.
-- [ ] Tower upgrade step.
+- [x] Tower upgrade step.
 - [ ] Second enemy type.
 - [x] Restart flow.
 

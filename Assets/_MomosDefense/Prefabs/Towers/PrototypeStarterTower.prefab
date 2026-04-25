@@ -130,3 +130,6 @@ MonoBehaviour:
   attackRange: 4
   attacksPerSecond: 1
   attackDamage: 1
+  upgradeCost: 90
+  maxLevel: 2
+  upgradedColor: {r: 0.24, g: 0.8, b: 1, a: 1}

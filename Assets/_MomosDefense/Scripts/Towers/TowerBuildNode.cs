@@ -12,6 +12,7 @@ namespace MomosDefense.Towers
         [SerializeField] private Vector3 towerOffset = new Vector3(0f, 0.75f, 0f);
 
         private bool hasTower;
+        private TowerAttack placedTower;
         private Renderer nodeRenderer;
         private PrototypeHud hud;
         private Color availableColor;
@@ -38,7 +39,7 @@ namespace MomosDefense.Towers
         {
             if (hasTower)
             {
-                hud?.ShowMessage("This build node is occupied.");
+                TryUpgradeTower();
                 return;
             }
 
@@ -54,10 +55,38 @@ namespace MomosDefense.Towers
                 return;
             }
 
-            Instantiate(towerPrefab, transform.position + towerOffset, Quaternion.identity);
+            GameObject tower = Instantiate(towerPrefab, transform.position + towerOffset, Quaternion.identity);
+            placedTower = tower.GetComponent<TowerAttack>();
             hasTower = true;
             SetNodeColor(occupiedColor);
             hud?.ShowMessage($"Built starter tower (-{buildCost} gold).");
+        }
+
+        private void TryUpgradeTower()
+        {
+            if (placedTower == null)
+            {
+                hud?.ShowMessage("This build node is occupied.");
+                return;
+            }
+
+            if (!placedTower.CanUpgrade)
+            {
+                hud?.ShowMessage("Tower is already upgraded.");
+                return;
+            }
+
+            int upgradeCost = placedTower.UpgradeCost;
+            if (gameState == null || !gameState.SpendGold(upgradeCost))
+            {
+                hud?.ShowMessage($"Need {upgradeCost} gold to upgrade.");
+                return;
+            }
+
+            if (placedTower.TryUpgrade())
+            {
+                hud?.ShowMessage($"Tower upgraded (-{upgradeCost} gold).");
+            }
         }
 
         private void SetNodeColor(Color color)

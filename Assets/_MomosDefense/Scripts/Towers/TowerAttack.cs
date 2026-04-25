@@ -9,8 +9,16 @@ namespace MomosDefense.Towers
         [SerializeField] private float attackRange = 4f;
         [SerializeField] private float attacksPerSecond = 1f;
         [SerializeField] private int attackDamage = 1;
+        [SerializeField] private int upgradeCost = 90;
+        [SerializeField] private int maxLevel = 2;
+        [SerializeField] private Color upgradedColor = new Color(0.24f, 0.8f, 1f);
 
         private float attackTimer;
+        private int level = 1;
+
+        public int Level => level;
+        public int UpgradeCost => upgradeCost;
+        public bool CanUpgrade => level < maxLevel;
 
         private void Update()
         {
@@ -53,6 +61,27 @@ namespace MomosDefense.Towers
             }
 
             return nearest;
+        }
+
+        public bool TryUpgrade()
+        {
+            if (!CanUpgrade)
+            {
+                return false;
+            }
+
+            level++;
+            attackDamage += 1;
+            attackRange += 0.75f;
+            attacksPerSecond += 0.25f;
+            transform.localScale *= 1.15f;
+
+            if (TryGetComponent(out Renderer renderer))
+            {
+                renderer.material.color = upgradedColor;
+            }
+
+            return true;
         }
     }
 }
