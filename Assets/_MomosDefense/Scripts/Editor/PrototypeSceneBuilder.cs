@@ -18,6 +18,7 @@ namespace MomosDefense.Editor
     {
         private const string ScenePath = "Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity";
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
+        private const string TowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeStarterTower.prefab";
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
 
         [MenuItem("Momo's Defense/Build Prototype Scene")]
@@ -34,8 +35,9 @@ namespace MomosDefense.Editor
             CreateGround();
             EnemyPath path = CreatePath();
             GameObject enemyPrefab = CreateEnemyPrefab();
+            GameObject towerPrefab = CreateTowerPrefab();
             MomoHeroController momo = CreateMomo();
-            CreateStarterTower();
+            CreateBuildNodes(gameState, towerPrefab);
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, path, gameState);
             CreateHud(gameState, waveSpawner, momo);
 
@@ -144,14 +146,43 @@ namespace MomosDefense.Editor
             return momo.AddComponent<MomoHeroController>();
         }
 
-        private static void CreateStarterTower()
+        private static GameObject CreateTowerPrefab()
         {
             GameObject tower = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            tower.name = "Starter Tower";
-            tower.transform.position = new Vector3(0f, 0.75f, 1.5f);
+            tower.name = "Prototype Starter Tower";
             tower.transform.localScale = new Vector3(1f, 1.5f, 1f);
             AssignMaterial(tower, "Prototype_Tower", new Color(0.25f, 0.43f, 0.86f));
             tower.AddComponent<TowerAttack>();
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(tower, TowerPrefabPath);
+            Object.DestroyImmediate(tower);
+            return prefab;
+        }
+
+        private static void CreateBuildNodes(GameState gameState, GameObject towerPrefab)
+        {
+            Vector3[] nodePositions =
+            {
+                new Vector3(-5.6f, 0.08f, 1.3f),
+                new Vector3(-0.2f, 0.08f, 1.5f),
+                new Vector3(2.2f, 0.08f, -4.2f),
+                new Vector3(5.5f, 0.08f, 0.4f)
+            };
+
+            for (int i = 0; i < nodePositions.Length; i++)
+            {
+                GameObject node = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                node.name = $"Build Node {i + 1}";
+                node.transform.position = nodePositions[i];
+                node.transform.localScale = new Vector3(1.25f, 0.08f, 1.25f);
+                AssignMaterial(node, "Prototype_BuildNode", new Color(0.95f, 0.82f, 0.24f));
+
+                TowerBuildNode buildNode = node.AddComponent<TowerBuildNode>();
+                SerializedObject serializedNode = new SerializedObject(buildNode);
+                serializedNode.FindProperty("gameState").objectReferenceValue = gameState;
+                serializedNode.FindProperty("towerPrefab").objectReferenceValue = towerPrefab;
+                serializedNode.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         private static WaveSpawner CreateWaveSpawner(GameObject enemyPrefab, EnemyPath path, GameState gameState)

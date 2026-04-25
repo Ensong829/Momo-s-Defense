@@ -1,5 +1,6 @@
 using MomosDefense.Combat;
 using MomosDefense.Enemies;
+using MomosDefense.Towers;
 using UnityEngine;
 
 namespace MomosDefense.Heroes
@@ -56,6 +57,11 @@ namespace MomosDefense.Heroes
 
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundMask))
             {
+                if (hit.collider.TryGetComponent(out TowerBuildNode _))
+                {
+                    return;
+                }
+
                 destination = hit.point;
                 destination.y = transform.position.y;
             }
