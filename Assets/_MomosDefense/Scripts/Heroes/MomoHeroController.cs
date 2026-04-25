@@ -12,9 +12,19 @@ namespace MomosDefense.Heroes
         [SerializeField] private float attackRange = 2f;
         [SerializeField] private float attacksPerSecond = 1f;
         [SerializeField] private int attackDamage = 2;
+        [SerializeField] private float momoPopRadius = 3f;
+        [SerializeField] private int momoPopDamage = 4;
+        [SerializeField] private float momoPopCooldown = 8f;
+        [SerializeField] private float momoPopSlowDuration = 2.5f;
+        [SerializeField] private float momoPopSlowMultiplier = 0.45f;
 
         private Vector3 destination;
         private float attackTimer;
+        private float momoPopCooldownRemaining;
+
+        public float MomoPopCooldownRemaining => momoPopCooldownRemaining;
+        public float MomoPopCooldown => momoPopCooldown;
+        public bool CanUseMomoPop => momoPopCooldownRemaining <= 0f;
 
         private void Awake()
         {
@@ -24,9 +34,15 @@ namespace MomosDefense.Heroes
 
         private void Update()
         {
+            UpdateCooldowns();
             ReadMoveInput();
             Move();
             AttackNearestEnemy();
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TryUseMomoPop();
+            }
         }
 
         private void ReadMoveInput()
@@ -85,6 +101,42 @@ namespace MomosDefense.Heroes
 
             nearest.TakeDamage(attackDamage);
             attackTimer = 1f / attacksPerSecond;
+        }
+
+        public void TryUseMomoPop()
+        {
+            if (!CanUseMomoPop)
+            {
+                return;
+            }
+
+            EnemyPathFollower[] enemies = FindObjectsByType<EnemyPathFollower>(FindObjectsInactive.Exclude);
+
+            foreach (EnemyPathFollower enemy in enemies)
+            {
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance > momoPopRadius)
+                {
+                    continue;
+                }
+
+                if (enemy.TryGetComponent(out Health health))
+                {
+                    health.TakeDamage(momoPopDamage);
+                }
+
+                enemy.ApplySlow(momoPopSlowDuration, momoPopSlowMultiplier);
+            }
+
+            momoPopCooldownRemaining = momoPopCooldown;
+        }
+
+        private void UpdateCooldowns()
+        {
+            if (momoPopCooldownRemaining > 0f)
+            {
+                momoPopCooldownRemaining = Mathf.Max(0f, momoPopCooldownRemaining - Time.deltaTime);
+            }
         }
     }
 }

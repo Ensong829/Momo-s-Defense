@@ -16,6 +16,8 @@ namespace MomosDefense.Enemies
         private GameState gameState;
         private Health health;
         private bool reachedGoal;
+        private float slowTimer;
+        private float slowMultiplier = 1f;
 
         public int GoldReward => goldReward;
         public UnityEvent ReachedGoal;
@@ -56,8 +58,11 @@ namespace MomosDefense.Enemies
                 return;
             }
 
+            UpdateSlow();
+
             Transform target = path.Waypoints[waypointIndex];
-            transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+            float currentMoveSpeed = moveSpeed * slowMultiplier;
+            transform.position = Vector3.MoveTowards(transform.position, target.position, currentMoveSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, target.position) > 0.05f)
             {
@@ -80,6 +85,33 @@ namespace MomosDefense.Enemies
             if (!reachedGoal)
             {
                 gameState?.AddGold(goldReward);
+            }
+        }
+
+        public void ApplySlow(float duration, float multiplier)
+        {
+            if (duration <= 0f)
+            {
+                return;
+            }
+
+            slowTimer = Mathf.Max(slowTimer, duration);
+            slowMultiplier = Mathf.Clamp(multiplier, 0.1f, 1f);
+        }
+
+        private void UpdateSlow()
+        {
+            if (slowTimer <= 0f)
+            {
+                slowMultiplier = 1f;
+                return;
+            }
+
+            slowTimer -= Time.deltaTime;
+
+            if (slowTimer <= 0f)
+            {
+                slowMultiplier = 1f;
             }
         }
     }

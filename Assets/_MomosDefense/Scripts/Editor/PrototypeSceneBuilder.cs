@@ -34,10 +34,10 @@ namespace MomosDefense.Editor
             CreateGround();
             EnemyPath path = CreatePath();
             GameObject enemyPrefab = CreateEnemyPrefab();
-            CreateMomo();
+            MomoHeroController momo = CreateMomo();
             CreateStarterTower();
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, path, gameState);
-            CreateHud(gameState, waveSpawner);
+            CreateHud(gameState, waveSpawner, momo);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -134,14 +134,14 @@ namespace MomosDefense.Editor
             return prefab;
         }
 
-        private static void CreateMomo()
+        private static MomoHeroController CreateMomo()
         {
             GameObject momo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             momo.name = "Momo Prototype Hero";
             momo.transform.position = new Vector3(-5f, 1f, 0f);
             momo.transform.localScale = new Vector3(0.9f, 1.1f, 0.9f);
             AssignMaterial(momo, "Prototype_Momo", new Color(0.95f, 0.58f, 0.74f));
-            momo.AddComponent<MomoHeroController>();
+            return momo.AddComponent<MomoHeroController>();
         }
 
         private static void CreateStarterTower()
@@ -168,7 +168,7 @@ namespace MomosDefense.Editor
             return spawner;
         }
 
-        private static void CreateHud(GameState gameState, WaveSpawner waveSpawner)
+        private static void CreateHud(GameState gameState, WaveSpawner waveSpawner, MomoHeroController momo)
         {
             GameObject canvasObject = new GameObject("Prototype HUD");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
@@ -180,6 +180,7 @@ namespace MomosDefense.Editor
             Text livesText = CreateHudText(canvasObject.transform, "Lives Text", "Lives: 20", new Vector2(16f, -16f), TextAnchor.UpperLeft, font);
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
+            Button momoPopButton = CreateHudButton(canvasObject.transform, "Momo Pop Button", new Vector2(16f, 16f), font, out Text momoPopText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
             resultText.fontSize = 42;
 
@@ -193,9 +194,12 @@ namespace MomosDefense.Editor
             SerializedObject serializedHud = new SerializedObject(hud);
             serializedHud.FindProperty("gameState").objectReferenceValue = gameState;
             serializedHud.FindProperty("waveSpawner").objectReferenceValue = waveSpawner;
+            serializedHud.FindProperty("momoHero").objectReferenceValue = momo;
             serializedHud.FindProperty("livesText").objectReferenceValue = livesText;
             serializedHud.FindProperty("goldText").objectReferenceValue = goldText;
             serializedHud.FindProperty("waveText").objectReferenceValue = waveText;
+            serializedHud.FindProperty("momoPopText").objectReferenceValue = momoPopText;
+            serializedHud.FindProperty("momoPopButton").objectReferenceValue = momoPopButton;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.ApplyModifiedPropertiesWithoutUndo();
         }
@@ -220,6 +224,47 @@ namespace MomosDefense.Editor
             rectTransform.sizeDelta = new Vector2(280f, 48f);
 
             return label;
+        }
+
+        private static Button CreateHudButton(Transform parent, string name, Vector2 anchoredPosition, Font font, out Text label)
+        {
+            GameObject buttonObject = new GameObject(name);
+            buttonObject.transform.SetParent(parent);
+
+            Image image = buttonObject.AddComponent<Image>();
+            image.color = new Color(0.94f, 0.58f, 0.74f, 0.9f);
+            Button button = buttonObject.AddComponent<Button>();
+
+            RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
+            rectTransform.anchorMin = new Vector2(0f, 0f);
+            rectTransform.anchorMax = new Vector2(0f, 0f);
+            rectTransform.pivot = new Vector2(0f, 0f);
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.sizeDelta = new Vector2(190f, 54f);
+
+            GameObject labelObject = new GameObject("Label");
+            labelObject.transform.SetParent(buttonObject.transform);
+            label = labelObject.AddComponent<Text>();
+            label.text = "Momo Pop";
+            label.font = font;
+            label.fontSize = 22;
+            label.color = Color.white;
+            label.alignment = TextAnchor.MiddleCenter;
+
+            RectTransform labelRect = label.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+
+            ColorBlock colors = button.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 0.92f, 0.96f);
+            colors.pressedColor = new Color(0.85f, 0.38f, 0.6f);
+            colors.disabledColor = new Color(0.45f, 0.45f, 0.45f, 0.7f);
+            button.colors = colors;
+
+            return button;
         }
 
         private static Vector2 AnchorFor(TextAnchor anchor)
