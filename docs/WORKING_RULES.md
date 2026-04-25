@@ -25,6 +25,16 @@ Every implementation chunk should answer:
 - What still feels risky?
 - What is the next smallest step?
 
+Before moving to the next feature:
+
+- Check Unity compilation.
+- Check Unity Console or `Editor.log` for current errors.
+- Fix compile errors immediately.
+- Fix blocking runtime errors immediately.
+- Do not build new features on top of a known broken state.
+
+The user should not need to send screenshots for routine errors. Prefer reading Unity logs directly whenever possible.
+
 ## Agent Rule
 
 Sub-agents can be used for bounded tasks once the project has enough surface area.
@@ -36,4 +46,3 @@ The main agent remains responsible for:
 - Reviewing changes.
 - Keeping the docs current.
 - Making sure the test/fix loop happens.
-

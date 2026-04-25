@@ -15,6 +15,13 @@ namespace MomosDefense.Waves
         [SerializeField] private float timeBetweenEnemies = 0.8f;
         [SerializeField] private float timeBetweenWaves = 4f;
 
+        private int aliveEnemies;
+
+        public int CurrentWave { get; private set; }
+        public int TotalWaves => totalWaves;
+        public bool IsSpawningComplete { get; private set; }
+        public bool IsComplete => IsSpawningComplete && aliveEnemies == 0;
+
         private void Start()
         {
             StartCoroutine(SpawnWaves());
@@ -24,6 +31,8 @@ namespace MomosDefense.Waves
         {
             for (int wave = 0; wave < totalWaves; wave++)
             {
+                CurrentWave = wave + 1;
+
                 for (int enemy = 0; enemy < enemiesPerWave; enemy++)
                 {
                     SpawnEnemy();
@@ -32,6 +41,8 @@ namespace MomosDefense.Waves
 
                 yield return new WaitForSeconds(timeBetweenWaves);
             }
+
+            IsSpawningComplete = true;
         }
 
         private void SpawnEnemy()
@@ -42,8 +53,19 @@ namespace MomosDefense.Waves
             }
 
             GameObject enemy = Instantiate(enemyPrefab);
+            aliveEnemies++;
             enemy.GetComponent<EnemyPathFollower>()?.Initialize(enemyPath, gameState);
+
+            if (enemy.TryGetComponent(out MomosDefense.Combat.Health health))
+            {
+                health.Died.AddListener(_ => aliveEnemies--);
+            }
+
+            EnemyPathFollower follower = enemy.GetComponent<EnemyPathFollower>();
+            if (follower != null)
+            {
+                follower.ReachedGoal.AddListener(() => aliveEnemies--);
+            }
         }
     }
 }
-

@@ -1,4 +1,5 @@
 using MomosDefense.Combat;
+using MomosDefense.Enemies;
 using UnityEngine;
 
 namespace MomosDefense.Towers
@@ -38,7 +39,7 @@ namespace MomosDefense.Towers
 
             foreach (Health target in healthTargets)
             {
-                if (!target.CompareTag("Enemy"))
+                if (!target.TryGetComponent(out EnemyPathFollower _))
                 {
                     continue;
                 }

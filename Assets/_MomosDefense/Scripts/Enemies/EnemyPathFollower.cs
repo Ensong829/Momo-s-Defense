@@ -1,6 +1,7 @@
 using MomosDefense.Core;
 using MomosDefense.Combat;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MomosDefense.Enemies
 {
@@ -17,6 +18,7 @@ namespace MomosDefense.Enemies
         private bool reachedGoal;
 
         public int GoldReward => goldReward;
+        public UnityEvent ReachedGoal;
 
         private void Awake()
         {
@@ -68,6 +70,7 @@ namespace MomosDefense.Enemies
             {
                 reachedGoal = true;
                 gameState.LoseLife(lifeDamage);
+                ReachedGoal?.Invoke();
                 Destroy(gameObject);
             }
         }

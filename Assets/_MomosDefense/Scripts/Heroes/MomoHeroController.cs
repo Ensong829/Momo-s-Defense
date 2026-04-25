@@ -1,4 +1,5 @@
 using MomosDefense.Combat;
+using MomosDefense.Enemies;
 using UnityEngine;
 
 namespace MomosDefense.Heroes
@@ -64,7 +65,7 @@ namespace MomosDefense.Heroes
 
             foreach (Health target in healthTargets)
             {
-                if (target.gameObject == gameObject || !target.CompareTag("Enemy"))
+                if (target.gameObject == gameObject || !target.TryGetComponent(out EnemyPathFollower _))
                 {
                     continue;
                 }

@@ -1,12 +1,15 @@
+using System.Collections.Generic;
 using MomosDefense.Combat;
 using MomosDefense.Core;
 using MomosDefense.Enemies;
 using MomosDefense.Heroes;
 using MomosDefense.Towers;
+using MomosDefense.UI;
 using MomosDefense.Waves;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace MomosDefense.Editor
@@ -15,6 +18,7 @@ namespace MomosDefense.Editor
     {
         private const string ScenePath = "Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity";
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
+        private const string MaterialFolder = "Assets/_MomosDefense/Materials";
 
         [MenuItem("Momo's Defense/Build Prototype Scene")]
         public static void BuildPrototypeScene()
@@ -24,6 +28,7 @@ namespace MomosDefense.Editor
             GameObject gameStateObject = new GameObject("Game State");
             GameState gameState = gameStateObject.AddComponent<GameState>();
 
+            EnsureMaterialFolder();
             CreateCamera();
             CreateLight();
             CreateGround();
@@ -31,7 +36,8 @@ namespace MomosDefense.Editor
             GameObject enemyPrefab = CreateEnemyPrefab();
             CreateMomo();
             CreateStarterTower();
-            CreateWaveSpawner(enemyPrefab, path, gameState);
+            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, path, gameState);
+            CreateHud(gameState, waveSpawner);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -46,7 +52,7 @@ namespace MomosDefense.Editor
             cameraObject.transform.position = new Vector3(0f, 14f, -12f);
             cameraObject.transform.rotation = Quaternion.Euler(55f, 0f, 0f);
             camera.orthographic = true;
-            camera.orthographicSize = 8f;
+            camera.orthographicSize = 7.2f;
         }
 
         private static void CreateLight()
@@ -54,7 +60,7 @@ namespace MomosDefense.Editor
             GameObject lightObject = new GameObject("Directional Light");
             Light light = lightObject.AddComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.2f;
+            light.intensity = 0.85f;
             lightObject.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
         }
 
@@ -63,11 +69,14 @@ namespace MomosDefense.Editor
             GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "Prototype Ground";
             ground.transform.localScale = new Vector3(2f, 1f, 2f);
+            AssignMaterial(ground, "Prototype_Ground", new Color(0.42f, 0.72f, 0.38f));
         }
 
         private static EnemyPath CreatePath()
         {
             GameObject pathObject = new GameObject("Enemy Path");
+            Material pathMaterial = GetOrCreateMaterial("Prototype_Path", new Color(0.68f, 0.52f, 0.34f));
+            List<Transform> waypoints = new List<Transform>();
             Vector3[] points =
             {
                 new Vector3(-8f, 0.1f, 4f),
@@ -82,17 +91,41 @@ namespace MomosDefense.Editor
                 GameObject waypoint = new GameObject($"Waypoint {i + 1}");
                 waypoint.transform.SetParent(pathObject.transform);
                 waypoint.transform.position = points[i];
+                waypoints.Add(waypoint.transform);
+
+                GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                marker.name = $"Path Marker {i + 1}";
+                marker.transform.SetParent(pathObject.transform);
+                marker.transform.position = points[i] + Vector3.up * 0.01f;
+                marker.transform.localScale = new Vector3(0.7f, 0.03f, 0.7f);
+                marker.GetComponent<Renderer>().sharedMaterial = pathMaterial;
+
+                if (i > 0)
+                {
+                    CreatePathSegment(pathObject.transform, points[i - 1], points[i], pathMaterial, i);
+                }
             }
 
-            return pathObject.AddComponent<EnemyPath>();
+            EnemyPath path = pathObject.AddComponent<EnemyPath>();
+            SerializedObject serializedPath = new SerializedObject(path);
+            SerializedProperty waypointProperty = serializedPath.FindProperty("waypoints");
+            waypointProperty.arraySize = waypoints.Count;
+
+            for (int i = 0; i < waypoints.Count; i++)
+            {
+                waypointProperty.GetArrayElementAtIndex(i).objectReferenceValue = waypoints[i];
+            }
+
+            serializedPath.ApplyModifiedPropertiesWithoutUndo();
+            return path;
         }
 
         private static GameObject CreateEnemyPrefab()
         {
             GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             enemy.name = "Prototype Enemy";
-            enemy.tag = "Enemy";
             enemy.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+            AssignMaterial(enemy, "Prototype_Enemy", new Color(0.86f, 0.26f, 0.25f));
             enemy.AddComponent<Health>();
             enemy.AddComponent<EnemyPathFollower>();
 
@@ -107,6 +140,7 @@ namespace MomosDefense.Editor
             momo.name = "Momo Prototype Hero";
             momo.transform.position = new Vector3(-5f, 1f, 0f);
             momo.transform.localScale = new Vector3(0.9f, 1.1f, 0.9f);
+            AssignMaterial(momo, "Prototype_Momo", new Color(0.95f, 0.58f, 0.74f));
             momo.AddComponent<MomoHeroController>();
         }
 
@@ -116,10 +150,11 @@ namespace MomosDefense.Editor
             tower.name = "Starter Tower";
             tower.transform.position = new Vector3(0f, 0.75f, 1.5f);
             tower.transform.localScale = new Vector3(1f, 1.5f, 1f);
+            AssignMaterial(tower, "Prototype_Tower", new Color(0.25f, 0.43f, 0.86f));
             tower.AddComponent<TowerAttack>();
         }
 
-        private static void CreateWaveSpawner(GameObject enemyPrefab, EnemyPath path, GameState gameState)
+        private static WaveSpawner CreateWaveSpawner(GameObject enemyPrefab, EnemyPath path, GameState gameState)
         {
             GameObject spawnerObject = new GameObject("Wave Spawner");
             WaveSpawner spawner = spawnerObject.AddComponent<WaveSpawner>();
@@ -129,7 +164,137 @@ namespace MomosDefense.Editor
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();
+
+            return spawner;
+        }
+
+        private static void CreateHud(GameState gameState, WaveSpawner waveSpawner)
+        {
+            GameObject canvasObject = new GameObject("Prototype HUD");
+            Canvas canvas = canvasObject.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasObject.AddComponent<CanvasScaler>();
+            canvasObject.AddComponent<GraphicRaycaster>();
+
+            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            Text livesText = CreateHudText(canvasObject.transform, "Lives Text", "Lives: 20", new Vector2(16f, -16f), TextAnchor.UpperLeft, font);
+            Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
+            Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
+            Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
+            resultText.fontSize = 42;
+
+            RectTransform resultRect = resultText.GetComponent<RectTransform>();
+            resultRect.anchorMin = new Vector2(0f, 0f);
+            resultRect.anchorMax = new Vector2(1f, 1f);
+            resultRect.offsetMin = Vector2.zero;
+            resultRect.offsetMax = Vector2.zero;
+
+            PrototypeHud hud = canvasObject.AddComponent<PrototypeHud>();
+            SerializedObject serializedHud = new SerializedObject(hud);
+            serializedHud.FindProperty("gameState").objectReferenceValue = gameState;
+            serializedHud.FindProperty("waveSpawner").objectReferenceValue = waveSpawner;
+            serializedHud.FindProperty("livesText").objectReferenceValue = livesText;
+            serializedHud.FindProperty("goldText").objectReferenceValue = goldText;
+            serializedHud.FindProperty("waveText").objectReferenceValue = waveText;
+            serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
+            serializedHud.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static Text CreateHudText(Transform parent, string name, string text, Vector2 anchoredPosition, TextAnchor alignment, Font font)
+        {
+            GameObject textObject = new GameObject(name);
+            textObject.transform.SetParent(parent);
+
+            Text label = textObject.AddComponent<Text>();
+            label.text = text;
+            label.font = font;
+            label.fontSize = 24;
+            label.color = Color.white;
+            label.alignment = alignment;
+
+            RectTransform rectTransform = label.GetComponent<RectTransform>();
+            rectTransform.anchorMin = AnchorFor(alignment);
+            rectTransform.anchorMax = AnchorFor(alignment);
+            rectTransform.pivot = PivotFor(alignment);
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.sizeDelta = new Vector2(280f, 48f);
+
+            return label;
+        }
+
+        private static Vector2 AnchorFor(TextAnchor anchor)
+        {
+            return anchor switch
+            {
+                TextAnchor.UpperRight => new Vector2(1f, 1f),
+                TextAnchor.MiddleCenter => new Vector2(0.5f, 0.5f),
+                _ => new Vector2(0f, 1f)
+            };
+        }
+
+        private static Vector2 PivotFor(TextAnchor anchor)
+        {
+            return anchor switch
+            {
+                TextAnchor.UpperRight => new Vector2(1f, 1f),
+                TextAnchor.MiddleCenter => new Vector2(0.5f, 0.5f),
+                _ => new Vector2(0f, 1f)
+            };
+        }
+
+        private static void CreatePathSegment(Transform parent, Vector3 start, Vector3 end, Material material, int index)
+        {
+            Vector3 midpoint = (start + end) * 0.5f + Vector3.up * 0.01f;
+            float length = Vector3.Distance(start, end);
+
+            GameObject segment = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            segment.name = $"Path Segment {index}";
+            segment.transform.SetParent(parent);
+            segment.transform.position = midpoint;
+            segment.transform.localScale = new Vector3(0.6f, 0.025f, length);
+            segment.transform.rotation = Quaternion.LookRotation(end - start, Vector3.up);
+            segment.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static void EnsureMaterialFolder()
+        {
+            if (!AssetDatabase.IsValidFolder(MaterialFolder))
+            {
+                AssetDatabase.CreateFolder("Assets/_MomosDefense", "Materials");
+            }
+        }
+
+        private static void AssignMaterial(GameObject target, string materialName, Color color)
+        {
+            Renderer renderer = target.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.sharedMaterial = GetOrCreateMaterial(materialName, color);
+            }
+        }
+
+        private static Material GetOrCreateMaterial(string materialName, Color color)
+        {
+            string path = $"{MaterialFolder}/{materialName}.mat";
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+
+            if (material != null)
+            {
+                material.color = color;
+                EditorUtility.SetDirty(material);
+                return material;
+            }
+
+            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null)
+            {
+                shader = Shader.Find("Standard");
+            }
+
+            material = new Material(shader);
+            material.color = color;
+            AssetDatabase.CreateAsset(material, path);
+            return material;
         }
     }
 }
-
