@@ -57,7 +57,7 @@ Deliverables:
 - [x] Momo's first active skill.
 - [x] Wave-start control.
 - [x] Tower upgrade step.
-- [ ] Second enemy type.
+- [x] Second enemy type.
 - [x] Restart flow.
 
 Done when:

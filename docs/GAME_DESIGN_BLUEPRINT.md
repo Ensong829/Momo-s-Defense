@@ -306,7 +306,7 @@ The first playable should include:
 - [x] Tower placement feedback.
 - [x] Wave-start control.
 - [x] Tower upgrade step.
-- [ ] Second enemy type.
+- [x] Second enemy type.
 
 The prototype is successful when:
 

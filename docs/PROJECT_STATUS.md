@@ -36,6 +36,8 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 - Basic `Health` component.
 - Enemy path follower.
 - Wave spawner.
+- Basic enemy and tough enemy prefabs.
+- Tough enemies appear from wave 2 onward.
 - Waves wait for player input before starting.
 - HUD has Start Wave / Next Wave control.
 - Enemy leaks reduce lives.
@@ -77,14 +79,13 @@ Goal: make a rough but complete tower defense match featuring Momo, one enemy pa
 
 ## Next Up
 
-1. Add one second enemy type.
-2. Improve mobile aspect ratio framing.
+1. Improve mobile aspect ratio framing.
+2. Add basic tutorial prompts or minimal guidance.
 3. Manual playtest pass in Unity Editor.
 4. Optional Android build smoke test.
 
 ## Remaining Phase 1 Tasks
 
-- At least one additional enemy type.
 - Basic tutorial prompts or minimal guidance.
 - Manual playtest pass in Unity Editor.
 - Optional Android build smoke test.

@@ -8,6 +8,7 @@ namespace MomosDefense.Waves
     public sealed class WaveSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject enemyPrefab;
+        [SerializeField] private GameObject toughEnemyPrefab;
         [SerializeField] private EnemyPath enemyPath;
         [SerializeField] private GameState gameState;
         [SerializeField] private int totalWaves = 3;
@@ -46,7 +47,7 @@ namespace MomosDefense.Waves
                     break;
                 }
 
-                SpawnEnemy();
+                SpawnEnemy(waveNumber, enemy);
                 yield return new WaitForSeconds(timeBetweenEnemies);
             }
 
@@ -58,14 +59,15 @@ namespace MomosDefense.Waves
             }
         }
 
-        private void SpawnEnemy()
+        private void SpawnEnemy(int waveNumber, int enemyIndex)
         {
             if (enemyPrefab == null || enemyPath == null || gameState == null || gameState.IsGameOver)
             {
                 return;
             }
 
-            GameObject enemy = Instantiate(enemyPrefab);
+            GameObject prefabToSpawn = ChooseEnemyPrefab(waveNumber, enemyIndex);
+            GameObject enemy = Instantiate(prefabToSpawn);
             aliveEnemies++;
             enemy.GetComponent<EnemyPathFollower>()?.Initialize(enemyPath, gameState);
 
@@ -79,6 +81,16 @@ namespace MomosDefense.Waves
             {
                 follower.ReachedGoal.AddListener(() => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
             }
+        }
+
+        private GameObject ChooseEnemyPrefab(int waveNumber, int enemyIndex)
+        {
+            if (toughEnemyPrefab != null && waveNumber >= 2 && enemyIndex % 3 == 2)
+            {
+                return toughEnemyPrefab;
+            }
+
+            return enemyPrefab;
         }
     }
 }

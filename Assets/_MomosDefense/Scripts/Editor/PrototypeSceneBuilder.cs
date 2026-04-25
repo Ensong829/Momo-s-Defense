@@ -18,6 +18,7 @@ namespace MomosDefense.Editor
     {
         private const string ScenePath = "Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity";
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
+        private const string ToughEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeToughEnemy.prefab";
         private const string TowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeStarterTower.prefab";
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
 
@@ -35,10 +36,11 @@ namespace MomosDefense.Editor
             CreateGround();
             EnemyPath path = CreatePath();
             GameObject enemyPrefab = CreateEnemyPrefab();
+            GameObject toughEnemyPrefab = CreateToughEnemyPrefab();
             GameObject towerPrefab = CreateTowerPrefab();
             MomoHeroController momo = CreateMomo();
             CreateBuildNodes(gameState, towerPrefab);
-            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, path, gameState);
+            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, path, gameState);
             CreateHud(gameState, waveSpawner, momo);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -136,6 +138,30 @@ namespace MomosDefense.Editor
             return prefab;
         }
 
+        private static GameObject CreateToughEnemyPrefab()
+        {
+            GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            enemy.name = "Prototype Tough Enemy";
+            enemy.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            AssignMaterial(enemy, "Prototype_ToughEnemy", new Color(0.55f, 0.18f, 0.78f));
+
+            Health health = enemy.AddComponent<Health>();
+            EnemyPathFollower follower = enemy.AddComponent<EnemyPathFollower>();
+
+            SerializedObject serializedHealth = new SerializedObject(health);
+            serializedHealth.FindProperty("maxHealth").intValue = 18;
+            serializedHealth.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject serializedFollower = new SerializedObject(follower);
+            serializedFollower.FindProperty("moveSpeed").floatValue = 1.25f;
+            serializedFollower.FindProperty("goldReward").intValue = 22;
+            serializedFollower.ApplyModifiedPropertiesWithoutUndo();
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, ToughEnemyPrefabPath);
+            Object.DestroyImmediate(enemy);
+            return prefab;
+        }
+
         private static MomoHeroController CreateMomo()
         {
             GameObject momo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -185,13 +211,14 @@ namespace MomosDefense.Editor
             }
         }
 
-        private static WaveSpawner CreateWaveSpawner(GameObject enemyPrefab, EnemyPath path, GameState gameState)
+        private static WaveSpawner CreateWaveSpawner(GameObject enemyPrefab, GameObject toughEnemyPrefab, EnemyPath path, GameState gameState)
         {
             GameObject spawnerObject = new GameObject("Wave Spawner");
             WaveSpawner spawner = spawnerObject.AddComponent<WaveSpawner>();
 
             SerializedObject serializedSpawner = new SerializedObject(spawner);
             serializedSpawner.FindProperty("enemyPrefab").objectReferenceValue = enemyPrefab;
+            serializedSpawner.FindProperty("toughEnemyPrefab").objectReferenceValue = toughEnemyPrefab;
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();
