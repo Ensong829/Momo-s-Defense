@@ -109,6 +109,10 @@ Playtest checklist:
 - First pass level art.
 - Placeholder music and SFX.
 
+Planning doc:
+
+- `docs/PHASE_2_VERTICAL_SLICE_PLAN.md`
+
 ### Phase 3: RPG Progression Foundation
 
 - Persistent hero levels.
@@ -119,6 +123,10 @@ Playtest checklist:
 - Save/load.
 - Reward screen.
 - Upgrade menus.
+
+Planning doc:
+
+- `docs/PHASE_3_PROGRESSION_PLAN.md`
 
 ## Testing Standard
 
