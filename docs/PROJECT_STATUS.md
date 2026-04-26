@@ -4,9 +4,9 @@ Last updated: 2026-04-25
 
 ## Current Milestone
 
-Phase 2: Three-Hero Vertical Slice, Slice 1
+Phase 2: Three-Hero Vertical Slice
 
-Goal: refactor the Momo-only prototype toward selectable hero control without breaking the first playable battle loop.
+Goal: prove three-hero control, per-hero skills, and readable battle UI without breaking the first playable battle loop.
 
 ## Completed
 
@@ -65,14 +65,22 @@ Goal: refactor the Momo-only prototype toward selectable hero control without br
 - Momo Pop damages nearby enemies.
 - Momo Pop slows nearby enemies.
 - Momo Pop can be activated through HUD button or Space in editor.
-- HUD shows Momo Pop cooldown.
+- HUD shows the selected hero skill cooldown.
 
 ### Hero Selection
 
 - Prototype hero selection manager added.
 - Momo is registered as the starting selected hero.
 - Generated scene includes an `EventSystem` for prototype UI input.
-- Generated HUD includes a Momo portrait button.
+- Generated HUD includes portrait buttons for Momo, Bulwark, and Sprout.
+- `1`, `2`, and `3` select heroes in the editor.
+
+### Additional Heroes
+
+- Bulwark placeholder added as the second controllable hero.
+- Bulwark uses `Ground Slam`, a short-range area hit with heavy slow.
+- Sprout placeholder added as the third controllable hero.
+- Sprout uses `Bloom Song`, a nearby tower buff skill.
 
 ### Towers
 
@@ -86,18 +94,19 @@ Goal: refactor the Momo-only prototype toward selectable hero control without br
 - Build nodes mark themselves as occupied after use.
 - Clicking build nodes no longer moves Momo.
 - Build and upgrade attempts are blocked after the battle ends.
+- Towers can receive a temporary attack buff from Sprout.
 
 ## In Progress
 
-- Phase 2 Slice 1: hero selection foundation.
-- Momo-only selectable hero control.
+- Phase 2 three-hero vertical slice.
+- Prototype hero combat tuning and readability.
 - Prototype-only UI and controls.
 
 ## Next Up
 
 1. Manual playtest pass in Unity Editor.
-2. Confirm tower building, Momo movement, Momo Pop, start waves, victory/defeat, and restart still work after the selection refactor.
-3. If stable, continue Phase 2 Slice 2: add the second and third placeholder heroes.
+2. Confirm tower building, wave start, restart flow, hero switching, and all three skills feel reliable.
+3. Tune hero stats, enemy pressure, and HUD readability based on playtest notes.
 
 ## Remaining Phase 1 Tasks
 
@@ -113,8 +122,8 @@ Playtest checklist:
 ### Phase 2: Three-Hero Vertical Slice
 
 - Three controllable heroes.
-- Hero portraits/selection. Momo-only foundation started.
-- One active skill per hero.
+- Hero portraits/selection. Prototype implemented.
+- One active skill per hero. Prototype implemented.
 - Three tower families.
 - Four enemy types.
 - In-battle hero leveling.
@@ -172,6 +181,15 @@ Latest Phase 2 Slice 1 automated scene generation:
 - Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
 - Scene check: generated `Hero Selection Manager`, `Momo Portrait Button`, `Selection Ring`, and `EventSystem`.
 - Notes: manual playtest is still needed before adding two more heroes.
+
+Latest automated three-hero scene generation:
+
+- Date: 2026-04-25
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated `Bulwark Prototype Hero`, `Sprout Prototype Hero`, `Bulwark Portrait Button`, `Sprout Portrait Button`, and `Skill Button`.
+- Notes: Unity still prints known `abort_threads` shutdown noise in batch mode. Manual playtest is still needed before calling Phase 2 finished.
 
 ## Recent Stable Checkpoints
 

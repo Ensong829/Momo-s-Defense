@@ -11,47 +11,64 @@ namespace MomosDefense.UI
     {
         [SerializeField] private GameState gameState;
         [SerializeField] private WaveSpawner waveSpawner;
-        [SerializeField] private MomoHeroController momoHero;
+        [SerializeField] private HeroSelectionManager heroSelection;
+        [SerializeField] private PrototypeHeroController momoHero;
+        [SerializeField] private PrototypeHeroController bulwarkHero;
+        [SerializeField] private PrototypeHeroController sproutHero;
         [SerializeField] private Text livesText;
         [SerializeField] private Text goldText;
         [SerializeField] private Text waveText;
-        [SerializeField] private Text momoPopText;
-        [SerializeField] private Button momoPopButton;
+        [SerializeField] private Text skillText;
+        [SerializeField] private Button skillButton;
         [SerializeField] private Text momoPortraitText;
         [SerializeField] private Button momoPortraitButton;
         [SerializeField] private Image momoPortraitImage;
+        [SerializeField] private Text bulwarkPortraitText;
+        [SerializeField] private Button bulwarkPortraitButton;
+        [SerializeField] private Image bulwarkPortraitImage;
+        [SerializeField] private Text sproutPortraitText;
+        [SerializeField] private Button sproutPortraitButton;
+        [SerializeField] private Image sproutPortraitImage;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
         [SerializeField] private Text messageText;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Text restartText;
-        [SerializeField] private HeroSelectionManager heroSelection;
 
+        private readonly Color idlePortraitColor = new Color(0.42f, 0.36f, 0.42f, 0.9f);
+        private readonly Color momoSelectedColor = new Color(1f, 0.7f, 0.88f, 0.95f);
+        private readonly Color bulwarkSelectedColor = new Color(0.95f, 0.8f, 0.45f, 0.95f);
+        private readonly Color sproutSelectedColor = new Color(0.58f, 0.92f, 0.58f, 0.95f);
         private float messageTimer;
 
         private void Awake()
         {
-            if (momoHero == null)
-            {
-                momoHero = FindFirstObjectByType<MomoHeroController>();
-            }
-
             if (heroSelection == null)
             {
                 heroSelection = FindFirstObjectByType<HeroSelectionManager>();
             }
 
-            EnsureMomoPopButton();
+            EnsureSkillButton();
 
-            if (momoPopButton != null)
+            if (skillButton != null)
             {
-                momoPopButton.onClick.AddListener(UseMomoPop);
+                skillButton.onClick.AddListener(UseSelectedSkill);
             }
 
             if (momoPortraitButton != null)
             {
                 momoPortraitButton.onClick.AddListener(SelectMomo);
+            }
+
+            if (bulwarkPortraitButton != null)
+            {
+                bulwarkPortraitButton.onClick.AddListener(SelectBulwark);
+            }
+
+            if (sproutPortraitButton != null)
+            {
+                sproutPortraitButton.onClick.AddListener(SelectSprout);
             }
 
             if (restartButton != null)
@@ -68,14 +85,24 @@ namespace MomosDefense.UI
 
         private void OnDestroy()
         {
-            if (momoPopButton != null)
+            if (skillButton != null)
             {
-                momoPopButton.onClick.RemoveListener(UseMomoPop);
+                skillButton.onClick.RemoveListener(UseSelectedSkill);
             }
 
             if (momoPortraitButton != null)
             {
                 momoPortraitButton.onClick.RemoveListener(SelectMomo);
+            }
+
+            if (bulwarkPortraitButton != null)
+            {
+                bulwarkPortraitButton.onClick.RemoveListener(SelectBulwark);
+            }
+
+            if (sproutPortraitButton != null)
+            {
+                sproutPortraitButton.onClick.RemoveListener(SelectSprout);
             }
 
             if (restartButton != null)
@@ -104,8 +131,8 @@ namespace MomosDefense.UI
                 waveText.text = $"Wave: {waveSpawner.CurrentWave}/{waveSpawner.TotalWaves}";
             }
 
-            UpdateMomoPop();
-            UpdateMomoPortrait();
+            UpdateSkillButton();
+            UpdatePortraits();
             UpdateStartWave();
             UpdateMessage();
 
@@ -128,21 +155,20 @@ namespace MomosDefense.UI
             UpdateRestart(isDefeat || isVictory);
         }
 
-        private void UpdateMomoPop()
+        public void ShowMessage(string message, float duration = 2f)
         {
-            if (momoHero == null || momoPopText == null || momoPopButton == null)
+            if (messageText == null)
             {
                 return;
             }
 
-            bool isReady = momoHero.CanUseMomoPop;
-            momoPopButton.interactable = isReady;
-            momoPopText.text = isReady ? "Momo Pop" : $"Momo Pop {momoHero.MomoPopCooldownRemaining:0.0}s";
+            messageText.text = message;
+            messageTimer = duration;
         }
 
-        private void UseMomoPop()
+        private void UseSelectedSkill()
         {
-            momoHero?.TryUseMomoPop();
+            heroSelection?.SelectedHero?.TryUseSkill();
         }
 
         private void SelectMomo()
@@ -153,23 +179,66 @@ namespace MomosDefense.UI
             }
         }
 
-        private void UpdateMomoPortrait()
+        private void SelectBulwark()
         {
-            if (momoHero == null)
+            if (heroSelection != null && bulwarkHero != null)
+            {
+                heroSelection.SelectHero(bulwarkHero);
+            }
+        }
+
+        private void SelectSprout()
+        {
+            if (heroSelection != null && sproutHero != null)
+            {
+                heroSelection.SelectHero(sproutHero);
+            }
+        }
+
+        private void UpdateSkillButton()
+        {
+            if (skillText == null || skillButton == null)
             {
                 return;
             }
 
-            if (momoPortraitText != null)
+            PrototypeHeroController selectedHero = heroSelection != null ? heroSelection.SelectedHero : null;
+
+            if (selectedHero == null)
             {
-                momoPortraitText.text = momoHero.IsSelected ? "Momo*" : "Momo";
+                skillButton.interactable = false;
+                skillText.text = "No Skill";
+                return;
             }
 
-            if (momoPortraitImage != null)
+            skillButton.interactable = selectedHero.CanUseSkill;
+            skillText.text = selectedHero.CanUseSkill
+                ? selectedHero.SkillName
+                : $"{selectedHero.SkillName} {selectedHero.SkillCooldownRemaining:0.0}s";
+        }
+
+        private void UpdatePortraits()
+        {
+            UpdatePortrait(momoHero, momoPortraitText, momoPortraitImage, momoSelectedColor);
+            UpdatePortrait(bulwarkHero, bulwarkPortraitText, bulwarkPortraitImage, bulwarkSelectedColor);
+            UpdatePortrait(sproutHero, sproutPortraitText, sproutPortraitImage, sproutSelectedColor);
+        }
+
+        private void UpdatePortrait(PrototypeHeroController hero, Text label, Image portraitImage, Color selectedColor)
+        {
+            if (hero == null)
             {
-                momoPortraitImage.color = momoHero.IsSelected
-                    ? new Color(1f, 0.7f, 0.88f, 0.95f)
-                    : new Color(0.42f, 0.36f, 0.42f, 0.9f);
+                return;
+            }
+
+            if (label != null)
+            {
+                label.text = hero.IsSelected ? $"{hero.HeroName}*" : hero.HeroName;
+            }
+
+            if (portraitImage != null)
+            {
+                portraitImage.color = hero.IsSelected ? selectedColor : idlePortraitColor;
             }
         }
 
@@ -221,17 +290,6 @@ namespace MomosDefense.UI
             }
         }
 
-        public void ShowMessage(string message, float duration = 2f)
-        {
-            if (messageText == null)
-            {
-                return;
-            }
-
-            messageText.text = message;
-            messageTimer = duration;
-        }
-
         private void UpdateMessage()
         {
             if (messageText == null || messageTimer <= 0f)
@@ -247,9 +305,9 @@ namespace MomosDefense.UI
             }
         }
 
-        private void EnsureMomoPopButton()
+        private void EnsureSkillButton()
         {
-            if (momoPopButton != null && momoPopText != null)
+            if (skillButton != null && skillText != null)
             {
                 return;
             }
@@ -261,40 +319,35 @@ namespace MomosDefense.UI
             }
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            GameObject buttonObject = new GameObject("Momo Pop Button");
+            GameObject buttonObject = new GameObject("Skill Button");
             buttonObject.transform.SetParent(canvas.transform);
 
             Image image = buttonObject.AddComponent<Image>();
             image.color = new Color(0.94f, 0.58f, 0.74f, 0.9f);
-            momoPopButton = buttonObject.AddComponent<Button>();
+            skillButton = buttonObject.AddComponent<Button>();
 
             RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
             buttonRect.anchorMin = new Vector2(0f, 0f);
             buttonRect.anchorMax = new Vector2(0f, 0f);
             buttonRect.pivot = new Vector2(0f, 0f);
-            buttonRect.anchoredPosition = new Vector2(16f, 16f);
-            buttonRect.sizeDelta = new Vector2(190f, 54f);
+            buttonRect.anchoredPosition = new Vector2(16f, 86f);
+            buttonRect.sizeDelta = new Vector2(220f, 54f);
 
             GameObject labelObject = new GameObject("Label");
             labelObject.transform.SetParent(buttonObject.transform);
-            momoPopText = labelObject.AddComponent<Text>();
-            momoPopText.text = "Momo Pop";
-            momoPopText.font = font;
-            momoPopText.fontSize = 22;
-            momoPopText.color = Color.white;
-            momoPopText.alignment = TextAnchor.MiddleCenter;
+            skillText = labelObject.AddComponent<Text>();
+            skillText.text = "Skill";
+            skillText.font = font;
+            skillText.fontSize = 22;
+            skillText.color = Color.white;
+            skillText.alignment = TextAnchor.MiddleCenter;
+            skillText.raycastTarget = false;
 
             RectTransform labelRect = labelObject.GetComponent<RectTransform>();
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
-        }
-
-        public void SetRestartControls(Button button, Text label)
-        {
-            restartButton = button;
-            restartText = label;
         }
     }
 }

@@ -133,3 +133,4 @@ MonoBehaviour:
   upgradeCost: 90
   maxLevel: 2
   upgradedColor: {r: 0.24, g: 0.8, b: 1, a: 1}
+  buffedColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}

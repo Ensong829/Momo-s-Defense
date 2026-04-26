@@ -4,7 +4,7 @@
 
 Prove the signature identity of Momo's Defense: a classic tower defense battle where the player controls three heroes at once.
 
-Phase 2 has started with a Momo-only selection foundation. A manual playtest is still needed before adding the second and third heroes.
+Phase 2 now has a three-hero prototype in code and generated scene content. A manual playtest is still needed before calling the slice stable.
 
 ## Target Experience
 
@@ -75,23 +75,23 @@ Design purpose:
 
 ### Slice 2: Three Placeholder Heroes
 
-- Add two placeholder hero prefabs.
-- Place all three heroes in the prototype scene.
-- Add portraits for all three.
-- Confirm selection and movement work for each.
+- [x] Add two placeholder hero prefabs.
+- [x] Place all three heroes in the prototype scene.
+- [x] Add portraits for all three.
+- [ ] Confirm selection and movement work for each in a manual playtest.
 
 ### Slice 3: Hero Skills
 
-- Keep Momo Pop.
-- Add tank ground slam.
-- Add support heal or tower buff.
-- Add cooldown text/buttons for each selected hero or per-portrait skill UI.
+- [x] Keep Momo Pop.
+- [x] Add tank ground slam.
+- [x] Add support tower buff.
+- [x] Add selected-hero cooldown/skill button UI.
 
 ### Slice 4: Hero Combat Tuning
 
-- Give each hero different attack range, damage, and role feel.
-- Add visual color coding.
-- Make enemies create at least one reason to reposition heroes.
+- [x] Give each hero different attack range, damage, and role feel.
+- [x] Add visual color coding.
+- [ ] Make enemies create at least one reason to reposition heroes.
 
 ### Slice 5: Phase 2 Level Pass
 

@@ -50,11 +50,13 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. The project has now started Phase 2 Slice 1 with a Momo-only hero selection foundation.
+Phase 1 first playable prototype is implemented enough for manual playtest. The project now has a working Phase 2 prototype with three selectable heroes in code and generated scene content.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
 Latest Phase 2 Slice 1 scene generation on 2026-04-25 also succeeded. The generated scene now includes a `Hero Selection Manager`, `Momo Portrait Button`, Momo `Selection Ring`, and `EventSystem`.
+
+Latest three-hero scene generation on 2026-04-25 succeeded as well. The generated scene now includes `Bulwark Prototype Hero`, `Sprout Prototype Hero`, portrait buttons for all three heroes, and a selected-hero `Skill Button`.
 
 Current prototype scene:
 
@@ -114,7 +116,14 @@ Android smoke build output:
 - Auto attack.
 - Momo Pop active skill.
 - Momo Pop damages and slows enemies.
-- HUD cooldown button.
+- Selected-hero HUD skill button.
+
+### Additional Heroes
+
+- Bulwark placeholder hero added.
+- Bulwark uses Ground Slam.
+- Sprout placeholder hero added.
+- Sprout uses Bloom Song to buff nearby towers.
 
 ### UI
 
@@ -178,15 +187,15 @@ The APK output is ignored by `.gitignore`.
 
 ## Next Recommended Work
 
-The user approved moving on before a full manual playtest. Keep the next step small and verify the selection refactor manually before adding two more heroes.
+The user approved moving forward before a full manual playtest. The next step is to playtest the three-hero slice and tune it instead of expanding scope immediately.
 
 Next steps:
 
 1. Open Unity and run `docs/PLAYTEST_CHECKLIST.md`.
-2. Confirm the Phase 2 Slice 1 selection refactor did not break Phase 1 gameplay.
+2. Confirm wave start, restart, tower build/upgrade, hero switching, and all three skills work in editor playtest.
 3. Record balance/bug notes.
 4. Fix blocking issues.
-5. If stable, start Phase 2 Slice 2: add the second and third placeholder heroes.
+5. Tune Phase 2 readability and combat feel before moving to larger content additions.
 
 ## Phase 2 Direction
 
@@ -194,11 +203,8 @@ Use `docs/PHASE_2_VERTICAL_SLICE_PLAN.md`.
 
 First implementation slice should be:
 
-- Done in code and automated scene generation: refactor Momo-only control into selectable hero control, add selection visual state, and add hero portrait button for Momo.
-- Still needs manual playtest: ensure tower building still works.
-- Still needs manual playtest: ensure Momo Pop still works.
-
-Only after that, add the second and third placeholder heroes.
+- Done in code and automated scene generation: three selectable heroes, portrait buttons, one skill per hero, and selected-hero skill HUD.
+- Still needs manual playtest: ensure wave start, tower building, switching, and all three skills work cleanly in live play.
 
 ## Recent Stable Commits
 

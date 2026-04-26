@@ -4,16 +4,17 @@ namespace MomosDefense.Heroes
 {
     public sealed class HeroSelectionManager : MonoBehaviour
     {
-        [SerializeField] private MomoHeroController[] heroes;
-        [SerializeField] private MomoHeroController startingHero;
+        [SerializeField] private PrototypeHeroController[] heroes;
+        [SerializeField] private PrototypeHeroController startingHero;
 
-        public MomoHeroController SelectedHero { get; private set; }
+        public PrototypeHeroController[] Heroes => heroes;
+        public PrototypeHeroController SelectedHero { get; private set; }
 
         private void Awake()
         {
             if (heroes == null || heroes.Length == 0)
             {
-                heroes = FindObjectsByType<MomoHeroController>(FindObjectsInactive.Exclude);
+                heroes = FindObjectsByType<PrototypeHeroController>(FindObjectsInactive.Exclude);
             }
 
             if (startingHero == null && heroes != null && heroes.Length > 0)
@@ -24,7 +25,23 @@ namespace MomosDefense.Heroes
             SelectHero(startingHero);
         }
 
-        public void SelectHero(MomoHeroController hero)
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                SelectHeroAtIndex(0);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                SelectHeroAtIndex(1);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                SelectHeroAtIndex(2);
+            }
+        }
+
+        public void SelectHero(PrototypeHeroController hero)
         {
             if (hero == null)
             {
@@ -33,13 +50,23 @@ namespace MomosDefense.Heroes
 
             SelectedHero = hero;
 
-            foreach (MomoHeroController selectableHero in heroes)
+            foreach (PrototypeHeroController selectableHero in heroes)
             {
                 if (selectableHero != null)
                 {
                     selectableHero.SetSelected(selectableHero == SelectedHero);
                 }
             }
+        }
+
+        private void SelectHeroAtIndex(int index)
+        {
+            if (heroes == null || index < 0 || index >= heroes.Length)
+            {
+                return;
+            }
+
+            SelectHero(heroes[index]);
         }
     }
 }

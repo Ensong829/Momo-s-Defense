@@ -81,9 +81,9 @@ Goal: Prove the special identity of the game.
 Deliverables:
 
 - Three controllable heroes.
-- Hero selection portraits. Momo-only foundation started.
+- Hero selection portraits. Prototype implemented.
 - Hero movement and targeting.
-- One active skill per hero.
+- One active skill per hero. Prototype implemented.
 - Three tower families.
 - Four enemy types.
 - In-battle hero leveling.
