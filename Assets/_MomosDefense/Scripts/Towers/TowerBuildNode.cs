@@ -1,3 +1,4 @@
+using MomosDefense.Audio;
 using MomosDefense.Core;
 using MomosDefense.UI;
 using UnityEngine;
@@ -7,8 +8,7 @@ namespace MomosDefense.Towers
     public sealed class TowerBuildNode : MonoBehaviour
     {
         [SerializeField] private GameState gameState;
-        [SerializeField] private GameObject towerPrefab;
-        [SerializeField] private int buildCost = 60;
+        [SerializeField] private TowerBuildManager buildManager;
         [SerializeField] private Vector3 towerOffset = new Vector3(0f, 0.75f, 0f);
 
         private bool hasTower;
@@ -49,24 +49,27 @@ namespace MomosDefense.Towers
                 return;
             }
 
-            if (towerPrefab == null || gameState == null)
+            TowerBuildManager.TowerBuildOption selectedOption = buildManager != null ? buildManager.SelectedOption : null;
+
+            if (selectedOption == null || selectedOption.towerPrefab == null || gameState == null)
             {
                 hud?.ShowMessage("Cannot build here yet.");
                 return;
             }
 
-            if (!gameState.SpendGold(buildCost))
+            if (!gameState.SpendGold(selectedOption.buildCost))
             {
-                hud?.ShowMessage($"Need {buildCost} gold to build.");
+                hud?.ShowMessage($"Need {selectedOption.buildCost} gold to build.");
                 return;
             }
 
-            GameObject tower = Instantiate(towerPrefab, transform.position + towerOffset, Quaternion.identity);
+            GameObject tower = Instantiate(selectedOption.towerPrefab, transform.position + towerOffset, Quaternion.identity);
             placedTower = tower.GetComponent<TowerAttack>();
             placedTower?.BindToNode(this);
             hasTower = true;
             SetNodeColor(occupiedColor);
-            hud?.ShowMessage($"Built starter tower (-{buildCost} gold).");
+            PrototypeAudioDirector.PlayBuild();
+            hud?.ShowMessage($"Built {selectedOption.displayName} (-{selectedOption.buildCost} gold).");
         }
 
         private void TryUpgradeTower()
@@ -92,6 +95,7 @@ namespace MomosDefense.Towers
 
             if (placedTower.TryUpgrade())
             {
+                PrototypeAudioDirector.PlayUpgrade();
                 hud?.ShowMessage($"Tower upgraded (-{upgradeCost} gold).");
             }
         }

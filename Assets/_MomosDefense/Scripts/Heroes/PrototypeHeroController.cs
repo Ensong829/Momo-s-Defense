@@ -1,3 +1,4 @@
+using MomosDefense.Audio;
 using MomosDefense.Combat;
 using MomosDefense.Enemies;
 using MomosDefense.Towers;
@@ -33,17 +34,26 @@ namespace MomosDefense.Heroes
         [SerializeField] private float towerBuffDuration = 5f;
         [SerializeField] private int towerBuffDamageBonus = 1;
         [SerializeField] private float towerBuffAttackSpeedMultiplier = 1.6f;
+        [SerializeField] private int experienceToNextLevel = 4;
+        [SerializeField] private int attackDamagePerLevel = 1;
+        [SerializeField] private int skillDamagePerLevel = 1;
+        [SerializeField] private float moveSpeedPerLevel = 0.2f;
 
         private Vector3 destination;
         private float attackTimer;
         private float skillCooldownRemaining;
         private bool isSelected;
+        private int currentExperience;
+        private int level = 1;
 
         public string HeroName => heroName;
         public string SkillName => skillName;
         public float SkillCooldownRemaining => skillCooldownRemaining;
         public bool CanUseSkill => skillCooldownRemaining <= 0f;
         public bool IsSelected => isSelected;
+        public int Level => level;
+        public int CurrentExperience => currentExperience;
+        public int ExperienceToNextLevel => experienceToNextLevel;
 
         private void Awake()
         {
@@ -102,7 +112,24 @@ namespace MomosDefense.Heroes
                     break;
             }
 
+            PrototypeAudioDirector.PlaySkill(GetSkillPitch());
             skillCooldownRemaining = skillCooldown;
+        }
+
+        public void GainExperience(int experience)
+        {
+            if (experience <= 0)
+            {
+                return;
+            }
+
+            currentExperience += experience;
+
+            while (currentExperience >= experienceToNextLevel)
+            {
+                currentExperience -= experienceToNextLevel;
+                LevelUp();
+            }
         }
 
         private void ReadMoveInput()
@@ -229,6 +256,26 @@ namespace MomosDefense.Heroes
             {
                 skillCooldownRemaining = Mathf.Max(0f, skillCooldownRemaining - Time.deltaTime);
             }
+        }
+
+        private void LevelUp()
+        {
+            level++;
+            attackDamage += attackDamagePerLevel;
+            skillDamage += skillDamagePerLevel;
+            moveSpeed += moveSpeedPerLevel;
+            experienceToNextLevel += 2;
+        }
+
+        private float GetSkillPitch()
+        {
+            return skillType switch
+            {
+                HeroSkillType.MomoPop => 1.1f,
+                HeroSkillType.GroundSlam => 0.82f,
+                HeroSkillType.TowerBloom => 1.22f,
+                _ => 1f
+            };
         }
 
         private void UpdateSelectionVisual()

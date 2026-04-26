@@ -50,7 +50,7 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. The project now has a working Phase 2 prototype with three selectable heroes in code and generated scene content.
+Phase 1 first playable prototype is implemented enough for manual playtest. The project now has a feature-complete Phase 2 prototype with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, and placeholder audio.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
@@ -59,6 +59,8 @@ Latest Phase 2 Slice 1 scene generation on 2026-04-25 also succeeded. The genera
 Latest three-hero scene generation on 2026-04-25 succeeded as well. The generated scene now includes `Bulwark Prototype Hero`, `Sprout Prototype Hero`, portrait buttons for all three heroes, and a selected-hero `Skill Button`.
 
 Latest Phase 2 polish scene generation on 2026-04-25 also succeeded. Runner enemies were added to later waves, clicking a hero in the world now selects that hero, and clicking a built tower should trigger its upgrade path again.
+
+Latest Phase 2 completion scene generation on 2026-04-25 also succeeded. The generated scene now includes a `Tower Build Manager`, three tower family buttons, shared hero XP leveling, armored enemies in later waves, and placeholder procedural audio feedback through scripts.
 
 Current prototype scene:
 
@@ -96,6 +98,7 @@ Android smoke build output:
 - Basic enemy type.
 - Tough enemy type from wave 2 onward.
 - Runner enemy type from wave 2 onward.
+- Armored enemy type from wave 3 onward.
 - Lives and gold.
 - Victory/defeat states.
 - Restart button.
@@ -104,7 +107,10 @@ Android smoke build output:
 - Tower placement.
 - Tower placement feedback.
 - One starter tower.
+- Burst tower family.
+- Frost tower family.
 - One tower upgrade step.
+- Three-tier tower upgrade flow through tower stats.
 - Tower build and upgrade attempts are blocked after the battle ends.
 - Clicking a built tower triggers upgrade interaction through its build node.
 
@@ -122,6 +128,7 @@ Android smoke build output:
 - Momo Pop active skill.
 - Momo Pop damages and slows enemies.
 - Selected-hero HUD skill button.
+- Shared in-battle hero XP and leveling.
 
 ### Additional Heroes
 
@@ -129,6 +136,11 @@ Android smoke build output:
 - Bulwark uses Ground Slam.
 - Sprout placeholder hero added.
 - Sprout uses Bloom Song to buff nearby towers.
+
+### Audio
+
+- Placeholder procedural music and SFX added in scripts.
+- Build, upgrade, selection, skill, wave start, victory, and defeat sounds are supported.
 
 ### UI
 
@@ -192,15 +204,15 @@ The APK output is ignored by `.gitignore`.
 
 ## Next Recommended Work
 
-The user approved moving forward before a full manual playtest. The next step is to playtest the three-hero slice and tune it instead of expanding scope immediately.
+The user approved moving forward before a full manual playtest. The next step is to tune and validate the feature-complete Phase 2 prototype rather than expanding scope immediately.
 
 Next steps:
 
 1. Open Unity and run `docs/PLAYTEST_CHECKLIST.md`.
-2. Confirm wave start, restart, tower build/upgrade, hero switching, world-click selection, and all three skills work in editor playtest.
+2. Confirm wave start, restart, tower family selection, tower build/upgrade, hero switching, world-click selection, leveling, and all three skills work in editor playtest.
 3. Record balance/bug notes.
 4. Fix blocking issues.
-5. Tune Phase 2 readability and combat feel before moving to larger content additions.
+5. Decide whether to officially mark Phase 2 complete and move into Phase 3 progression systems.
 
 ## Phase 2 Direction
 
@@ -208,8 +220,8 @@ Use `docs/PHASE_2_VERTICAL_SLICE_PLAN.md`.
 
 First implementation slice should be:
 
-- Done in code and automated scene generation: three selectable heroes, portrait buttons, one skill per hero, and selected-hero skill HUD.
-- Still needs manual playtest: ensure wave start, tower building, switching, and all three skills work cleanly in live play.
+- Done in code and automated scene generation: three selectable heroes, three tower families, four enemy types, hero leveling, selected-hero skill HUD, and placeholder audio.
+- Still useful to playtest: tune wave pacing, tower family value, and hero level pacing in live play.
 
 ## Recent Stable Commits
 

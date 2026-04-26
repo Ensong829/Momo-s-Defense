@@ -39,8 +39,10 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Wave spawner.
 - Basic enemy and tough enemy prefabs.
 - Fast runner enemy prefab for later-wave pressure.
+- Armored enemy prefab for late-wave durability pressure.
 - Tough enemies appear from wave 2 onward.
 - Runner enemies appear from wave 2 onward.
+- Armored enemies appear from wave 3 onward.
 - Waves wait for player input before starting.
 - HUD has Start Wave / Next Wave control.
 - Enemy leaks reduce lives.
@@ -84,10 +86,13 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Bulwark uses `Ground Slam`, a short-range area hit with heavy slow.
 - Sprout placeholder added as the third controllable hero.
 - Sprout uses `Bloom Song`, a nearby tower buff skill.
+- Heroes gain simple in-battle levels from shared enemy XP.
 
 ### Towers
 
 - Starter tower prefab created.
+- Burst tower family added.
+- Frost tower family added.
 - Tower targets and damages nearby enemies.
 - Starter towers can be upgraded once by clicking the occupied build node.
 - Upgraded towers gain damage, range, attack speed, size, and a color change.
@@ -99,18 +104,24 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Build and upgrade attempts are blocked after the battle ends.
 - Clicking a built tower routes upgrade interaction back to its build node.
 - Towers can receive a temporary attack buff from Sprout.
+- HUD supports tower family selection buttons for Star, Burst, and Frost towers.
+
+### Audio
+
+- Placeholder procedural background music added.
+- Placeholder SFX added for selection, building, upgrading, skills, wave start, victory, and defeat.
 
 ## In Progress
 
-- Phase 2 three-hero vertical slice.
-- Prototype hero combat tuning and readability.
+- Phase 2 feature-complete prototype.
+- Balance and readability tuning.
 - Prototype-only UI and controls.
 
 ## Next Up
 
-1. Manual playtest pass in Unity Editor.
-2. Confirm tower building, wave start, restart flow, hero switching, and all three skills feel reliable.
-3. Tune hero stats, enemy pressure, and HUD readability based on playtest notes.
+1. Focused balance playtest in Unity Editor.
+2. Tune tower family costs, enemy pressure, and hero level pacing.
+3. Decide whether to officially call Phase 2 complete and begin Phase 3 progression systems.
 
 ## Remaining Phase 1 Tasks
 
@@ -128,12 +139,12 @@ Playtest checklist:
 - Three controllable heroes.
 - Hero portraits/selection. Prototype implemented.
 - One active skill per hero. Prototype implemented.
-- Three tower families.
-- Four enemy types.
-- In-battle hero leveling.
-- Tower upgrade tiers.
+- Three tower families. Prototype implemented.
+- Four enemy types. Prototype implemented.
+- In-battle hero leveling. Prototype implemented.
+- Tower upgrade tiers. Prototype implemented.
 - First pass level art.
-- Placeholder music and SFX.
+- Placeholder music and SFX. Prototype implemented.
 
 Planning doc:
 
@@ -203,6 +214,15 @@ Latest Phase 2 polish scene generation:
 - Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
 - Scene check: generated `runnerEnemyPrefab` reference and rebuilt the scene after tower-upgrade interaction fixes.
 - Notes: tower upgrades should now work by clicking the built tower itself.
+
+Latest Phase 2 completion scene generation:
+
+- Date: 2026-04-25
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated `Tower Build Manager`, tower family buttons, and the rebuilt feature-complete Phase 2 prototype scene.
+- Notes: only known Unity `abort_threads` shutdown noise appeared.
 
 ## Recent Stable Checkpoints
 

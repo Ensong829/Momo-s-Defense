@@ -147,6 +147,7 @@ MonoBehaviour:
   moveSpeed: 1.25
   lifeDamage: 1
   goldReward: 22
+  experienceReward: 2
   ReachedGoal:
     m_PersistentCalls:
       m_Calls: []

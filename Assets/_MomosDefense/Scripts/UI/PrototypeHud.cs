@@ -1,5 +1,7 @@
+using MomosDefense.Audio;
 using MomosDefense.Core;
 using MomosDefense.Heroes;
+using MomosDefense.Towers;
 using MomosDefense.Waves;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +14,7 @@ namespace MomosDefense.UI
         [SerializeField] private GameState gameState;
         [SerializeField] private WaveSpawner waveSpawner;
         [SerializeField] private HeroSelectionManager heroSelection;
+        [SerializeField] private TowerBuildManager buildManager;
         [SerializeField] private PrototypeHeroController momoHero;
         [SerializeField] private PrototypeHeroController bulwarkHero;
         [SerializeField] private PrototypeHeroController sproutHero;
@@ -29,6 +32,12 @@ namespace MomosDefense.UI
         [SerializeField] private Text sproutPortraitText;
         [SerializeField] private Button sproutPortraitButton;
         [SerializeField] private Image sproutPortraitImage;
+        [SerializeField] private Text towerBuildText;
+        [SerializeField] private Button towerBuildButton;
+        [SerializeField] private Text burstBuildText;
+        [SerializeField] private Button burstBuildButton;
+        [SerializeField] private Text frostBuildText;
+        [SerializeField] private Button frostBuildButton;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
         [SerializeField] private Text messageText;
@@ -41,12 +50,19 @@ namespace MomosDefense.UI
         private readonly Color bulwarkSelectedColor = new Color(0.95f, 0.8f, 0.45f, 0.95f);
         private readonly Color sproutSelectedColor = new Color(0.58f, 0.92f, 0.58f, 0.95f);
         private float messageTimer;
+        private bool playedVictoryAudio;
+        private bool playedDefeatAudio;
 
         private void Awake()
         {
             if (heroSelection == null)
             {
                 heroSelection = FindFirstObjectByType<HeroSelectionManager>();
+            }
+
+            if (buildManager == null)
+            {
+                buildManager = FindFirstObjectByType<TowerBuildManager>();
             }
 
             EnsureSkillButton();
@@ -69,6 +85,21 @@ namespace MomosDefense.UI
             if (sproutPortraitButton != null)
             {
                 sproutPortraitButton.onClick.AddListener(SelectSprout);
+            }
+
+            if (towerBuildButton != null)
+            {
+                towerBuildButton.onClick.AddListener(() => SelectTowerOption(0));
+            }
+
+            if (burstBuildButton != null)
+            {
+                burstBuildButton.onClick.AddListener(() => SelectTowerOption(1));
+            }
+
+            if (frostBuildButton != null)
+            {
+                frostBuildButton.onClick.AddListener(() => SelectTowerOption(2));
             }
 
             if (restartButton != null)
@@ -105,6 +136,21 @@ namespace MomosDefense.UI
                 sproutPortraitButton.onClick.RemoveListener(SelectSprout);
             }
 
+            if (towerBuildButton != null)
+            {
+                towerBuildButton.onClick.RemoveAllListeners();
+            }
+
+            if (burstBuildButton != null)
+            {
+                burstBuildButton.onClick.RemoveAllListeners();
+            }
+
+            if (frostBuildButton != null)
+            {
+                frostBuildButton.onClick.RemoveAllListeners();
+            }
+
             if (restartButton != null)
             {
                 restartButton.onClick.RemoveListener(RestartScene);
@@ -133,6 +179,7 @@ namespace MomosDefense.UI
 
             UpdateSkillButton();
             UpdatePortraits();
+            UpdateTowerButtons();
             UpdateStartWave();
             UpdateMessage();
 
@@ -142,10 +189,20 @@ namespace MomosDefense.UI
             if (isDefeat)
             {
                 resultText.text = "Defeat";
+                if (!playedDefeatAudio)
+                {
+                    PrototypeAudioDirector.PlayDefeat();
+                    playedDefeatAudio = true;
+                }
             }
             else if (isVictory)
             {
                 resultText.text = "Victory";
+                if (!playedVictoryAudio)
+                {
+                    PrototypeAudioDirector.PlayVictory();
+                    playedVictoryAudio = true;
+                }
             }
             else
             {
@@ -195,6 +252,11 @@ namespace MomosDefense.UI
             }
         }
 
+        private void SelectTowerOption(int optionIndex)
+        {
+            buildManager?.SelectOption(optionIndex);
+        }
+
         private void UpdateSkillButton()
         {
             if (skillText == null || skillButton == null)
@@ -233,7 +295,8 @@ namespace MomosDefense.UI
 
             if (label != null)
             {
-                label.text = hero.IsSelected ? $"{hero.HeroName}*" : hero.HeroName;
+                string selectedMarker = hero.IsSelected ? "*" : string.Empty;
+                label.text = $"{hero.HeroName} L{hero.Level}{selectedMarker}";
             }
 
             if (portraitImage != null)
@@ -242,8 +305,32 @@ namespace MomosDefense.UI
             }
         }
 
+        private void UpdateTowerButtons()
+        {
+            UpdateTowerButton(towerBuildText, towerBuildButton, 0);
+            UpdateTowerButton(burstBuildText, burstBuildButton, 1);
+            UpdateTowerButton(frostBuildText, frostBuildButton, 2);
+        }
+
+        private void UpdateTowerButton(Text label, Button button, int optionIndex)
+        {
+            if (label == null || button == null || buildManager == null || buildManager.BuildOptions == null || optionIndex >= buildManager.BuildOptions.Length)
+            {
+                return;
+            }
+
+            TowerBuildManager.TowerBuildOption option = buildManager.BuildOptions[optionIndex];
+            label.text = $"{option.displayName} {option.buildCost}g";
+            ColorBlock colors = button.colors;
+            bool isSelected = buildManager.SelectedOptionIndex == optionIndex;
+            colors.normalColor = isSelected ? new Color(0.95f, 0.82f, 0.4f, 1f) : Color.white;
+            colors.highlightedColor = isSelected ? new Color(1f, 0.9f, 0.55f, 1f) : new Color(1f, 0.92f, 0.96f, 1f);
+            button.colors = colors;
+        }
+
         private void StartNextWave()
         {
+            PrototypeAudioDirector.PlayWaveStart();
             waveSpawner?.StartNextWave();
         }
 

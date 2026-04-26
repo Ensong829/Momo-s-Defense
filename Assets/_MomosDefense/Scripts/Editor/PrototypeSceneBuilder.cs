@@ -21,7 +21,10 @@ namespace MomosDefense.Editor
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
         private const string ToughEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeToughEnemy.prefab";
         private const string RunnerEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeRunnerEnemy.prefab";
+        private const string ArmoredEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeArmoredEnemy.prefab";
         private const string TowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeStarterTower.prefab";
+        private const string BurstTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeBurstTower.prefab";
+        private const string FrostTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeFrostTower.prefab";
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
 
         [MenuItem("Momo's Defense/Build Prototype Scene")]
@@ -40,7 +43,51 @@ namespace MomosDefense.Editor
             GameObject enemyPrefab = CreateEnemyPrefab();
             GameObject toughEnemyPrefab = CreateToughEnemyPrefab();
             GameObject runnerEnemyPrefab = CreateRunnerEnemyPrefab();
-            GameObject towerPrefab = CreateTowerPrefab();
+            GameObject armoredEnemyPrefab = CreateArmoredEnemyPrefab();
+            GameObject towerPrefab = CreateTowerPrefab(
+                "Prototype Starter Tower",
+                TowerPrefabPath,
+                "Prototype_Tower",
+                new Color(0.25f, 0.43f, 0.86f),
+                "Star Tower",
+                4f,
+                1f,
+                1,
+                80,
+                1,
+                0.75f,
+                0.25f,
+                1.15f);
+            GameObject burstTowerPrefab = CreateTowerPrefab(
+                "Prototype Burst Tower",
+                BurstTowerPrefabPath,
+                "Prototype_BurstTower",
+                new Color(0.92f, 0.42f, 0.32f),
+                "Burst Tower",
+                3.2f,
+                0.65f,
+                3,
+                95,
+                2,
+                0.5f,
+                0.15f,
+                1.14f);
+            GameObject frostTowerPrefab = CreateTowerPrefab(
+                "Prototype Frost Tower",
+                FrostTowerPrefabPath,
+                "Prototype_FrostTower",
+                new Color(0.48f, 0.85f, 0.95f),
+                "Frost Tower",
+                3.6f,
+                1.1f,
+                1,
+                85,
+                1,
+                0.65f,
+                0.2f,
+                1.14f,
+                1.5f,
+                0.65f);
             PrototypeHeroController momo = CreateHero(
                 "Momo",
                 "Prototype_Momo",
@@ -102,10 +149,11 @@ namespace MomosDefense.Editor
                 1,
                 1.75f);
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
-            CreateBuildNodes(gameState, towerPrefab);
-            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, path, gameState);
+            TowerBuildManager buildManager = CreateTowerBuildManager(towerPrefab, burstTowerPrefab, frostTowerPrefab);
+            CreateBuildNodes(gameState, buildManager);
+            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, path, gameState, heroSelection);
             CreateEventSystem();
-            CreateHud(gameState, waveSpawner, heroSelection, momo, bulwark, sprout);
+            CreateHud(gameState, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -219,6 +267,7 @@ namespace MomosDefense.Editor
             SerializedObject serializedFollower = new SerializedObject(follower);
             serializedFollower.FindProperty("moveSpeed").floatValue = 1.25f;
             serializedFollower.FindProperty("goldReward").intValue = 22;
+            serializedFollower.FindProperty("experienceReward").intValue = 2;
             serializedFollower.ApplyModifiedPropertiesWithoutUndo();
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, ToughEnemyPrefabPath);
@@ -243,9 +292,35 @@ namespace MomosDefense.Editor
             SerializedObject serializedFollower = new SerializedObject(follower);
             serializedFollower.FindProperty("moveSpeed").floatValue = 3.3f;
             serializedFollower.FindProperty("goldReward").intValue = 8;
+            serializedFollower.FindProperty("experienceReward").intValue = 1;
             serializedFollower.ApplyModifiedPropertiesWithoutUndo();
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, RunnerEnemyPrefabPath);
+            Object.DestroyImmediate(enemy);
+            return prefab;
+        }
+
+        private static GameObject CreateArmoredEnemyPrefab()
+        {
+            GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            enemy.name = "Prototype Armored Enemy";
+            enemy.transform.localScale = new Vector3(1.25f, 1.35f, 1.25f);
+            AssignMaterial(enemy, "Prototype_ArmoredEnemy", new Color(0.4f, 0.45f, 0.52f));
+
+            Health health = enemy.AddComponent<Health>();
+            EnemyPathFollower follower = enemy.AddComponent<EnemyPathFollower>();
+
+            SerializedObject serializedHealth = new SerializedObject(health);
+            serializedHealth.FindProperty("maxHealth").intValue = 28;
+            serializedHealth.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject serializedFollower = new SerializedObject(follower);
+            serializedFollower.FindProperty("moveSpeed").floatValue = 0.95f;
+            serializedFollower.FindProperty("goldReward").intValue = 30;
+            serializedFollower.FindProperty("experienceReward").intValue = 3;
+            serializedFollower.ApplyModifiedPropertiesWithoutUndo();
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, ArmoredEnemyPrefabPath);
             Object.DestroyImmediate(enemy);
             return prefab;
         }
@@ -330,20 +405,74 @@ namespace MomosDefense.Editor
             return selectionManager;
         }
 
-        private static GameObject CreateTowerPrefab()
+        private static GameObject CreateTowerPrefab(
+            string towerObjectName,
+            string prefabPath,
+            string materialName,
+            Color bodyColor,
+            string towerName,
+            float attackRange,
+            float attacksPerSecond,
+            int attackDamage,
+            int upgradeCost,
+            int damagePerUpgrade,
+            float rangePerUpgrade,
+            float attackSpeedPerUpgrade,
+            float scaleMultiplierPerUpgrade,
+            float slowDurationOnHit = 0f,
+            float slowMultiplierOnHit = 1f)
         {
             GameObject tower = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            tower.name = "Prototype Starter Tower";
+            tower.name = towerObjectName;
             tower.transform.localScale = new Vector3(1f, 1.5f, 1f);
-            AssignMaterial(tower, "Prototype_Tower", new Color(0.25f, 0.43f, 0.86f));
-            tower.AddComponent<TowerAttack>();
+            AssignMaterial(tower, materialName, bodyColor);
+            TowerAttack towerAttack = tower.AddComponent<TowerAttack>();
 
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(tower, TowerPrefabPath);
+            SerializedObject serializedTower = new SerializedObject(towerAttack);
+            serializedTower.FindProperty("towerName").stringValue = towerName;
+            serializedTower.FindProperty("attackRange").floatValue = attackRange;
+            serializedTower.FindProperty("attacksPerSecond").floatValue = attacksPerSecond;
+            serializedTower.FindProperty("attackDamage").intValue = attackDamage;
+            serializedTower.FindProperty("upgradeCost").intValue = upgradeCost;
+            serializedTower.FindProperty("damagePerUpgrade").intValue = damagePerUpgrade;
+            serializedTower.FindProperty("rangePerUpgrade").floatValue = rangePerUpgrade;
+            serializedTower.FindProperty("attackSpeedPerUpgrade").floatValue = attackSpeedPerUpgrade;
+            serializedTower.FindProperty("scaleMultiplierPerUpgrade").floatValue = scaleMultiplierPerUpgrade;
+            serializedTower.FindProperty("slowDurationOnHit").floatValue = slowDurationOnHit;
+            serializedTower.FindProperty("slowMultiplierOnHit").floatValue = slowMultiplierOnHit;
+            serializedTower.ApplyModifiedPropertiesWithoutUndo();
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(tower, prefabPath);
             Object.DestroyImmediate(tower);
             return prefab;
         }
 
-        private static void CreateBuildNodes(GameState gameState, GameObject towerPrefab)
+        private static TowerBuildManager CreateTowerBuildManager(GameObject towerPrefab, GameObject burstTowerPrefab, GameObject frostTowerPrefab)
+        {
+            GameObject managerObject = new GameObject("Tower Build Manager");
+            TowerBuildManager buildManager = managerObject.AddComponent<TowerBuildManager>();
+
+            SerializedObject serializedManager = new SerializedObject(buildManager);
+            SerializedProperty optionsProperty = serializedManager.FindProperty("buildOptions");
+            optionsProperty.arraySize = 3;
+
+            ConfigureBuildOption(optionsProperty.GetArrayElementAtIndex(0), "Star", towerPrefab, 60);
+            ConfigureBuildOption(optionsProperty.GetArrayElementAtIndex(1), "Burst", burstTowerPrefab, 75);
+            ConfigureBuildOption(optionsProperty.GetArrayElementAtIndex(2), "Frost", frostTowerPrefab, 70);
+
+            serializedManager.FindProperty("startingOptionIndex").intValue = 0;
+            serializedManager.ApplyModifiedPropertiesWithoutUndo();
+            return buildManager;
+        }
+
+        private static void ConfigureBuildOption(SerializedProperty optionProperty, string displayName, GameObject towerPrefab, int buildCost)
+        {
+            optionProperty.FindPropertyRelative("displayName").stringValue = displayName;
+            optionProperty.FindPropertyRelative("towerPrefab").objectReferenceValue = towerPrefab;
+            optionProperty.FindPropertyRelative("buildCost").intValue = buildCost;
+        }
+
+        private static void CreateBuildNodes(GameState gameState, TowerBuildManager buildManager)
         {
             Vector3[] nodePositions =
             {
@@ -364,7 +493,7 @@ namespace MomosDefense.Editor
                 TowerBuildNode buildNode = node.AddComponent<TowerBuildNode>();
                 SerializedObject serializedNode = new SerializedObject(buildNode);
                 serializedNode.FindProperty("gameState").objectReferenceValue = gameState;
-                serializedNode.FindProperty("towerPrefab").objectReferenceValue = towerPrefab;
+                serializedNode.FindProperty("buildManager").objectReferenceValue = buildManager;
                 serializedNode.ApplyModifiedPropertiesWithoutUndo();
             }
         }
@@ -373,8 +502,10 @@ namespace MomosDefense.Editor
             GameObject enemyPrefab,
             GameObject toughEnemyPrefab,
             GameObject runnerEnemyPrefab,
+            GameObject armoredEnemyPrefab,
             EnemyPath path,
-            GameState gameState)
+            GameState gameState,
+            HeroSelectionManager heroSelection)
         {
             GameObject spawnerObject = new GameObject("Wave Spawner");
             WaveSpawner spawner = spawnerObject.AddComponent<WaveSpawner>();
@@ -383,8 +514,10 @@ namespace MomosDefense.Editor
             serializedSpawner.FindProperty("enemyPrefab").objectReferenceValue = enemyPrefab;
             serializedSpawner.FindProperty("toughEnemyPrefab").objectReferenceValue = toughEnemyPrefab;
             serializedSpawner.FindProperty("runnerEnemyPrefab").objectReferenceValue = runnerEnemyPrefab;
+            serializedSpawner.FindProperty("armoredEnemyPrefab").objectReferenceValue = armoredEnemyPrefab;
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
+            serializedSpawner.FindProperty("heroSelection").objectReferenceValue = heroSelection;
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();
 
             return spawner;
@@ -401,6 +534,7 @@ namespace MomosDefense.Editor
             GameState gameState,
             WaveSpawner waveSpawner,
             HeroSelectionManager heroSelection,
+            TowerBuildManager buildManager,
             PrototypeHeroController momo,
             PrototypeHeroController bulwark,
             PrototypeHeroController sprout)
@@ -425,6 +559,9 @@ namespace MomosDefense.Editor
             Button momoPortraitButton = CreateHudButton(canvasObject.transform, "Momo Portrait Button", new Vector2(16f, 16f), new Vector2(150f, 54f), font, out Text momoPortraitText);
             Button bulwarkPortraitButton = CreateHudButton(canvasObject.transform, "Bulwark Portrait Button", new Vector2(172f, 16f), new Vector2(150f, 54f), font, out Text bulwarkPortraitText);
             Button sproutPortraitButton = CreateHudButton(canvasObject.transform, "Sprout Portrait Button", new Vector2(328f, 16f), new Vector2(150f, 54f), font, out Text sproutPortraitText);
+            Button starBuildButton = CreateHudButton(canvasObject.transform, "Star Tower Button", new Vector2(488f, 16f), new Vector2(132f, 54f), font, out Text starBuildText);
+            Button burstBuildButton = CreateHudButton(canvasObject.transform, "Burst Tower Button", new Vector2(626f, 16f), new Vector2(132f, 54f), font, out Text burstBuildText);
+            Button frostBuildButton = CreateHudButton(canvasObject.transform, "Frost Tower Button", new Vector2(764f, 16f), new Vector2(132f, 54f), font, out Text frostBuildText);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
@@ -484,6 +621,7 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("gameState").objectReferenceValue = gameState;
             serializedHud.FindProperty("waveSpawner").objectReferenceValue = waveSpawner;
             serializedHud.FindProperty("heroSelection").objectReferenceValue = heroSelection;
+            serializedHud.FindProperty("buildManager").objectReferenceValue = buildManager;
             serializedHud.FindProperty("momoHero").objectReferenceValue = momo;
             serializedHud.FindProperty("bulwarkHero").objectReferenceValue = bulwark;
             serializedHud.FindProperty("sproutHero").objectReferenceValue = sprout;
@@ -501,6 +639,12 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("sproutPortraitText").objectReferenceValue = sproutPortraitText;
             serializedHud.FindProperty("sproutPortraitButton").objectReferenceValue = sproutPortraitButton;
             serializedHud.FindProperty("sproutPortraitImage").objectReferenceValue = sproutPortraitImage;
+            serializedHud.FindProperty("towerBuildText").objectReferenceValue = starBuildText;
+            serializedHud.FindProperty("towerBuildButton").objectReferenceValue = starBuildButton;
+            serializedHud.FindProperty("burstBuildText").objectReferenceValue = burstBuildText;
+            serializedHud.FindProperty("burstBuildButton").objectReferenceValue = burstBuildButton;
+            serializedHud.FindProperty("frostBuildText").objectReferenceValue = frostBuildText;
+            serializedHud.FindProperty("frostBuildButton").objectReferenceValue = frostBuildButton;
             serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
             serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
             serializedHud.FindProperty("messageText").objectReferenceValue = messageText;

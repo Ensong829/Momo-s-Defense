@@ -1,6 +1,7 @@
 using System.Collections;
 using MomosDefense.Core;
 using MomosDefense.Enemies;
+using MomosDefense.Heroes;
 using UnityEngine;
 
 namespace MomosDefense.Waves
@@ -10,8 +11,10 @@ namespace MomosDefense.Waves
         [SerializeField] private GameObject enemyPrefab;
         [SerializeField] private GameObject toughEnemyPrefab;
         [SerializeField] private GameObject runnerEnemyPrefab;
+        [SerializeField] private GameObject armoredEnemyPrefab;
         [SerializeField] private EnemyPath enemyPath;
         [SerializeField] private GameState gameState;
+        [SerializeField] private HeroSelectionManager heroSelection;
         [SerializeField] private int totalWaves = 3;
         [SerializeField] private int enemiesPerWave = 6;
         [SerializeField] private float timeBetweenEnemies = 0.8f;
@@ -70,22 +73,29 @@ namespace MomosDefense.Waves
             GameObject prefabToSpawn = ChooseEnemyPrefab(waveNumber, enemyIndex);
             GameObject enemy = Instantiate(prefabToSpawn);
             aliveEnemies++;
-            enemy.GetComponent<EnemyPathFollower>()?.Initialize(enemyPath, gameState);
+            EnemyPathFollower follower = enemy.GetComponent<EnemyPathFollower>();
+            follower?.Initialize(enemyPath, gameState);
 
             if (enemy.TryGetComponent(out MomosDefense.Combat.Health health))
             {
-                health.Died.AddListener(_ => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
+                int experienceReward = follower != null ? follower.ExperienceReward : 0;
+                health.Died.AddListener(_ =>
+                {
+                    aliveEnemies = Mathf.Max(0, aliveEnemies - 1);
+                    heroSelection?.AwardExperienceToAll(experienceReward);
+                });
             }
 
-            EnemyPathFollower follower = enemy.GetComponent<EnemyPathFollower>();
-            if (follower != null)
-            {
-                follower.ReachedGoal.AddListener(() => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
-            }
+            follower?.ReachedGoal.AddListener(() => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
         }
 
         private GameObject ChooseEnemyPrefab(int waveNumber, int enemyIndex)
         {
+            if (armoredEnemyPrefab != null && waveNumber >= 3 && enemyIndex % 5 == 4)
+            {
+                return armoredEnemyPrefab;
+            }
+
             if (runnerEnemyPrefab != null && waveNumber >= 2 && enemyIndex % 4 == 1)
             {
                 return runnerEnemyPrefab;

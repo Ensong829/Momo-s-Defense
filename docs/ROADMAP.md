@@ -74,7 +74,7 @@ Done when:
 
 ## Phase 2: Three-Hero Vertical Slice
 
-Status: started.
+Status: prototype feature-complete.
 
 Goal: Prove the special identity of the game.
 
@@ -84,12 +84,12 @@ Deliverables:
 - Hero selection portraits. Prototype implemented.
 - Hero movement and targeting.
 - One active skill per hero. Prototype implemented.
-- Three tower families.
-- Four enemy types.
-- In-battle hero leveling.
-- Tower upgrade tiers.
+- Three tower families. Prototype implemented.
+- Four enemy types. Prototype implemented.
+- In-battle hero leveling. Prototype implemented.
+- Tower upgrade tiers. Prototype implemented.
 - First pass level art.
-- Placeholder music and SFX.
+- Placeholder music and SFX. Prototype implemented.
 
 Done when:
 

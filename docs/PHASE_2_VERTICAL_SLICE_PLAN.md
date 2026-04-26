@@ -4,7 +4,7 @@
 
 Prove the signature identity of Momo's Defense: a classic tower defense battle where the player controls three heroes at once.
 
-Phase 2 now has a three-hero prototype in code and generated scene content. A manual playtest is still needed before calling the slice stable.
+Phase 2 now has a feature-complete prototype in code and generated scene content. Remaining work is tuning and deciding when to formally mark the slice complete.
 
 ## Target Experience
 
@@ -95,9 +95,9 @@ Design purpose:
 
 ### Slice 5: Phase 2 Level Pass
 
-- Adjust path/build nodes for three-hero play.
-- Add enemy mix that tests all three roles.
-- Add basic placeholder effects for skills.
+- [x] Adjust path/build nodes for three-hero play.
+- [x] Add enemy mix that tests all three roles.
+- [x] Add basic placeholder effects and audio feedback for skills.
 
 ## Risks
 

@@ -6,11 +6,18 @@ namespace MomosDefense.Towers
 {
     public sealed class TowerAttack : MonoBehaviour
     {
+        [SerializeField] private string towerName = "Tower";
         [SerializeField] private float attackRange = 4f;
         [SerializeField] private float attacksPerSecond = 1f;
         [SerializeField] private int attackDamage = 1;
         [SerializeField] private int upgradeCost = 90;
-        [SerializeField] private int maxLevel = 2;
+        [SerializeField] private int maxLevel = 3;
+        [SerializeField] private int damagePerUpgrade = 1;
+        [SerializeField] private float rangePerUpgrade = 0.75f;
+        [SerializeField] private float attackSpeedPerUpgrade = 0.25f;
+        [SerializeField] private float scaleMultiplierPerUpgrade = 1.15f;
+        [SerializeField] private float slowDurationOnHit;
+        [SerializeField] private float slowMultiplierOnHit = 1f;
         [SerializeField] private Color upgradedColor = new Color(0.24f, 0.8f, 1f);
         [SerializeField] private Color buffedColor = new Color(0.45f, 0.95f, 0.45f);
 
@@ -23,8 +30,9 @@ namespace MomosDefense.Towers
         private Color baseColor;
         private TowerBuildNode ownerNode;
 
+        public string TowerName => towerName;
         public int Level => level;
-        public int UpgradeCost => upgradeCost;
+        public int UpgradeCost => upgradeCost * level;
         public bool CanUpgrade => level < maxLevel;
 
         public void BindToNode(TowerBuildNode buildNode)
@@ -59,6 +67,11 @@ namespace MomosDefense.Towers
             }
 
             target.TakeDamage(attackDamage + temporaryDamageBonus);
+            if (slowDurationOnHit > 0f && target.TryGetComponent(out EnemyPathFollower follower))
+            {
+                follower.ApplySlow(slowDurationOnHit, slowMultiplierOnHit);
+            }
+
             attackTimer = 1f / (attacksPerSecond * temporaryAttackSpeedMultiplier);
         }
 
@@ -99,10 +112,10 @@ namespace MomosDefense.Towers
             }
 
             level++;
-            attackDamage += 1;
-            attackRange += 0.75f;
-            attacksPerSecond += 0.25f;
-            transform.localScale *= 1.15f;
+            attackDamage += damagePerUpgrade;
+            attackRange += rangePerUpgrade;
+            attacksPerSecond += attackSpeedPerUpgrade;
+            transform.localScale *= scaleMultiplierPerUpgrade;
             RefreshVisualState();
 
             return true;

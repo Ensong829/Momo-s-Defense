@@ -1,3 +1,4 @@
+using MomosDefense.Audio;
 using UnityEngine;
 
 namespace MomosDefense.Heroes
@@ -49,6 +50,7 @@ namespace MomosDefense.Heroes
             }
 
             SelectedHero = hero;
+            PrototypeAudioDirector.PlaySelection();
 
             foreach (PrototypeHeroController selectableHero in heroes)
             {
@@ -67,6 +69,19 @@ namespace MomosDefense.Heroes
             }
 
             SelectHero(heroes[index]);
+        }
+
+        public void AwardExperienceToAll(int experience)
+        {
+            if (heroes == null || experience <= 0)
+            {
+                return;
+            }
+
+            foreach (PrototypeHeroController hero in heroes)
+            {
+                hero?.GainExperience(experience);
+            }
         }
     }
 }

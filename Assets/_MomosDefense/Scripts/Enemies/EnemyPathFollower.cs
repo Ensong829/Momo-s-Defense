@@ -10,6 +10,7 @@ namespace MomosDefense.Enemies
         [SerializeField] private float moveSpeed = 2f;
         [SerializeField] private int lifeDamage = 1;
         [SerializeField] private int goldReward = 10;
+        [SerializeField] private int experienceReward = 1;
 
         private EnemyPath path;
         private int waypointIndex;
@@ -20,6 +21,7 @@ namespace MomosDefense.Enemies
         private float slowMultiplier = 1f;
 
         public int GoldReward => goldReward;
+        public int ExperienceReward => experienceReward;
         public UnityEvent ReachedGoal = new UnityEvent();
 
         private void Awake()
