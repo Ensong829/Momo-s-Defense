@@ -50,6 +50,7 @@ namespace MomosDefense.Editor
                 "Prototype_Tower",
                 new Color(0.25f, 0.43f, 0.86f),
                 "Star Tower",
+                "Star",
                 4f,
                 1f,
                 1,
@@ -64,6 +65,7 @@ namespace MomosDefense.Editor
                 "Prototype_BurstTower",
                 new Color(0.92f, 0.42f, 0.32f),
                 "Burst Tower",
+                "Burst",
                 3.2f,
                 0.65f,
                 3,
@@ -78,6 +80,7 @@ namespace MomosDefense.Editor
                 "Prototype_FrostTower",
                 new Color(0.48f, 0.85f, 0.95f),
                 "Frost Tower",
+                "Frost",
                 3.6f,
                 1.1f,
                 1,
@@ -151,7 +154,7 @@ namespace MomosDefense.Editor
             ProgressionService progressionService = CreateProgressionService();
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
             TowerBuildManager buildManager = CreateTowerBuildManager(towerPrefab, burstTowerPrefab, frostTowerPrefab);
-            CreateBuildNodes(gameState, buildManager);
+            CreateBuildNodes(gameState, progressionService, buildManager);
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, path, gameState, heroSelection);
             CreateEventSystem();
             CreateHud(gameState, progressionService, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
@@ -418,6 +421,7 @@ namespace MomosDefense.Editor
             string materialName,
             Color bodyColor,
             string towerName,
+            string towerFamilyId,
             float attackRange,
             float attacksPerSecond,
             int attackDamage,
@@ -437,6 +441,7 @@ namespace MomosDefense.Editor
 
             SerializedObject serializedTower = new SerializedObject(towerAttack);
             serializedTower.FindProperty("towerName").stringValue = towerName;
+            serializedTower.FindProperty("towerFamilyId").stringValue = towerFamilyId;
             serializedTower.FindProperty("attackRange").floatValue = attackRange;
             serializedTower.FindProperty("attacksPerSecond").floatValue = attacksPerSecond;
             serializedTower.FindProperty("attackDamage").intValue = attackDamage;
@@ -479,7 +484,7 @@ namespace MomosDefense.Editor
             optionProperty.FindPropertyRelative("buildCost").intValue = buildCost;
         }
 
-        private static void CreateBuildNodes(GameState gameState, TowerBuildManager buildManager)
+        private static void CreateBuildNodes(GameState gameState, ProgressionService progressionService, TowerBuildManager buildManager)
         {
             Vector3[] nodePositions =
             {
@@ -500,6 +505,7 @@ namespace MomosDefense.Editor
                 TowerBuildNode buildNode = node.AddComponent<TowerBuildNode>();
                 SerializedObject serializedNode = new SerializedObject(buildNode);
                 serializedNode.FindProperty("gameState").objectReferenceValue = gameState;
+                serializedNode.FindProperty("progressionService").objectReferenceValue = progressionService;
                 serializedNode.FindProperty("buildManager").objectReferenceValue = buildManager;
                 serializedNode.ApplyModifiedPropertiesWithoutUndo();
             }
@@ -576,7 +582,8 @@ namespace MomosDefense.Editor
             Button starBuildButton = CreateHudButton(canvasObject.transform, "Star Tower Button", new Vector2(488f, 16f), new Vector2(132f, 54f), font, out Text starBuildText);
             Button burstBuildButton = CreateHudButton(canvasObject.transform, "Burst Tower Button", new Vector2(626f, 16f), new Vector2(132f, 54f), font, out Text burstBuildText);
             Button frostBuildButton = CreateHudButton(canvasObject.transform, "Frost Tower Button", new Vector2(764f, 16f), new Vector2(132f, 54f), font, out Text frostBuildText);
-            Button momoSkillUpgradeButton = CreateHudButton(canvasObject.transform, "Momo Skill Upgrade Button", new Vector2(-256f, -76f), new Vector2(240f, 54f), font, out Text momoSkillUpgradeText);
+            Button progressionToggleButton = CreateHudButton(canvasObject.transform, "Upgrade Toggle Button", new Vector2(-216f, -76f), new Vector2(200f, 54f), font, out Text progressionToggleText);
+            GameObject progressionPanel = CreateProgressionPanel(canvasObject.transform, font, out Text progressionTitleText, out Text progressionSummaryText, out Text momoSkillUpgradeText, out Button momoSkillUpgradeButton, out Text bulwarkSkillUpgradeText, out Button bulwarkSkillUpgradeButton, out Text sproutSkillUpgradeText, out Button sproutSkillUpgradeButton, out Text starTowerUpgradeText, out Button starTowerUpgradeButton, out Text burstTowerUpgradeText, out Button burstTowerUpgradeButton, out Text frostTowerUpgradeText, out Button frostTowerUpgradeButton, out Text starSpecializationText, out Button starSpecializationButton, out Text burstSpecializationText, out Button burstSpecializationButton, out Text frostSpecializationText, out Button frostSpecializationButton, out Text resetProgressionText, out Button resetProgressionButton);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
@@ -600,11 +607,11 @@ namespace MomosDefense.Editor
             startWaveRect.pivot = new Vector2(1f, 0f);
             startWaveRect.anchoredPosition = new Vector2(-16f, 16f);
 
-            RectTransform upgradeRect = momoSkillUpgradeButton.GetComponent<RectTransform>();
-            upgradeRect.anchorMin = new Vector2(1f, 1f);
-            upgradeRect.anchorMax = new Vector2(1f, 1f);
-            upgradeRect.pivot = new Vector2(1f, 1f);
-            upgradeRect.anchoredPosition = new Vector2(-16f, -76f);
+            RectTransform progressionToggleRect = progressionToggleButton.GetComponent<RectTransform>();
+            progressionToggleRect.anchorMin = new Vector2(1f, 1f);
+            progressionToggleRect.anchorMax = new Vector2(1f, 1f);
+            progressionToggleRect.pivot = new Vector2(1f, 1f);
+            progressionToggleRect.anchoredPosition = new Vector2(-16f, -76f);
 
             RectTransform rewardRect = rewardText.GetComponent<RectTransform>();
             rewardRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -678,14 +685,106 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("frostBuildButton").objectReferenceValue = frostBuildButton;
             serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
             serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
+            serializedHud.FindProperty("progressionPanel").objectReferenceValue = progressionPanel;
+            serializedHud.FindProperty("progressionTitleText").objectReferenceValue = progressionTitleText;
+            serializedHud.FindProperty("progressionSummaryText").objectReferenceValue = progressionSummaryText;
+            serializedHud.FindProperty("progressionToggleText").objectReferenceValue = progressionToggleText;
+            serializedHud.FindProperty("progressionToggleButton").objectReferenceValue = progressionToggleButton;
             serializedHud.FindProperty("momoSkillUpgradeText").objectReferenceValue = momoSkillUpgradeText;
             serializedHud.FindProperty("momoSkillUpgradeButton").objectReferenceValue = momoSkillUpgradeButton;
+            serializedHud.FindProperty("bulwarkSkillUpgradeText").objectReferenceValue = bulwarkSkillUpgradeText;
+            serializedHud.FindProperty("bulwarkSkillUpgradeButton").objectReferenceValue = bulwarkSkillUpgradeButton;
+            serializedHud.FindProperty("sproutSkillUpgradeText").objectReferenceValue = sproutSkillUpgradeText;
+            serializedHud.FindProperty("sproutSkillUpgradeButton").objectReferenceValue = sproutSkillUpgradeButton;
+            serializedHud.FindProperty("starTowerUpgradeText").objectReferenceValue = starTowerUpgradeText;
+            serializedHud.FindProperty("starTowerUpgradeButton").objectReferenceValue = starTowerUpgradeButton;
+            serializedHud.FindProperty("burstTowerUpgradeText").objectReferenceValue = burstTowerUpgradeText;
+            serializedHud.FindProperty("burstTowerUpgradeButton").objectReferenceValue = burstTowerUpgradeButton;
+            serializedHud.FindProperty("frostTowerUpgradeText").objectReferenceValue = frostTowerUpgradeText;
+            serializedHud.FindProperty("frostTowerUpgradeButton").objectReferenceValue = frostTowerUpgradeButton;
+            serializedHud.FindProperty("starSpecializationText").objectReferenceValue = starSpecializationText;
+            serializedHud.FindProperty("starSpecializationButton").objectReferenceValue = starSpecializationButton;
+            serializedHud.FindProperty("burstSpecializationText").objectReferenceValue = burstSpecializationText;
+            serializedHud.FindProperty("burstSpecializationButton").objectReferenceValue = burstSpecializationButton;
+            serializedHud.FindProperty("frostSpecializationText").objectReferenceValue = frostSpecializationText;
+            serializedHud.FindProperty("frostSpecializationButton").objectReferenceValue = frostSpecializationButton;
+            serializedHud.FindProperty("resetProgressionText").objectReferenceValue = resetProgressionText;
+            serializedHud.FindProperty("resetProgressionButton").objectReferenceValue = resetProgressionButton;
             serializedHud.FindProperty("rewardText").objectReferenceValue = rewardText;
             serializedHud.FindProperty("messageText").objectReferenceValue = messageText;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
             serializedHud.FindProperty("restartText").objectReferenceValue = restartText;
             serializedHud.ApplyModifiedPropertiesWithoutUndo();
+            progressionPanel.SetActive(false);
+        }
+
+        private static GameObject CreateProgressionPanel(
+            Transform parent,
+            Font font,
+            out Text titleText,
+            out Text summaryText,
+            out Text momoSkillText,
+            out Button momoSkillButton,
+            out Text bulwarkSkillText,
+            out Button bulwarkSkillButton,
+            out Text sproutSkillText,
+            out Button sproutSkillButton,
+            out Text starTowerText,
+            out Button starTowerButton,
+            out Text burstTowerText,
+            out Button burstTowerButton,
+            out Text frostTowerText,
+            out Button frostTowerButton,
+            out Text starSpecializationText,
+            out Button starSpecializationButton,
+            out Text burstSpecializationText,
+            out Button burstSpecializationButton,
+            out Text frostSpecializationText,
+            out Button frostSpecializationButton,
+            out Text resetText,
+            out Button resetButton)
+        {
+            GameObject panelObject = new GameObject("Progression Panel");
+            panelObject.transform.SetParent(parent);
+
+            Image image = panelObject.AddComponent<Image>();
+            image.color = new Color(0.13f, 0.15f, 0.18f, 0.92f);
+
+            RectTransform panelRect = panelObject.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(1f, 1f);
+            panelRect.anchorMax = new Vector2(1f, 1f);
+            panelRect.pivot = new Vector2(1f, 1f);
+            panelRect.anchoredPosition = new Vector2(-16f, -138f);
+            panelRect.sizeDelta = new Vector2(520f, 430f);
+
+            titleText = CreateHudText(panelObject.transform, "Progression Title", "Upgrades", new Vector2(16f, -14f), TextAnchor.UpperLeft, font);
+            titleText.fontSize = 28;
+            titleText.color = new Color(1f, 0.9f, 0.55f);
+
+            summaryText = CreateHudText(panelObject.transform, "Progression Summary", "Crystals 0", new Vector2(250f, -16f), TextAnchor.UpperLeft, font);
+            summaryText.alignment = TextAnchor.UpperRight;
+            RectTransform summaryRect = summaryText.GetComponent<RectTransform>();
+            summaryRect.sizeDelta = new Vector2(250f, 40f);
+
+            momoSkillButton = CreateHudButton(panelObject.transform, "Momo Skill Rank Button", new Vector2(16f, 292f), new Vector2(236f, 48f), font, out momoSkillText);
+            bulwarkSkillButton = CreateHudButton(panelObject.transform, "Bulwark Skill Rank Button", new Vector2(268f, 292f), new Vector2(236f, 48f), font, out bulwarkSkillText);
+            sproutSkillButton = CreateHudButton(panelObject.transform, "Sprout Skill Rank Button", new Vector2(16f, 232f), new Vector2(236f, 48f), font, out sproutSkillText);
+            starTowerButton = CreateHudButton(panelObject.transform, "Star Tower Rank Button", new Vector2(268f, 232f), new Vector2(236f, 48f), font, out starTowerText);
+            burstTowerButton = CreateHudButton(panelObject.transform, "Burst Tower Rank Button", new Vector2(16f, 172f), new Vector2(236f, 48f), font, out burstTowerText);
+            frostTowerButton = CreateHudButton(panelObject.transform, "Frost Tower Rank Button", new Vector2(268f, 172f), new Vector2(236f, 48f), font, out frostTowerText);
+            starSpecializationButton = CreateHudButton(panelObject.transform, "Star Specialization Button", new Vector2(16f, 112f), new Vector2(152f, 44f), font, out starSpecializationText);
+            burstSpecializationButton = CreateHudButton(panelObject.transform, "Burst Specialization Button", new Vector2(184f, 112f), new Vector2(152f, 44f), font, out burstSpecializationText);
+            frostSpecializationButton = CreateHudButton(panelObject.transform, "Frost Specialization Button", new Vector2(352f, 112f), new Vector2(152f, 44f), font, out frostSpecializationText);
+            resetButton = CreateHudButton(panelObject.transform, "Reset Progression Button", new Vector2(16f, 24f), new Vector2(160f, 48f), font, out resetText);
+
+            Text noteText = CreateHudText(panelObject.transform, "Progression Note", "Specializations unlock at tower rank 3.", new Vector2(16f, 82f), TextAnchor.UpperLeft, font);
+            noteText.fontSize = 20;
+            noteText.color = new Color(0.82f, 0.88f, 0.9f);
+            RectTransform noteRect = noteText.GetComponent<RectTransform>();
+            noteRect.sizeDelta = new Vector2(480f, 44f);
+
+            return panelObject;
         }
 
         private static Text CreateHudText(Transform parent, string name, string text, Vector2 anchoredPosition, TextAnchor alignment, Font font)

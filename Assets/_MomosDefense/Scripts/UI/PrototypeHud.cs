@@ -42,8 +42,31 @@ namespace MomosDefense.UI
         [SerializeField] private Button frostBuildButton;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
+        [SerializeField] private GameObject progressionPanel;
+        [SerializeField] private Text progressionTitleText;
+        [SerializeField] private Text progressionSummaryText;
+        [SerializeField] private Text progressionToggleText;
+        [SerializeField] private Button progressionToggleButton;
         [SerializeField] private Text momoSkillUpgradeText;
         [SerializeField] private Button momoSkillUpgradeButton;
+        [SerializeField] private Text bulwarkSkillUpgradeText;
+        [SerializeField] private Button bulwarkSkillUpgradeButton;
+        [SerializeField] private Text sproutSkillUpgradeText;
+        [SerializeField] private Button sproutSkillUpgradeButton;
+        [SerializeField] private Text starTowerUpgradeText;
+        [SerializeField] private Button starTowerUpgradeButton;
+        [SerializeField] private Text burstTowerUpgradeText;
+        [SerializeField] private Button burstTowerUpgradeButton;
+        [SerializeField] private Text frostTowerUpgradeText;
+        [SerializeField] private Button frostTowerUpgradeButton;
+        [SerializeField] private Text starSpecializationText;
+        [SerializeField] private Button starSpecializationButton;
+        [SerializeField] private Text burstSpecializationText;
+        [SerializeField] private Button burstSpecializationButton;
+        [SerializeField] private Text frostSpecializationText;
+        [SerializeField] private Button frostSpecializationButton;
+        [SerializeField] private Text resetProgressionText;
+        [SerializeField] private Button resetProgressionButton;
         [SerializeField] private Text rewardText;
         [SerializeField] private Text messageText;
         [SerializeField] private Text resultText;
@@ -123,7 +146,57 @@ namespace MomosDefense.UI
 
             if (momoSkillUpgradeButton != null)
             {
-                momoSkillUpgradeButton.onClick.AddListener(UpgradeMomoSkill);
+                momoSkillUpgradeButton.onClick.AddListener(() => UpgradeHeroSkill("Momo"));
+            }
+
+            if (bulwarkSkillUpgradeButton != null)
+            {
+                bulwarkSkillUpgradeButton.onClick.AddListener(() => UpgradeHeroSkill("Bulwark"));
+            }
+
+            if (sproutSkillUpgradeButton != null)
+            {
+                sproutSkillUpgradeButton.onClick.AddListener(() => UpgradeHeroSkill("Sprout"));
+            }
+
+            if (starTowerUpgradeButton != null)
+            {
+                starTowerUpgradeButton.onClick.AddListener(() => UpgradeTowerFamily("Star"));
+            }
+
+            if (burstTowerUpgradeButton != null)
+            {
+                burstTowerUpgradeButton.onClick.AddListener(() => UpgradeTowerFamily("Burst"));
+            }
+
+            if (frostTowerUpgradeButton != null)
+            {
+                frostTowerUpgradeButton.onClick.AddListener(() => UpgradeTowerFamily("Frost"));
+            }
+
+            if (starSpecializationButton != null)
+            {
+                starSpecializationButton.onClick.AddListener(() => ChooseTowerSpecialization("Star"));
+            }
+
+            if (burstSpecializationButton != null)
+            {
+                burstSpecializationButton.onClick.AddListener(() => ChooseTowerSpecialization("Burst"));
+            }
+
+            if (frostSpecializationButton != null)
+            {
+                frostSpecializationButton.onClick.AddListener(() => ChooseTowerSpecialization("Frost"));
+            }
+
+            if (resetProgressionButton != null)
+            {
+                resetProgressionButton.onClick.AddListener(ResetProgression);
+            }
+
+            if (progressionToggleButton != null)
+            {
+                progressionToggleButton.onClick.AddListener(ToggleProgressionPanel);
             }
 
             if (startWaveButton != null)
@@ -176,7 +249,57 @@ namespace MomosDefense.UI
 
             if (momoSkillUpgradeButton != null)
             {
-                momoSkillUpgradeButton.onClick.RemoveListener(UpgradeMomoSkill);
+                momoSkillUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (bulwarkSkillUpgradeButton != null)
+            {
+                bulwarkSkillUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (sproutSkillUpgradeButton != null)
+            {
+                sproutSkillUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (starTowerUpgradeButton != null)
+            {
+                starTowerUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (burstTowerUpgradeButton != null)
+            {
+                burstTowerUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (frostTowerUpgradeButton != null)
+            {
+                frostTowerUpgradeButton.onClick.RemoveAllListeners();
+            }
+
+            if (starSpecializationButton != null)
+            {
+                starSpecializationButton.onClick.RemoveAllListeners();
+            }
+
+            if (burstSpecializationButton != null)
+            {
+                burstSpecializationButton.onClick.RemoveAllListeners();
+            }
+
+            if (frostSpecializationButton != null)
+            {
+                frostSpecializationButton.onClick.RemoveAllListeners();
+            }
+
+            if (resetProgressionButton != null)
+            {
+                resetProgressionButton.onClick.RemoveListener(ResetProgression);
+            }
+
+            if (progressionToggleButton != null)
+            {
+                progressionToggleButton.onClick.RemoveListener(ToggleProgressionPanel);
             }
 
             if (startWaveButton != null)
@@ -253,7 +376,7 @@ namespace MomosDefense.UI
             heroSelection?.SelectedHero?.TryUseSkill();
         }
 
-        private void UpgradeMomoSkill()
+        private void UpgradeHeroSkill(string heroId)
         {
             if (progressionService == null)
             {
@@ -261,15 +384,60 @@ namespace MomosDefense.UI
                 return;
             }
 
-            if (!progressionService.TryUpgradeMomoSkill())
+            if (!progressionService.TryUpgradeHeroSkill(heroId))
             {
-                ShowMessage("Need more crystals for Momo Pop.");
+                ShowMessage($"Need more crystals for {heroId} skill.");
                 return;
             }
 
             ApplyPersistentProgression();
             PrototypeAudioDirector.PlayUpgrade();
-            ShowMessage($"Momo Pop rank {progressionService.MomoSkillRank} unlocked.");
+            ShowMessage($"{heroId} skill rank {progressionService.GetHeroSkillRank(heroId)} unlocked.");
+        }
+
+        private void UpgradeTowerFamily(string familyId)
+        {
+            if (progressionService == null)
+            {
+                ShowMessage("Progression is not ready.");
+                return;
+            }
+
+            if (!progressionService.TryUpgradeTowerFamily(familyId))
+            {
+                ShowMessage($"Need more crystals for {familyId} towers.");
+                return;
+            }
+
+            PrototypeAudioDirector.PlayUpgrade();
+            ShowMessage($"{familyId} tower rank {progressionService.GetTowerFamilyRank(familyId)} unlocked.");
+        }
+
+        private void ResetProgression()
+        {
+            progressionService?.ResetPrototypeProgression();
+            ShowMessage("Prototype progression reset.");
+            RestartScene();
+        }
+
+        private void ChooseTowerSpecialization(string familyId)
+        {
+            if (progressionService == null || !progressionService.TryChooseTowerSpecialization(familyId))
+            {
+                ShowMessage($"{familyId} needs rank 3 first.");
+                return;
+            }
+
+            PrototypeAudioDirector.PlayUpgrade();
+            ShowMessage($"{familyId}: {progressionService.GetTowerSpecialization(familyId)} chosen.");
+        }
+
+        private void ToggleProgressionPanel()
+        {
+            if (progressionPanel != null)
+            {
+                progressionPanel.SetActive(!progressionPanel.activeSelf);
+            }
         }
 
         private void SelectMomo()
@@ -318,8 +486,8 @@ namespace MomosDefense.UI
             }
 
             skillButton.interactable = selectedHero.CanUseSkill;
-            string rankText = selectedHero == momoHero && progressionService != null
-                ? $" R{progressionService.MomoSkillRank}"
+            string rankText = progressionService != null
+                ? $" R{progressionService.GetHeroSkillRank(selectedHero.HeroName)}"
                 : string.Empty;
             skillText.text = selectedHero.CanUseSkill
                 ? $"{selectedHero.SkillName}{rankText}"
@@ -340,15 +508,96 @@ namespace MomosDefense.UI
 
             if (momoSkillUpgradeText != null)
             {
-                momoSkillUpgradeText.text = progressionService.MomoSkillRank >= progressionService.MaxSkillRank
-                    ? "Momo Pop Max"
-                    : $"Momo Pop R{progressionService.MomoSkillRank + 1} {progressionService.MomoSkillUpgradeCost}c";
+                UpdateHeroUpgradeButton("Momo", momoSkillUpgradeText, momoSkillUpgradeButton);
             }
 
-            if (momoSkillUpgradeButton != null)
+            UpdateHeroUpgradeButton("Bulwark", bulwarkSkillUpgradeText, bulwarkSkillUpgradeButton);
+            UpdateHeroUpgradeButton("Sprout", sproutSkillUpgradeText, sproutSkillUpgradeButton);
+            UpdateTowerUpgradeButton("Star", starTowerUpgradeText, starTowerUpgradeButton);
+            UpdateTowerUpgradeButton("Burst", burstTowerUpgradeText, burstTowerUpgradeButton);
+            UpdateTowerUpgradeButton("Frost", frostTowerUpgradeText, frostTowerUpgradeButton);
+            UpdateTowerSpecializationButton("Star", starSpecializationText, starSpecializationButton);
+            UpdateTowerSpecializationButton("Burst", burstSpecializationText, burstSpecializationButton);
+            UpdateTowerSpecializationButton("Frost", frostSpecializationText, frostSpecializationButton);
+
+            if (progressionTitleText != null)
             {
-                momoSkillUpgradeButton.interactable = progressionService.CanUpgradeMomoSkill;
+                progressionTitleText.text = "Upgrades";
             }
+
+            if (progressionSummaryText != null)
+            {
+                progressionSummaryText.text = $"Crystals {progressionService.SoftCurrency}  Charm +{progressionService.EquippedHeroSkillDamageBonus}";
+            }
+
+            if (progressionToggleText != null)
+            {
+                progressionToggleText.text = "Upgrades";
+            }
+
+            if (resetProgressionText != null)
+            {
+                resetProgressionText.text = "Reset";
+            }
+        }
+
+        private void UpdateHeroUpgradeButton(string heroId, Text label, Button button)
+        {
+            if (label == null || button == null || progressionService == null)
+            {
+                return;
+            }
+
+            int rank = progressionService.GetHeroSkillRank(heroId);
+            bool maxed = rank >= progressionService.MaxSkillRank;
+            bool affordable = progressionService.CanUpgradeHeroSkill(heroId);
+            label.text = maxed
+                ? $"{heroId} Skill Max"
+                : $"{heroId} Skill R{rank + 1} {progressionService.GetHeroSkillUpgradeCost(heroId)}c";
+            button.interactable = affordable;
+            SetButtonStateColor(button, maxed, affordable);
+        }
+
+        private void UpdateTowerUpgradeButton(string familyId, Text label, Button button)
+        {
+            if (label == null || button == null || progressionService == null)
+            {
+                return;
+            }
+
+            int rank = progressionService.GetTowerFamilyRank(familyId);
+            bool maxed = rank >= progressionService.MaxSkillRank;
+            bool affordable = progressionService.CanUpgradeTowerFamily(familyId);
+            label.text = maxed
+                ? $"{familyId} Tower Max"
+                : $"{familyId} Tower R{rank + 1} {progressionService.GetTowerFamilyUpgradeCost(familyId)}c";
+            button.interactable = affordable;
+            SetButtonStateColor(button, maxed, affordable);
+        }
+
+        private void UpdateTowerSpecializationButton(string familyId, Text label, Button button)
+        {
+            if (label == null || button == null || progressionService == null)
+            {
+                return;
+            }
+
+            string specialization = progressionService.GetTowerSpecialization(familyId);
+            bool chosen = !string.IsNullOrEmpty(specialization);
+            bool available = progressionService.CanChooseTowerSpecialization(familyId);
+            label.text = chosen ? specialization : $"{familyId} Spec";
+            button.interactable = available;
+            SetButtonStateColor(button, chosen, available);
+        }
+
+        private static void SetButtonStateColor(Button button, bool maxed, bool affordable)
+        {
+            ColorBlock colors = button.colors;
+            colors.normalColor = maxed
+                ? new Color(0.45f, 0.7f, 0.5f, 1f)
+                : affordable ? new Color(0.95f, 0.82f, 0.4f, 1f) : new Color(0.72f, 0.72f, 0.72f, 1f);
+            colors.highlightedColor = affordable ? new Color(1f, 0.9f, 0.55f, 1f) : colors.normalColor;
+            button.colors = colors;
         }
 
         private void UpdatePortraits()
@@ -368,7 +617,8 @@ namespace MomosDefense.UI
             if (label != null)
             {
                 string selectedMarker = hero.IsSelected ? "*" : string.Empty;
-                label.text = $"{hero.HeroName} L{hero.Level}{selectedMarker}";
+                string persistentLevel = progressionService != null ? $" P{progressionService.GetHeroLevel(hero.HeroName)}" : string.Empty;
+                label.text = $"{hero.HeroName} L{hero.Level}{persistentLevel}{selectedMarker}";
             }
 
             if (portraitImage != null)
@@ -451,7 +701,23 @@ namespace MomosDefense.UI
         {
             if (momoHero != null && progressionService != null)
             {
+                momoHero.ApplyPersistentHeroLevel(progressionService.GetHeroLevel("Momo"));
                 momoHero.ApplyPersistentSkillRank(progressionService.MomoSkillRank);
+                momoHero.ApplyEquipmentBonus(progressionService.EquippedHeroSkillDamageBonus);
+            }
+
+            if (bulwarkHero != null && progressionService != null)
+            {
+                bulwarkHero.ApplyPersistentHeroLevel(progressionService.GetHeroLevel("Bulwark"));
+                bulwarkHero.ApplyPersistentSkillRank(progressionService.GetHeroSkillRank("Bulwark"));
+                bulwarkHero.ApplyEquipmentBonus(progressionService.EquippedHeroSkillDamageBonus);
+            }
+
+            if (sproutHero != null && progressionService != null)
+            {
+                sproutHero.ApplyPersistentHeroLevel(progressionService.GetHeroLevel("Sprout"));
+                sproutHero.ApplyPersistentSkillRank(progressionService.GetHeroSkillRank("Sprout"));
+                sproutHero.ApplyEquipmentBonus(progressionService.EquippedHeroSkillDamageBonus);
             }
         }
 

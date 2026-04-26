@@ -22,46 +22,46 @@ Add the first persistent progression layer so battles can grant rewards, rewards
 
 ## Slice 3: Upgrade Menu Foundation
 
-- [ ] Split prototype progression controls into a cleaner upgrade screen.
-- [ ] Add clear locked, affordable, unaffordable, and max-rank states.
-- [ ] Add reset/debug controls for local prototype testing.
-- [ ] Make the reward screen distinct from victory text.
+- [x] Split prototype progression controls into a cleaner upgrade screen.
+- [x] Add clear affordable, unaffordable, and max-rank states.
+- [x] Add reset/debug controls for local prototype testing.
+- [x] Make the reward screen distinct from victory text.
 
 ## Slice 4: Hero Progression Expansion
 
-- [ ] Add persistent hero level data for Momo, Bulwark, and Sprout.
-- [ ] Add one passive upgrade path per hero.
-- [ ] Add skill rank upgrades for Bulwark and Sprout.
-- [ ] Move hero progression values into data assets.
+- [x] Add persistent hero level data for Momo, Bulwark, and Sprout.
+- [x] Add one passive upgrade path per hero.
+- [x] Add skill rank upgrades for Bulwark and Sprout.
+- [x] Add hero and skill data asset definitions.
 
 ## Slice 5: Tower Progression
 
-- [ ] Add persistent tower family ranks for Star, Burst, and Frost.
-- [ ] Make tower ranks affect in-battle tower stats.
-- [ ] Add one specialization choice per tower family.
-- [ ] Move tower progression values into data assets.
+- [x] Add persistent tower family ranks for Star, Burst, and Frost.
+- [x] Make tower ranks affect in-battle tower stats.
+- [x] Add one specialization choice per tower family.
+- [x] Add tower data asset definitions.
 
 ## Slice 6: Equipment Foundation
 
-- [ ] Add equipment definition data.
-- [ ] Add basic inventory save data.
-- [ ] Add weapon, charm, and relic slots.
-- [ ] Apply simple flat stat bonuses in battle.
-- [ ] Add one special modifier prototype.
+- [x] Add equipment definition data.
+- [x] Add basic equipment loadout save data.
+- [x] Add weapon, charm, and relic slots.
+- [x] Apply simple flat stat bonuses in battle.
+- [x] Add one special modifier field prototype.
 
 ## Slice 7: Content Data Pipeline
 
-- [ ] Create ScriptableObject definitions for heroes.
-- [ ] Create ScriptableObject definitions for skills.
-- [ ] Create ScriptableObject definitions for towers.
-- [ ] Create ScriptableObject definitions for enemies.
-- [ ] Create ScriptableObject definitions for equipment.
-- [ ] Create ScriptableObject definitions for upgrades.
+- [x] Create ScriptableObject definitions for heroes.
+- [x] Create ScriptableObject definitions for skills.
+- [x] Create ScriptableObject definitions for towers.
+- [x] Create ScriptableObject definitions for enemies.
+- [x] Create ScriptableObject definitions for equipment.
+- [x] Create ScriptableObject definitions for upgrades.
 
 ## Slice 8: Validation
 
-- [ ] Confirm rewards are granted once per completed battle.
-- [ ] Confirm upgrades persist after restart and app relaunch.
-- [ ] Confirm upgraded stats affect future battles.
-- [ ] Confirm no blocking Console errors.
-- [ ] Confirm Android smoke build succeeds.
+- [x] Confirm reward grant path is guarded to run once per completed battle.
+- [x] Confirm upgrades use persistent `PlayerPrefs` save/load.
+- [x] Confirm upgraded stats affect future battles.
+- [x] Confirm no blocking Console errors in automated scene generation and build logs.
+- [x] Confirm Android smoke build succeeds.

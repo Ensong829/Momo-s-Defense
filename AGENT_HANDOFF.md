@@ -50,7 +50,7 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 has started with persistent crystals, victory rewards, and a Momo Pop skill-rank upgrade loop.
+Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 is complete for the prototype milestone with persistent crystals, victory rewards, hero skill ranks, persistent hero levels/passives, tower family ranks, tower specialization choices, starter equipment bonuses, and ScriptableObject definition classes.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
@@ -62,7 +62,7 @@ Latest Phase 2 polish scene generation on 2026-04-25 also succeeded. Runner enem
 
 Latest Phase 2 final validation on 2026-04-26 succeeded. The generated scene now includes a `Tower Build Manager`, three tower family buttons, shared hero XP leveling, armored enemies in later waves, placeholder procedural audio feedback through scripts, four tuned waves, and the objective prompt moved above the bottom controls.
 
-Latest Phase 3 scene generation and Android smoke build on 2026-04-26 succeeded. The generated scene now includes a `Progression Service`, crystal counter, victory reward text, and a Momo Pop upgrade button. `ProgressionService` saves crystals and Momo Pop rank through `PlayerPrefs`.
+Latest Phase 3 scene generation and Android smoke build on 2026-04-26 succeeded. The generated scene now includes a `Progression Service`, crystal counter, distinct victory reward text, upgrade panel, reset control, all hero skill rank buttons, all tower family rank buttons, and tower specialization buttons. `ProgressionService` saves crystals, hero skill ranks, persistent hero levels, tower family ranks, tower specialization choices, and equipment loadout slots through `PlayerPrefs`.
 
 Current prototype scene:
 
@@ -211,11 +211,11 @@ The user asked to finish Phase 2. The prototype milestone is now complete and th
 
 Next steps:
 
-1. Split prototype progression controls into a cleaner upgrade screen.
-2. Add debug reset controls for local progression testing.
-3. Add persistent progression for Bulwark, Sprout, and tower families.
-4. Add first tower family rank upgrades.
-5. Run `docs/PHASE_2_PLAYTEST_CHECKLIST.md` before any public/demo build to capture hands-on feel notes.
+1. Begin Phase 4 content pipeline work.
+2. Create level/wave authoring data around ScriptableObject definitions.
+3. Add balance/debug tools for spawning waves and testing upgrades.
+4. Run `docs/PHASE_2_PLAYTEST_CHECKLIST.md` before any public/demo build to capture hands-on feel notes.
+5. Push checkpoints only with explicit user approval.
 
 ## Phase 2 Direction
 

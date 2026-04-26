@@ -99,20 +99,21 @@ Done when:
 
 ## Phase 3: RPG Progression Foundation
 
-Status: in progress.
+Status: complete for prototype milestone.
 
 Goal: Add the progression systems that make the game sticky.
 
 Deliverables:
 
 - Persistent hero levels.
-- Hero skill upgrades. First Momo Pop rank prototype implemented.
-- Tower family upgrades.
-- Equipment definitions.
-- Equipment inventory.
+- Hero skill upgrades. Prototype implemented for Momo, Bulwark, and Sprout.
+- Tower family upgrades. Prototype implemented for Star, Burst, and Frost ranks.
+- Tower specialization choices. Prototype implemented for Star, Burst, and Frost.
+- Equipment definitions. ScriptableObject definition added.
+- Equipment inventory. Prototype loadout slots added.
 - Save/load. First `PlayerPrefs` progression save implemented.
 - Reward screen. Prototype victory reward text implemented.
-- Basic upgrade menus. Prototype Momo Pop upgrade button implemented.
+- Basic upgrade menus. Prototype upgrade panel implemented.
 
 Done when:
 

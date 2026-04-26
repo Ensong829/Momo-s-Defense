@@ -7,6 +7,7 @@ namespace MomosDefense.Towers
     public sealed class TowerAttack : MonoBehaviour
     {
         [SerializeField] private string towerName = "Tower";
+        [SerializeField] private string towerFamilyId = "Star";
         [SerializeField] private float attackRange = 4f;
         [SerializeField] private float attacksPerSecond = 1f;
         [SerializeField] private int attackDamage = 1;
@@ -31,6 +32,7 @@ namespace MomosDefense.Towers
         private TowerBuildNode ownerNode;
 
         public string TowerName => towerName;
+        public string TowerFamilyId => towerFamilyId;
         public int Level => level;
         public int UpgradeCost => upgradeCost * level;
         public bool CanUpgrade => level < maxLevel;
@@ -38,6 +40,32 @@ namespace MomosDefense.Towers
         public void BindToNode(TowerBuildNode buildNode)
         {
             ownerNode = buildNode;
+        }
+
+        public void ApplyPersistentRank(int rank, float equipmentAttackSpeedBonus = 0f)
+        {
+            int bonusRanks = Mathf.Max(0, rank - 1);
+            attackDamage += bonusRanks;
+            attackRange += bonusRanks * 0.25f;
+            attacksPerSecond += bonusRanks * 0.08f + Mathf.Max(0f, equipmentAttackSpeedBonus);
+        }
+
+        public void ApplySpecialization(string specialization)
+        {
+            switch (specialization)
+            {
+                case "Focus":
+                    attackDamage += 2;
+                    attackRange += 0.35f;
+                    break;
+                case "Volley":
+                    attacksPerSecond += 0.35f;
+                    break;
+                case "Deep Freeze":
+                    slowDurationOnHit += 0.65f;
+                    slowMultiplierOnHit = Mathf.Min(slowMultiplierOnHit, 0.5f);
+                    break;
+            }
         }
 
         private void Awake()

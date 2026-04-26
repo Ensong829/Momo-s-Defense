@@ -45,7 +45,9 @@ namespace MomosDefense.Heroes
         private bool isSelected;
         private int currentExperience;
         private int level = 1;
+        private int appliedPersistentHeroLevel = 1;
         private int appliedPersistentSkillRank = 1;
+        private int appliedEquipmentSkillDamageBonus;
 
         public string HeroName => heroName;
         public string SkillName => skillName;
@@ -148,6 +150,27 @@ namespace MomosDefense.Heroes
             skillRadius += bonusRanks * 0.25f;
             skillCooldown = Mathf.Max(4f, skillCooldown - (bonusRanks * 0.35f));
             appliedPersistentSkillRank = skillRank;
+        }
+
+        public void ApplyPersistentHeroLevel(int heroLevel)
+        {
+            heroLevel = Mathf.Max(1, heroLevel);
+            if (heroLevel <= appliedPersistentHeroLevel)
+            {
+                return;
+            }
+
+            int bonusLevels = heroLevel - appliedPersistentHeroLevel;
+            attackDamage += bonusLevels;
+            moveSpeed += bonusLevels * 0.08f;
+            appliedPersistentHeroLevel = heroLevel;
+        }
+
+        public void ApplyEquipmentBonus(int skillDamageBonus)
+        {
+            int clampedBonus = Mathf.Max(0, skillDamageBonus);
+            skillDamage += clampedBonus - appliedEquipmentSkillDamageBonus;
+            appliedEquipmentSkillDamageBonus = clampedBonus;
         }
 
         private void ReadMoveInput()

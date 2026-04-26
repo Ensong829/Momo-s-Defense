@@ -4,9 +4,9 @@ Last updated: 2026-04-26
 
 ## Current Milestone
 
-Phase 3: RPG Progression Foundation
+Phase 4: Content Pipeline
 
-Goal: add persistent hero, tower, equipment, reward, and save/load systems on top of the completed Phase 2 battle prototype.
+Goal: make it easy to add heroes, towers, enemies, waves, equipment, and upgrades without rewriting prototype systems.
 
 ## Completed
 
@@ -118,19 +118,26 @@ Goal: add persistent hero, tower, equipment, reward, and save/load systems on to
 - Victory grants persistent crystals once per battle.
 - Prototype HUD shows persistent crystals and victory reward text.
 - Momo Pop has a persistent skill rank.
-- Prototype HUD includes a Momo Pop upgrade button.
+- Prototype HUD includes an upgrade panel with hero skill and tower family rank buttons.
 - Momo Pop rank persists between sessions and improves damage, radius, cooldown, and rank text in battle.
+- Bulwark and Sprout skill ranks persist and improve their skill output.
+- Momo, Bulwark, and Sprout have persistent hero levels that grant small passive battle bonuses.
+- Star, Burst, and Frost tower family ranks persist and improve newly built tower stats.
+- Star, Burst, and Frost tower families each have a first explicit specialization choice.
+- Starter equipment loadout is saved with weapon, charm, and relic slots.
+- Training Charm applies prototype hero skill damage and tower attack speed bonuses.
+- ScriptableObject definition classes added for heroes, skills, towers, enemies, equipment, and upgrades.
 
 ## In Progress
 
-- Phase 3 upgrade menu foundation.
-- Prototype-only UI and controls remain acceptable until progression requirements are proven.
+- Phase 4 content pipeline planning.
+- Prototype-only UI and controls remain acceptable until content authoring requirements are proven.
 
 ## Next Up
 
-1. Split prototype progression controls into a cleaner upgrade screen.
-2. Add debug reset controls for local progression testing.
-3. Add persistent progression for Bulwark, Sprout, and tower families.
+1. Create content authoring workflow around the new ScriptableObject definitions.
+2. Add level/wave authoring data.
+3. Add balance/debug tools for spawning waves and testing upgrades.
 
 ## Remaining Phase 1 Tasks
 
@@ -166,6 +173,8 @@ Planning doc:
 - `docs/PHASE_2_VERTICAL_SLICE_PLAN.md`
 
 ### Phase 3: RPG Progression Foundation
+
+Status: complete for prototype milestone.
 
 - Persistent hero levels.
 - Hero skill upgrades.
@@ -259,6 +268,16 @@ Latest Phase 3 progression slice:
 - Scene check: generated `Progression Service`, crystal counter, victory reward text, and Momo Pop upgrade button.
 - Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
 - Notes: Phase 3 Slice 1 and Slice 2 are implemented as prototype HUD controls; a cleaner upgrade screen is next.
+
+Latest expanded Phase 3 scene generation:
+
+- Date: 2026-04-26
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded.
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated upgrade panel, reset control, all hero skill rank buttons, all tower family rank buttons, persistent hero level/passive hooks, starter equipment bonuses, and ScriptableObject definition scripts.
+- Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
+- Notes: Phase 3 is complete for the prototype milestone and ready to move into Phase 4 content pipeline work.
 
 ## Recent Stable Checkpoints
 

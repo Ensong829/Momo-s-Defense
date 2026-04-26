@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Towers.TowerAttack
   towerName: Star Tower
+  towerFamilyId: Star
   attackRange: 4
   attacksPerSecond: 1
   attackDamage: 1

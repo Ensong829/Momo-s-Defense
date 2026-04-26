@@ -4,6 +4,8 @@
 
 Build the first persistent progression layer for heroes, towers, and equipment after the three-hero vertical slice proves the combat direction.
 
+Status: complete for the prototype milestone.
+
 ## Progression Principles
 
 - Start simple.
@@ -78,7 +80,13 @@ Implementation notes:
 - `ProgressionService` stores prototype progression in `PlayerPrefs`.
 - Victory grants crystals once per battle.
 - Momo Pop rank increases damage and radius while slightly reducing cooldown.
-- The prototype HUD shows crystals, victory reward text, Momo Pop rank text, and an upgrade button.
+- The prototype HUD shows crystals, victory reward text, selected skill rank text, and an upgrade panel.
+- Momo, Bulwark, and Sprout have persistent skill ranks and persistent hero levels.
+- Star, Burst, and Frost have persistent tower family ranks.
+- Star, Burst, and Frost have first-pass specialization choices.
+- A starter Training Charm applies prototype equipment bonuses.
+- ScriptableObject definition classes now exist for future content authoring.
+- Automated scene generation and Android smoke build both passed for the final Phase 3 slice.
 
 Detailed task list:
 
