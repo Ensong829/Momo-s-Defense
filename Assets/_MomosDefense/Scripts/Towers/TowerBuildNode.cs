@@ -63,6 +63,7 @@ namespace MomosDefense.Towers
 
             GameObject tower = Instantiate(towerPrefab, transform.position + towerOffset, Quaternion.identity);
             placedTower = tower.GetComponent<TowerAttack>();
+            placedTower?.BindToNode(this);
             hasTower = true;
             SetNodeColor(occupiedColor);
             hud?.ShowMessage($"Built starter tower (-{buildCost} gold).");

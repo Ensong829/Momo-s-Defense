@@ -91,7 +91,7 @@ Design purpose:
 
 - [x] Give each hero different attack range, damage, and role feel.
 - [x] Add visual color coding.
-- [ ] Make enemies create at least one reason to reposition heroes.
+- [x] Make enemies create at least one reason to reposition heroes.
 
 ### Slice 5: Phase 2 Level Pass
 
@@ -109,8 +109,10 @@ Design purpose:
 ## Testing Requirements
 
 - Player can select each hero reliably.
+- Player can select heroes by portrait and by clicking them in the world.
 - Move commands affect only the selected hero.
 - Tower building still works.
+- Tower upgrades still work after the three-hero refactor.
 - Momo Pop still works after the selection refactor.
 - No Console errors during a full match.
 - HUD remains readable at 16:9 landscape.

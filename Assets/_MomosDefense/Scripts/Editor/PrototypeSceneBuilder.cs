@@ -20,6 +20,7 @@ namespace MomosDefense.Editor
         private const string ScenePath = "Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity";
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
         private const string ToughEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeToughEnemy.prefab";
+        private const string RunnerEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeRunnerEnemy.prefab";
         private const string TowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeStarterTower.prefab";
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
 
@@ -38,6 +39,7 @@ namespace MomosDefense.Editor
             EnemyPath path = CreatePath();
             GameObject enemyPrefab = CreateEnemyPrefab();
             GameObject toughEnemyPrefab = CreateToughEnemyPrefab();
+            GameObject runnerEnemyPrefab = CreateRunnerEnemyPrefab();
             GameObject towerPrefab = CreateTowerPrefab();
             PrototypeHeroController momo = CreateHero(
                 "Momo",
@@ -101,7 +103,7 @@ namespace MomosDefense.Editor
                 1.75f);
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
             CreateBuildNodes(gameState, towerPrefab);
-            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, path, gameState);
+            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, path, gameState);
             CreateEventSystem();
             CreateHud(gameState, waveSpawner, heroSelection, momo, bulwark, sprout);
 
@@ -220,6 +222,30 @@ namespace MomosDefense.Editor
             serializedFollower.ApplyModifiedPropertiesWithoutUndo();
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, ToughEnemyPrefabPath);
+            Object.DestroyImmediate(enemy);
+            return prefab;
+        }
+
+        private static GameObject CreateRunnerEnemyPrefab()
+        {
+            GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            enemy.name = "Prototype Runner Enemy";
+            enemy.transform.localScale = new Vector3(0.68f, 0.72f, 0.68f);
+            AssignMaterial(enemy, "Prototype_RunnerEnemy", new Color(0.95f, 0.9f, 0.32f));
+
+            Health health = enemy.AddComponent<Health>();
+            EnemyPathFollower follower = enemy.AddComponent<EnemyPathFollower>();
+
+            SerializedObject serializedHealth = new SerializedObject(health);
+            serializedHealth.FindProperty("maxHealth").intValue = 6;
+            serializedHealth.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject serializedFollower = new SerializedObject(follower);
+            serializedFollower.FindProperty("moveSpeed").floatValue = 3.3f;
+            serializedFollower.FindProperty("goldReward").intValue = 8;
+            serializedFollower.ApplyModifiedPropertiesWithoutUndo();
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, RunnerEnemyPrefabPath);
             Object.DestroyImmediate(enemy);
             return prefab;
         }
@@ -343,7 +369,12 @@ namespace MomosDefense.Editor
             }
         }
 
-        private static WaveSpawner CreateWaveSpawner(GameObject enemyPrefab, GameObject toughEnemyPrefab, EnemyPath path, GameState gameState)
+        private static WaveSpawner CreateWaveSpawner(
+            GameObject enemyPrefab,
+            GameObject toughEnemyPrefab,
+            GameObject runnerEnemyPrefab,
+            EnemyPath path,
+            GameState gameState)
         {
             GameObject spawnerObject = new GameObject("Wave Spawner");
             WaveSpawner spawner = spawnerObject.AddComponent<WaveSpawner>();
@@ -351,6 +382,7 @@ namespace MomosDefense.Editor
             SerializedObject serializedSpawner = new SerializedObject(spawner);
             serializedSpawner.FindProperty("enemyPrefab").objectReferenceValue = enemyPrefab;
             serializedSpawner.FindProperty("toughEnemyPrefab").objectReferenceValue = toughEnemyPrefab;
+            serializedSpawner.FindProperty("runnerEnemyPrefab").objectReferenceValue = runnerEnemyPrefab;
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();

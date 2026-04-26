@@ -38,7 +38,9 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Enemy path follower.
 - Wave spawner.
 - Basic enemy and tough enemy prefabs.
+- Fast runner enemy prefab for later-wave pressure.
 - Tough enemies appear from wave 2 onward.
+- Runner enemies appear from wave 2 onward.
 - Waves wait for player input before starting.
 - HUD has Start Wave / Next Wave control.
 - Enemy leaks reduce lives.
@@ -74,6 +76,7 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Generated scene includes an `EventSystem` for prototype UI input.
 - Generated HUD includes portrait buttons for Momo, Bulwark, and Sprout.
 - `1`, `2`, and `3` select heroes in the editor.
+- Clicking a hero in the world selects that hero.
 
 ### Additional Heroes
 
@@ -94,6 +97,7 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 - Build nodes mark themselves as occupied after use.
 - Clicking build nodes no longer moves Momo.
 - Build and upgrade attempts are blocked after the battle ends.
+- Clicking a built tower routes upgrade interaction back to its build node.
 - Towers can receive a temporary attack buff from Sprout.
 
 ## In Progress
@@ -190,6 +194,15 @@ Latest automated three-hero scene generation:
 - Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
 - Scene check: generated `Bulwark Prototype Hero`, `Sprout Prototype Hero`, `Bulwark Portrait Button`, `Sprout Portrait Button`, and `Skill Button`.
 - Notes: Unity still prints known `abort_threads` shutdown noise in batch mode. Manual playtest is still needed before calling Phase 2 finished.
+
+Latest Phase 2 polish scene generation:
+
+- Date: 2026-04-25
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated `runnerEnemyPrefab` reference and rebuilt the scene after tower-upgrade interaction fixes.
+- Notes: tower upgrades should now work by clicking the built tower itself.
 
 ## Recent Stable Checkpoints
 

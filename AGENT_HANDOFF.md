@@ -58,6 +58,8 @@ Latest Phase 2 Slice 1 scene generation on 2026-04-25 also succeeded. The genera
 
 Latest three-hero scene generation on 2026-04-25 succeeded as well. The generated scene now includes `Bulwark Prototype Hero`, `Sprout Prototype Hero`, portrait buttons for all three heroes, and a selected-hero `Skill Button`.
 
+Latest Phase 2 polish scene generation on 2026-04-25 also succeeded. Runner enemies were added to later waves, clicking a hero in the world now selects that hero, and clicking a built tower should trigger its upgrade path again.
+
 Current prototype scene:
 
 - `Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity`
@@ -93,6 +95,7 @@ Android smoke build output:
 - Start Wave / Next Wave control.
 - Basic enemy type.
 - Tough enemy type from wave 2 onward.
+- Runner enemy type from wave 2 onward.
 - Lives and gold.
 - Victory/defeat states.
 - Restart button.
@@ -103,6 +106,7 @@ Android smoke build output:
 - One starter tower.
 - One tower upgrade step.
 - Tower build and upgrade attempts are blocked after the battle ends.
+- Clicking a built tower triggers upgrade interaction through its build node.
 
 ### Momo
 
@@ -113,6 +117,7 @@ Android smoke build output:
 - Click/tap movement.
 - Only selected Momo receives movement commands.
 - UI taps no longer issue movement commands.
+- Clicking heroes in the world changes selection.
 - Auto attack.
 - Momo Pop active skill.
 - Momo Pop damages and slows enemies.
@@ -192,7 +197,7 @@ The user approved moving forward before a full manual playtest. The next step is
 Next steps:
 
 1. Open Unity and run `docs/PLAYTEST_CHECKLIST.md`.
-2. Confirm wave start, restart, tower build/upgrade, hero switching, and all three skills work in editor playtest.
+2. Confirm wave start, restart, tower build/upgrade, hero switching, world-click selection, and all three skills work in editor playtest.
 3. Record balance/bug notes.
 4. Fix blocking issues.
 5. Tune Phase 2 readability and combat feel before moving to larger content additions.

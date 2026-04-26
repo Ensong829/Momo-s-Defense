@@ -21,10 +21,16 @@ namespace MomosDefense.Towers
         private float temporaryAttackSpeedMultiplier = 1f;
         private Renderer cachedRenderer;
         private Color baseColor;
+        private TowerBuildNode ownerNode;
 
         public int Level => level;
         public int UpgradeCost => upgradeCost;
         public bool CanUpgrade => level < maxLevel;
+
+        public void BindToNode(TowerBuildNode buildNode)
+        {
+            ownerNode = buildNode;
+        }
 
         private void Awake()
         {
@@ -54,6 +60,11 @@ namespace MomosDefense.Towers
 
             target.TakeDamage(attackDamage + temporaryDamageBonus);
             attackTimer = 1f / (attacksPerSecond * temporaryAttackSpeedMultiplier);
+        }
+
+        private void OnMouseDown()
+        {
+            ownerNode?.TryBuildTower();
         }
 
         private Health FindNearestEnemy()

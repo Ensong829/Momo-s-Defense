@@ -9,6 +9,7 @@ namespace MomosDefense.Waves
     {
         [SerializeField] private GameObject enemyPrefab;
         [SerializeField] private GameObject toughEnemyPrefab;
+        [SerializeField] private GameObject runnerEnemyPrefab;
         [SerializeField] private EnemyPath enemyPath;
         [SerializeField] private GameState gameState;
         [SerializeField] private int totalWaves = 3;
@@ -85,6 +86,11 @@ namespace MomosDefense.Waves
 
         private GameObject ChooseEnemyPrefab(int waveNumber, int enemyIndex)
         {
+            if (runnerEnemyPrefab != null && waveNumber >= 2 && enemyIndex % 4 == 1)
+            {
+                return runnerEnemyPrefab;
+            }
+
             if (toughEnemyPrefab != null && waveNumber >= 2 && enemyIndex % 3 == 2)
             {
                 return toughEnemyPrefab;

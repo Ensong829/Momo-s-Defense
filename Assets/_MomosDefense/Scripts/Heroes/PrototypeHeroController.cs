@@ -65,6 +65,12 @@ namespace MomosDefense.Heroes
             }
         }
 
+        private void OnMouseDown()
+        {
+            HeroSelectionManager selectionManager = FindFirstObjectByType<HeroSelectionManager>();
+            selectionManager?.SelectHero(this);
+        }
+
         public void SetSelected(bool selected)
         {
             if (isSelected == selected)
