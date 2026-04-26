@@ -12,6 +12,8 @@ namespace MomosDefense.Waves
         [SerializeField] private GameObject toughEnemyPrefab;
         [SerializeField] private GameObject runnerEnemyPrefab;
         [SerializeField] private GameObject armoredEnemyPrefab;
+        [SerializeField] private LevelDefinition levelDefinition;
+        [SerializeField] private EnemyPrefabEntry[] enemyCatalog;
         [SerializeField] private EnemyPath enemyPath;
         [SerializeField] private GameState gameState;
         [SerializeField] private HeroSelectionManager heroSelection;
@@ -24,10 +26,19 @@ namespace MomosDefense.Waves
         private bool isSpawningWave;
 
         public int CurrentWave { get; private set; }
-        public int TotalWaves => totalWaves;
+        public int TotalWaves => levelDefinition != null && levelDefinition.Waves != null && levelDefinition.Waves.Length > 0
+            ? levelDefinition.Waves.Length
+            : totalWaves;
         public bool IsWaveInProgress => isSpawningWave || aliveEnemies > 0;
         public bool CanStartNextWave => !IsComplete && !IsWaveInProgress && (gameState == null || !gameState.IsGameOver);
-        public bool IsComplete => CurrentWave >= totalWaves && !IsWaveInProgress;
+        public bool IsComplete => CurrentWave >= TotalWaves && !IsWaveInProgress;
+
+        [System.Serializable]
+        public sealed class EnemyPrefabEntry
+        {
+            public string enemyId = "Basic";
+            public GameObject prefab;
+        }
 
         public void StartNextWave()
         {
@@ -43,34 +54,60 @@ namespace MomosDefense.Waves
         {
             isSpawningWave = true;
             CurrentWave = waveNumber;
+            WaveDefinition waveDefinition = GetWaveDefinition(waveNumber);
 
-            for (int enemy = 0; enemy < enemiesPerWave; enemy++)
+            if (waveDefinition != null && waveDefinition.SpawnGroups != null && waveDefinition.SpawnGroups.Length > 0)
             {
-                if (gameState != null && gameState.IsGameOver)
+                foreach (WaveDefinition.SpawnGroup spawnGroup in waveDefinition.SpawnGroups)
                 {
-                    break;
-                }
+                    if (spawnGroup == null)
+                    {
+                        continue;
+                    }
 
-                SpawnEnemy(waveNumber, enemy);
-                yield return new WaitForSeconds(timeBetweenEnemies);
+                    for (int enemy = 0; enemy < spawnGroup.count; enemy++)
+                    {
+                        if (gameState != null && gameState.IsGameOver)
+                        {
+                            break;
+                        }
+
+                        SpawnEnemy(spawnGroup.enemyId, waveNumber, enemy);
+                        yield return new WaitForSeconds(GetTimeBetweenEnemies());
+                    }
+                }
+            }
+            else
+            {
+                for (int enemy = 0; enemy < enemiesPerWave; enemy++)
+                {
+                    if (gameState != null && gameState.IsGameOver)
+                    {
+                        break;
+                    }
+
+                    SpawnEnemy(string.Empty, waveNumber, enemy);
+                    yield return new WaitForSeconds(GetTimeBetweenEnemies());
+                }
             }
 
             isSpawningWave = false;
 
-            if (!IsComplete && timeBetweenWaves > 0f)
+            float waveDelay = GetTimeBetweenWaves();
+            if (!IsComplete && waveDelay > 0f)
             {
-                yield return new WaitForSeconds(timeBetweenWaves);
+                yield return new WaitForSeconds(waveDelay);
             }
         }
 
-        private void SpawnEnemy(int waveNumber, int enemyIndex)
+        private void SpawnEnemy(string enemyId, int waveNumber, int enemyIndex)
         {
             if (enemyPrefab == null || enemyPath == null || gameState == null || gameState.IsGameOver)
             {
                 return;
             }
 
-            GameObject prefabToSpawn = ChooseEnemyPrefab(waveNumber, enemyIndex);
+            GameObject prefabToSpawn = ChooseEnemyPrefab(enemyId, waveNumber, enemyIndex);
             GameObject enemy = Instantiate(prefabToSpawn);
             aliveEnemies++;
             EnemyPathFollower follower = enemy.GetComponent<EnemyPathFollower>();
@@ -89,8 +126,19 @@ namespace MomosDefense.Waves
             follower?.ReachedGoal.AddListener(() => aliveEnemies = Mathf.Max(0, aliveEnemies - 1));
         }
 
-        private GameObject ChooseEnemyPrefab(int waveNumber, int enemyIndex)
+        private GameObject ChooseEnemyPrefab(string enemyId, int waveNumber, int enemyIndex)
         {
+            if (!string.IsNullOrEmpty(enemyId) && enemyCatalog != null)
+            {
+                foreach (EnemyPrefabEntry entry in enemyCatalog)
+                {
+                    if (entry != null && entry.enemyId == enemyId && entry.prefab != null)
+                    {
+                        return entry.prefab;
+                    }
+                }
+            }
+
             if (armoredEnemyPrefab != null && waveNumber >= 3 && enemyIndex % 5 == 4)
             {
                 return armoredEnemyPrefab;
@@ -107,6 +155,26 @@ namespace MomosDefense.Waves
             }
 
             return enemyPrefab;
+        }
+
+        private WaveDefinition GetWaveDefinition(int waveNumber)
+        {
+            if (levelDefinition == null || levelDefinition.Waves == null || waveNumber <= 0 || waveNumber > levelDefinition.Waves.Length)
+            {
+                return null;
+            }
+
+            return levelDefinition.Waves[waveNumber - 1];
+        }
+
+        private float GetTimeBetweenEnemies()
+        {
+            return levelDefinition != null ? levelDefinition.TimeBetweenEnemies : timeBetweenEnemies;
+        }
+
+        private float GetTimeBetweenWaves()
+        {
+            return levelDefinition != null ? levelDefinition.TimeBetweenWaves : timeBetweenWaves;
         }
     }
 }

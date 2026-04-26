@@ -26,6 +26,7 @@ namespace MomosDefense.Editor
         private const string BurstTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeBurstTower.prefab";
         private const string FrostTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeFrostTower.prefab";
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
+        private const string ContentFolder = "Assets/_MomosDefense/Data/Prototype";
 
         [MenuItem("Momo's Defense/Build Prototype Scene")]
         public static void BuildPrototypeScene()
@@ -44,6 +45,7 @@ namespace MomosDefense.Editor
             GameObject toughEnemyPrefab = CreateToughEnemyPrefab();
             GameObject runnerEnemyPrefab = CreateRunnerEnemyPrefab();
             GameObject armoredEnemyPrefab = CreateArmoredEnemyPrefab();
+            LevelDefinition levelDefinition = CreatePrototypeContentAssets();
             GameObject towerPrefab = CreateTowerPrefab(
                 "Prototype Starter Tower",
                 TowerPrefabPath,
@@ -155,7 +157,7 @@ namespace MomosDefense.Editor
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
             TowerBuildManager buildManager = CreateTowerBuildManager(towerPrefab, burstTowerPrefab, frostTowerPrefab);
             CreateBuildNodes(gameState, progressionService, buildManager);
-            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, path, gameState, heroSelection);
+            WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, levelDefinition, path, gameState, heroSelection);
             CreateEventSystem();
             CreateHud(gameState, progressionService, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
 
@@ -327,6 +329,52 @@ namespace MomosDefense.Editor
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(enemy, ArmoredEnemyPrefabPath);
             Object.DestroyImmediate(enemy);
             return prefab;
+        }
+
+        private static LevelDefinition CreatePrototypeContentAssets()
+        {
+            EnsureContentFolder();
+
+            CreateHeroDefinition("Momo", "Momo", "Flexible control", 1);
+            CreateHeroDefinition("Bulwark", "Bulwark", "Tank control", 1);
+            CreateHeroDefinition("Sprout", "Sprout", "Support", 1);
+            CreateSkillDefinition("MomoPop", "Momo Pop", "Momo", 4, 3f, 8f);
+            CreateSkillDefinition("GroundSlam", "Ground Slam", "Bulwark", 5, 2.4f, 10f);
+            CreateSkillDefinition("BloomSong", "Bloom Song", "Sprout", 0, 3.75f, 12f);
+            CreateTowerDefinition("Star", "Star Tower", 60, 1, 4f, 1f);
+            CreateTowerDefinition("Burst", "Burst Tower", 75, 3, 3.2f, 0.65f);
+            CreateTowerDefinition("Frost", "Frost Tower", 70, 1, 3.6f, 1.1f);
+            CreateEnemyDefinition("Basic", "Basic Enemy", 10, 2f, 10, 1);
+            CreateEnemyDefinition("Tough", "Tough Enemy", 18, 1.25f, 22, 2);
+            CreateEnemyDefinition("Runner", "Runner Enemy", 6, 3.3f, 8, 1);
+            CreateEnemyDefinition("Armored", "Armored Enemy", 28, 0.95f, 30, 3);
+            CreateEquipmentDefinition("TrainingCharm", "Training Charm", EquipmentDefinition.EquipmentSlot.Charm, 1, 0.05f, "Starter");
+            CreateUpgradeDefinition("MomoSkillRank", "Momo Pop Rank", "Momo", 5, 50, 35);
+            CreateUpgradeDefinition("TowerFamilyRank", "Tower Family Rank", "Tower", 5, 45, 30);
+
+            WaveDefinition wave1 = CreateWaveDefinition("Wave01", new[] { ("Basic", 8) });
+            WaveDefinition wave2 = CreateWaveDefinition("Wave02", new[] { ("Basic", 4), ("Runner", 2), ("Tough", 2) });
+            WaveDefinition wave3 = CreateWaveDefinition("Wave03", new[] { ("Basic", 3), ("Runner", 2), ("Tough", 2), ("Armored", 1) });
+            WaveDefinition wave4 = CreateWaveDefinition("Wave04", new[] { ("Runner", 3), ("Tough", 3), ("Armored", 2) });
+
+            LevelDefinition level = LoadOrCreateAsset<LevelDefinition>($"{ContentFolder}/PrototypeLevel01.asset");
+            SerializedObject serializedLevel = new SerializedObject(level);
+            serializedLevel.FindProperty("levelId").stringValue = "PrototypeLevel01";
+            serializedLevel.FindProperty("displayName").stringValue = "Prototype Crossing";
+            serializedLevel.FindProperty("timeBetweenEnemies").floatValue = 0.7f;
+            serializedLevel.FindProperty("timeBetweenWaves").floatValue = 3f;
+            serializedLevel.FindProperty("victoryCurrencyReward").intValue = 35;
+            SerializedProperty wavesProperty = serializedLevel.FindProperty("waves");
+            wavesProperty.arraySize = 4;
+            wavesProperty.GetArrayElementAtIndex(0).objectReferenceValue = wave1;
+            wavesProperty.GetArrayElementAtIndex(1).objectReferenceValue = wave2;
+            wavesProperty.GetArrayElementAtIndex(2).objectReferenceValue = wave3;
+            wavesProperty.GetArrayElementAtIndex(3).objectReferenceValue = wave4;
+            serializedLevel.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(level);
+
+            AssetDatabase.SaveAssets();
+            return level;
         }
 
         private static PrototypeHeroController CreateHero(
@@ -516,6 +564,7 @@ namespace MomosDefense.Editor
             GameObject toughEnemyPrefab,
             GameObject runnerEnemyPrefab,
             GameObject armoredEnemyPrefab,
+            LevelDefinition levelDefinition,
             EnemyPath path,
             GameState gameState,
             HeroSelectionManager heroSelection)
@@ -528,6 +577,13 @@ namespace MomosDefense.Editor
             serializedSpawner.FindProperty("toughEnemyPrefab").objectReferenceValue = toughEnemyPrefab;
             serializedSpawner.FindProperty("runnerEnemyPrefab").objectReferenceValue = runnerEnemyPrefab;
             serializedSpawner.FindProperty("armoredEnemyPrefab").objectReferenceValue = armoredEnemyPrefab;
+            serializedSpawner.FindProperty("levelDefinition").objectReferenceValue = levelDefinition;
+            SerializedProperty catalogProperty = serializedSpawner.FindProperty("enemyCatalog");
+            catalogProperty.arraySize = 4;
+            ConfigureEnemyCatalogEntry(catalogProperty.GetArrayElementAtIndex(0), "Basic", enemyPrefab);
+            ConfigureEnemyCatalogEntry(catalogProperty.GetArrayElementAtIndex(1), "Tough", toughEnemyPrefab);
+            ConfigureEnemyCatalogEntry(catalogProperty.GetArrayElementAtIndex(2), "Runner", runnerEnemyPrefab);
+            ConfigureEnemyCatalogEntry(catalogProperty.GetArrayElementAtIndex(3), "Armored", armoredEnemyPrefab);
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
             serializedSpawner.FindProperty("heroSelection").objectReferenceValue = heroSelection;
@@ -538,6 +594,12 @@ namespace MomosDefense.Editor
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();
 
             return spawner;
+        }
+
+        private static void ConfigureEnemyCatalogEntry(SerializedProperty entryProperty, string enemyId, GameObject prefab)
+        {
+            entryProperty.FindPropertyRelative("enemyId").stringValue = enemyId;
+            entryProperty.FindPropertyRelative("prefab").objectReferenceValue = prefab;
         }
 
         private static void CreateEventSystem()
@@ -897,6 +959,134 @@ namespace MomosDefense.Editor
             {
                 AssetDatabase.CreateFolder("Assets/_MomosDefense", "Materials");
             }
+        }
+
+        private static void EnsureContentFolder()
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/_MomosDefense/Data"))
+            {
+                AssetDatabase.CreateFolder("Assets/_MomosDefense", "Data");
+            }
+
+            if (!AssetDatabase.IsValidFolder(ContentFolder))
+            {
+                AssetDatabase.CreateFolder("Assets/_MomosDefense/Data", "Prototype");
+            }
+        }
+
+        private static T LoadOrCreateAsset<T>(string path) where T : ScriptableObject
+        {
+            T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset != null)
+            {
+                return asset;
+            }
+
+            asset = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(asset, path);
+            return asset;
+        }
+
+        private static void CreateHeroDefinition(string heroId, string displayName, string role, int startingLevel)
+        {
+            HeroDefinition hero = LoadOrCreateAsset<HeroDefinition>($"{ContentFolder}/Hero_{heroId}.asset");
+            SerializedObject serializedHero = new SerializedObject(hero);
+            serializedHero.FindProperty("heroId").stringValue = heroId;
+            serializedHero.FindProperty("displayName").stringValue = displayName;
+            serializedHero.FindProperty("role").stringValue = role;
+            serializedHero.FindProperty("startingLevel").intValue = startingLevel;
+            serializedHero.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(hero);
+        }
+
+        private static void CreateSkillDefinition(string skillId, string displayName, string ownerHeroId, int baseDamage, float baseRadius, float baseCooldown)
+        {
+            SkillDefinition skill = LoadOrCreateAsset<SkillDefinition>($"{ContentFolder}/Skill_{skillId}.asset");
+            SerializedObject serializedSkill = new SerializedObject(skill);
+            serializedSkill.FindProperty("skillId").stringValue = skillId;
+            serializedSkill.FindProperty("displayName").stringValue = displayName;
+            serializedSkill.FindProperty("ownerHeroId").stringValue = ownerHeroId;
+            serializedSkill.FindProperty("baseDamage").intValue = baseDamage;
+            serializedSkill.FindProperty("baseRadius").floatValue = baseRadius;
+            serializedSkill.FindProperty("baseCooldown").floatValue = baseCooldown;
+            serializedSkill.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(skill);
+        }
+
+        private static void CreateTowerDefinition(string towerFamilyId, string displayName, int buildCost, int baseDamage, float baseRange, float attacksPerSecond)
+        {
+            TowerDefinition tower = LoadOrCreateAsset<TowerDefinition>($"{ContentFolder}/Tower_{towerFamilyId}.asset");
+            SerializedObject serializedTower = new SerializedObject(tower);
+            serializedTower.FindProperty("towerFamilyId").stringValue = towerFamilyId;
+            serializedTower.FindProperty("displayName").stringValue = displayName;
+            serializedTower.FindProperty("buildCost").intValue = buildCost;
+            serializedTower.FindProperty("baseDamage").intValue = baseDamage;
+            serializedTower.FindProperty("baseRange").floatValue = baseRange;
+            serializedTower.FindProperty("attacksPerSecond").floatValue = attacksPerSecond;
+            serializedTower.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(tower);
+        }
+
+        private static void CreateEnemyDefinition(string enemyId, string displayName, int maxHealth, float moveSpeed, int goldReward, int experienceReward)
+        {
+            EnemyDefinition enemy = LoadOrCreateAsset<EnemyDefinition>($"{ContentFolder}/Enemy_{enemyId}.asset");
+            SerializedObject serializedEnemy = new SerializedObject(enemy);
+            serializedEnemy.FindProperty("enemyId").stringValue = enemyId;
+            serializedEnemy.FindProperty("displayName").stringValue = displayName;
+            serializedEnemy.FindProperty("maxHealth").intValue = maxHealth;
+            serializedEnemy.FindProperty("moveSpeed").floatValue = moveSpeed;
+            serializedEnemy.FindProperty("goldReward").intValue = goldReward;
+            serializedEnemy.FindProperty("experienceReward").intValue = experienceReward;
+            serializedEnemy.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(enemy);
+        }
+
+        private static void CreateEquipmentDefinition(string equipmentId, string displayName, EquipmentDefinition.EquipmentSlot slot, int skillDamageBonus, float towerAttackSpeedBonus, string specialModifier)
+        {
+            EquipmentDefinition equipment = LoadOrCreateAsset<EquipmentDefinition>($"{ContentFolder}/Equipment_{equipmentId}.asset");
+            SerializedObject serializedEquipment = new SerializedObject(equipment);
+            serializedEquipment.FindProperty("equipmentId").stringValue = equipmentId;
+            serializedEquipment.FindProperty("displayName").stringValue = displayName;
+            serializedEquipment.FindProperty("slot").enumValueIndex = (int)slot;
+            serializedEquipment.FindProperty("heroSkillDamageBonus").intValue = skillDamageBonus;
+            serializedEquipment.FindProperty("towerAttackSpeedBonus").floatValue = towerAttackSpeedBonus;
+            serializedEquipment.FindProperty("specialModifier").stringValue = specialModifier;
+            serializedEquipment.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(equipment);
+        }
+
+        private static void CreateUpgradeDefinition(string upgradeId, string displayName, string targetId, int maxRank, int baseCost, int costStep)
+        {
+            UpgradeDefinition upgrade = LoadOrCreateAsset<UpgradeDefinition>($"{ContentFolder}/Upgrade_{upgradeId}.asset");
+            SerializedObject serializedUpgrade = new SerializedObject(upgrade);
+            serializedUpgrade.FindProperty("upgradeId").stringValue = upgradeId;
+            serializedUpgrade.FindProperty("displayName").stringValue = displayName;
+            serializedUpgrade.FindProperty("targetId").stringValue = targetId;
+            serializedUpgrade.FindProperty("maxRank").intValue = maxRank;
+            serializedUpgrade.FindProperty("baseCost").intValue = baseCost;
+            serializedUpgrade.FindProperty("costStep").intValue = costStep;
+            serializedUpgrade.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(upgrade);
+        }
+
+        private static WaveDefinition CreateWaveDefinition(string waveId, (string enemyId, int count)[] groups)
+        {
+            WaveDefinition wave = LoadOrCreateAsset<WaveDefinition>($"{ContentFolder}/{waveId}.asset");
+            SerializedObject serializedWave = new SerializedObject(wave);
+            serializedWave.FindProperty("waveId").stringValue = waveId;
+            SerializedProperty groupsProperty = serializedWave.FindProperty("spawnGroups");
+            groupsProperty.arraySize = groups.Length;
+
+            for (int index = 0; index < groups.Length; index++)
+            {
+                SerializedProperty groupProperty = groupsProperty.GetArrayElementAtIndex(index);
+                groupProperty.FindPropertyRelative("enemyId").stringValue = groups[index].enemyId;
+                groupProperty.FindPropertyRelative("count").intValue = groups[index].count;
+            }
+
+            serializedWave.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(wave);
+            return wave;
         }
 
         private static void AssignMaterial(GameObject target, string materialName, Color color)

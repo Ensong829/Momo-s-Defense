@@ -1,0 +1,13 @@
+category,id,display_name,health_or_damage,speed_or_rate,reward_or_cost,notes
+hero,Momo,Momo,2,5.0,0,Flexible control starter
+hero,Bulwark,Bulwark,3,4.2,0,Tank control placeholder
+hero,Sprout,Sprout,1,5.4,0,Support placeholder
+enemy,Basic,Basic Enemy,10,2.0,10,Standard path pressure
+enemy,Tough,Tough Enemy,18,1.25,22,Durable wave 2 pressure
+enemy,Runner,Runner Enemy,6,3.3,8,Fast leak pressure
+enemy,Armored,Armored Enemy,28,0.95,30,Late durability pressure
+tower,Star,Star Tower,1,1.0,60,Flexible starter tower
+tower,Burst,Burst Tower,3,0.65,75,High damage slower firing
+tower,Frost,Frost Tower,1,1.1,70,Slow utility tower
+upgrade,HeroSkill,Hero Skill Rank,0,0,50,Cost increases by 35 per rank
+upgrade,TowerFamily,Tower Family Rank,0,0,45,Cost increases by 30 per rank

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 878fe808992b14e44b945703ea6e7ede, type: 3}
+  m_Name: Enemy_Armored
+  m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Core.EnemyDefinition
+  enemyId: Armored
+  displayName: Armored Enemy
+  maxHealth: 28
+  moveSpeed: 0.95
+  goldReward: 30
+  experienceReward: 3

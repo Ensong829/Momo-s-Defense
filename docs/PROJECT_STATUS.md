@@ -4,9 +4,9 @@ Last updated: 2026-04-26
 
 ## Current Milestone
 
-Phase 4: Content Pipeline
+Phase 5: Demo Content
 
-Goal: make it easy to add heroes, towers, enemies, waves, equipment, and upgrades without rewriting prototype systems.
+Goal: turn the prototype systems into a small playable demo with multiple levels, clearer onboarding, and production-facing menus.
 
 ## Completed
 
@@ -128,16 +128,30 @@ Goal: make it easy to add heroes, towers, enemies, waves, equipment, and upgrade
 - Training Charm applies prototype hero skill damage and tower attack speed bonuses.
 - ScriptableObject definition classes added for heroes, skills, towers, enemies, equipment, and upgrades.
 
+### Content Pipeline
+
+- Prototype content asset folder added at `Assets/_MomosDefense/Data/Prototype`.
+- Generated hero assets for Momo, Bulwark, and Sprout.
+- Generated skill assets for Momo Pop, Ground Slam, and Bloom Song.
+- Generated tower assets for Star, Burst, and Frost.
+- Generated enemy assets for Basic, Tough, Runner, and Armored.
+- Generated equipment and upgrade assets.
+- Level and wave definition assets added for the prototype battle.
+- `WaveSpawner` now consumes `LevelDefinition` and `WaveDefinition` data through an enemy prefab catalog.
+- Legacy wave fallback remains for safety.
+- Prototype balance CSV added at `Assets/_MomosDefense/Data/Balance/prototype_balance.csv`.
+- Editor debug tools added for granting crystals, maxing progression, and resetting progression.
+
 ## In Progress
 
-- Phase 4 content pipeline planning.
-- Prototype-only UI and controls remain acceptable until content authoring requirements are proven.
+- Phase 5 demo content planning.
+- Prototype-only UI and controls remain acceptable until demo flow requirements are proven.
 
 ## Next Up
 
-1. Create content authoring workflow around the new ScriptableObject definitions.
-2. Add level/wave authoring data.
-3. Add balance/debug tools for spawning waves and testing upgrades.
+1. Plan 3-5 demo levels using the new level/wave data.
+2. Add a basic main menu and level select.
+3. Add tutorial/onboarding flow for first-time players.
 
 ## Remaining Phase 1 Tasks
 
@@ -189,6 +203,22 @@ Planning doc:
 
 - `docs/PHASE_3_PROGRESSION_PLAN.md`
 - `docs/PHASE_3_TASKS.md`
+
+### Phase 4: Content Pipeline
+
+Status: complete for prototype milestone.
+
+- ScriptableObject content templates.
+- Level/wave authoring workflow.
+- Enemy stat tables.
+- Tower stat tables.
+- Hero stat tables.
+- Balance spreadsheet or data source.
+- Debug tools for progression testing.
+
+Planning doc:
+
+- `docs/PHASE_4_TASKS.md`
 
 ## Testing Standard
 
@@ -278,6 +308,16 @@ Latest expanded Phase 3 scene generation:
 - Scene check: generated upgrade panel, reset control, all hero skill rank buttons, all tower family rank buttons, persistent hero level/passive hooks, starter equipment bonuses, and ScriptableObject definition scripts.
 - Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
 - Notes: Phase 3 is complete for the prototype milestone and ready to move into Phase 4 content pipeline work.
+
+Latest Phase 4 content pipeline validation:
+
+- Date: 2026-04-26
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded.
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated `PrototypeLevel01`, four wave assets, prototype hero/skill/tower/enemy/equipment/upgrade assets, and a scene wired to `LevelDefinition` plus enemy prefab catalog.
+- Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
+- Notes: Phase 4 is complete for the prototype milestone and ready to move into Phase 5 demo content.
 
 ## Recent Stable Checkpoints
 

@@ -50,7 +50,7 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 is complete for the prototype milestone with persistent crystals, victory rewards, hero skill ranks, persistent hero levels/passives, tower family ranks, tower specialization choices, starter equipment bonuses, and ScriptableObject definition classes.
+Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 is complete for the prototype milestone with persistent crystals, victory rewards, hero skill ranks, persistent hero levels/passives, tower family ranks, tower specialization choices, starter equipment bonuses, and ScriptableObject definition classes. Phase 4 is complete for the prototype milestone with generated content assets, level/wave authoring data, a balance CSV, and editor debug tools.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
@@ -63,6 +63,8 @@ Latest Phase 2 polish scene generation on 2026-04-25 also succeeded. Runner enem
 Latest Phase 2 final validation on 2026-04-26 succeeded. The generated scene now includes a `Tower Build Manager`, three tower family buttons, shared hero XP leveling, armored enemies in later waves, placeholder procedural audio feedback through scripts, four tuned waves, and the objective prompt moved above the bottom controls.
 
 Latest Phase 3 scene generation and Android smoke build on 2026-04-26 succeeded. The generated scene now includes a `Progression Service`, crystal counter, distinct victory reward text, upgrade panel, reset control, all hero skill rank buttons, all tower family rank buttons, and tower specialization buttons. `ProgressionService` saves crystals, hero skill ranks, persistent hero levels, tower family ranks, tower specialization choices, and equipment loadout slots through `PlayerPrefs`.
+
+Latest Phase 4 scene generation and Android smoke build on 2026-04-26 succeeded. The generated content now includes `Assets/_MomosDefense/Data/Prototype/PrototypeLevel01.asset`, `Wave01` through `Wave04`, prototype hero/skill/tower/enemy/equipment/upgrade assets, `prototype_balance.csv`, and editor debug commands for crystals/progression.
 
 Current prototype scene:
 
@@ -211,10 +213,10 @@ The user asked to finish Phase 2. The prototype milestone is now complete and th
 
 Next steps:
 
-1. Begin Phase 4 content pipeline work.
-2. Create level/wave authoring data around ScriptableObject definitions.
-3. Add balance/debug tools for spawning waves and testing upgrades.
-4. Run `docs/PHASE_2_PLAYTEST_CHECKLIST.md` before any public/demo build to capture hands-on feel notes.
+1. Begin Phase 5 demo content work.
+2. Plan 3-5 demo levels using `LevelDefinition` and `WaveDefinition`.
+3. Add a basic main menu and level select.
+4. Add tutorial/onboarding flow for first-time players.
 5. Push checkpoints only with explicit user approval.
 
 ## Phase 2 Direction

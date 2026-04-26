@@ -124,19 +124,19 @@ Done when:
 
 ## Phase 4: Content Pipeline
 
-Status: not started.
+Status: complete for prototype milestone.
 
 Goal: Make it easy to add more game content.
 
 Deliverables:
 
-- ScriptableObject content templates.
-- Level/wave authoring workflow.
-- Enemy stat tables.
-- Tower stat tables.
-- Hero stat tables.
-- Balance spreadsheet or data source.
-- Debug tools for spawning waves and testing upgrades.
+- ScriptableObject content templates. Prototype implemented.
+- Level/wave authoring workflow. Prototype implemented with `LevelDefinition` and `WaveDefinition`.
+- Enemy stat tables. Prototype assets and CSV implemented.
+- Tower stat tables. Prototype assets and CSV implemented.
+- Hero stat tables. Prototype assets and CSV implemented.
+- Balance spreadsheet or data source. Prototype CSV implemented.
+- Debug tools for spawning waves and testing upgrades. Prototype progression debug menu implemented.
 
 Done when:
 
