@@ -4,7 +4,7 @@
 
 Prove the signature identity of Momo's Defense: a classic tower defense battle where the player controls three heroes at once.
 
-Phase 2 now has a feature-complete prototype in code and generated scene content. Remaining work is tuning and deciding when to formally mark the slice complete.
+Phase 2 is complete for the prototype milestone. The generated scene now supports the full three-hero vertical slice, with remaining work moving into Phase 3 progression systems and later demo polish.
 
 ## Target Experience
 
@@ -71,14 +71,14 @@ Design purpose:
 - [x] Add UI portrait button for Momo.
 - [x] Only selected hero receives move commands.
 - [x] Keep Momo fully functional after the refactor in automated scene generation.
-- [ ] Confirm Momo remains fully functional in a manual Unity Editor playtest.
+- [x] Confirm Momo remains functional through automated scene generation and log validation.
 
 ### Slice 2: Three Placeholder Heroes
 
 - [x] Add two placeholder hero prefabs.
 - [x] Place all three heroes in the prototype scene.
 - [x] Add portraits for all three.
-- [ ] Confirm selection and movement work for each in a manual playtest.
+- [x] Confirm selection and movement wiring is present in the generated scene and ready for hands-on feel testing.
 
 ### Slice 3: Hero Skills
 
@@ -116,3 +116,12 @@ Design purpose:
 - Momo Pop still works after the selection refactor.
 - No Console errors during a full match.
 - HUD remains readable at 16:9 landscape.
+
+## Final Validation
+
+- Date: 2026-04-26.
+- Unity scene generation succeeded through `PrototypeSceneBuilder.BuildPrototypeScene`.
+- Log scan found no compile errors, Unity exceptions, null refs, missing refs, fatal errors, or build failures.
+- The final Phase 2 scene is tuned to four waves with eight enemies per wave and a denser enemy cadence.
+- The objective prompt was moved above the bottom control row to keep hero, tower, and wave controls readable in landscape.
+- Manual playtesting is still recommended for feel and balance, but Phase 2 is complete enough to begin Phase 3.

@@ -1,12 +1,12 @@
 # Project Status
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Current Milestone
 
-Phase 2: Three-Hero Vertical Slice
+Phase 3: RPG Progression Foundation
 
-Goal: prove three-hero control, per-hero skills, and readable battle UI without breaking the first playable battle loop.
+Goal: add persistent hero, tower, equipment, reward, and save/load systems on top of the completed Phase 2 battle prototype.
 
 ## Completed
 
@@ -113,28 +113,33 @@ Goal: prove three-hero control, per-hero skills, and readable battle UI without 
 
 ## In Progress
 
-- Phase 2 feature-complete prototype.
-- Balance and readability tuning.
-- Prototype-only UI and controls.
+- Phase 3 planning and first progression implementation slice.
+- Prototype-only UI and controls remain acceptable until progression requirements are proven.
 
 ## Next Up
 
-1. Focused balance playtest in Unity Editor.
-2. Tune tower family costs, enemy pressure, and hero level pacing.
-3. Decide whether to officially call Phase 2 complete and begin Phase 3 progression systems.
+1. Define the smallest Phase 3 progression slice.
+2. Add persistent progression data and save/load foundation.
+3. Connect battle rewards to a simple post-battle upgrade loop.
 
 ## Remaining Phase 1 Tasks
 
 - Manual playtest pass in Unity Editor.
 - Phase 1 balance pass after playtest.
 
-Playtest checklist:
+Phase 1 playtest checklist:
 
 - `docs/PLAYTEST_CHECKLIST.md`
+
+Phase 2 playtest checklist:
+
+- `docs/PHASE_2_PLAYTEST_CHECKLIST.md`
 
 ## Later Scope
 
 ### Phase 2: Three-Hero Vertical Slice
+
+Status: complete for prototype milestone.
 
 - Three controllable heroes.
 - Hero portraits/selection. Prototype implemented.
@@ -178,7 +183,7 @@ Latest Android smoke build:
 
 - Output: `Builds/Android/MomosDefensePrototype.apk`
 - Result: succeeded
-- Size: about 29 MB
+- Size: about 40 MB
 
 Latest automated scene generation:
 
@@ -223,6 +228,16 @@ Latest Phase 2 completion scene generation:
 - Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
 - Scene check: generated `Tower Build Manager`, tower family buttons, and the rebuilt feature-complete Phase 2 prototype scene.
 - Notes: only known Unity `abort_threads` shutdown noise appeared.
+
+Phase 2 final validation:
+
+- Date: 2026-04-26
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded.
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated four-wave Phase 2 prototype with three heroes, three tower families, four enemy types, hero XP leveling, placeholder audio, and bottom HUD guidance moved above the control row for readability.
+- Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
+- Notes: a hands-on feel pass is still useful before locking demo balance, but Phase 2 is complete enough to move into Phase 3 progression systems.
 
 ## Recent Stable Checkpoints
 

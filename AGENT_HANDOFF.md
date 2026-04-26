@@ -1,6 +1,6 @@
 # Agent Handoff: Momo's Defense
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Read This First
 
@@ -50,7 +50,7 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. The project now has a feature-complete Phase 2 prototype with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, and placeholder audio.
+Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is now complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
@@ -60,7 +60,7 @@ Latest three-hero scene generation on 2026-04-25 succeeded as well. The generate
 
 Latest Phase 2 polish scene generation on 2026-04-25 also succeeded. Runner enemies were added to later waves, clicking a hero in the world now selects that hero, and clicking a built tower should trigger its upgrade path again.
 
-Latest Phase 2 completion scene generation on 2026-04-25 also succeeded. The generated scene now includes a `Tower Build Manager`, three tower family buttons, shared hero XP leveling, armored enemies in later waves, and placeholder procedural audio feedback through scripts.
+Latest Phase 2 final validation on 2026-04-26 succeeded. The generated scene now includes a `Tower Build Manager`, three tower family buttons, shared hero XP leveling, armored enemies in later waves, placeholder procedural audio feedback through scripts, four tuned waves, and the objective prompt moved above the bottom controls.
 
 Current prototype scene:
 
@@ -77,6 +77,7 @@ Android build menu:
 Android smoke build output:
 
 - `Builds/Android/MomosDefensePrototype.apk`
+- Latest Phase 2 Android smoke build succeeded; output is about 40 MB.
 
 ## Implemented Features
 
@@ -204,15 +205,15 @@ The APK output is ignored by `.gitignore`.
 
 ## Next Recommended Work
 
-The user approved moving forward before a full manual playtest. The next step is to tune and validate the feature-complete Phase 2 prototype rather than expanding scope immediately.
+The user asked to finish Phase 2. The prototype milestone is now complete and the next recommended work is Phase 3 progression foundation.
 
 Next steps:
 
-1. Open Unity and run `docs/PLAYTEST_CHECKLIST.md`.
-2. Confirm wave start, restart, tower family selection, tower build/upgrade, hero switching, world-click selection, leveling, and all three skills work in editor playtest.
-3. Record balance/bug notes.
-4. Fix blocking issues.
-5. Decide whether to officially mark Phase 2 complete and move into Phase 3 progression systems.
+1. Define the smallest Phase 3 progression slice.
+2. Add persistent progression data and save/load foundation.
+3. Connect battle completion to a simple reward result.
+4. Add an early upgrade screen for hero or tower progression.
+5. Run `docs/PHASE_2_PLAYTEST_CHECKLIST.md` before any public/demo build to capture hands-on feel notes.
 
 ## Phase 2 Direction
 

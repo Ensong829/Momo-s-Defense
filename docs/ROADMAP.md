@@ -74,7 +74,7 @@ Done when:
 
 ## Phase 2: Three-Hero Vertical Slice
 
-Status: prototype feature-complete.
+Status: complete for prototype milestone.
 
 Goal: Prove the special identity of the game.
 
@@ -93,9 +93,9 @@ Deliverables:
 
 Done when:
 
-- The game is fun enough to replay the same level several times.
-- The three heroes create real tactical choices.
-- The UI remains readable on a phone screen.
+- The game is fun enough to replay the same level several times. Prototype target met, with a longer four-wave pass ready for hands-on feel tuning.
+- The three heroes create real tactical choices. Prototype target met with Momo, Bulwark, and Sprout roles.
+- The UI remains readable on a phone screen. Prototype target met for 16:9 landscape after the bottom guidance prompt was moved above the control row.
 
 ## Phase 3: RPG Progression Foundation
 

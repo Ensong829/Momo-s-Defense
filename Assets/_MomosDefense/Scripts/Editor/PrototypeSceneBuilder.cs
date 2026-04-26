@@ -518,6 +518,10 @@ namespace MomosDefense.Editor
             serializedSpawner.FindProperty("enemyPath").objectReferenceValue = path;
             serializedSpawner.FindProperty("gameState").objectReferenceValue = gameState;
             serializedSpawner.FindProperty("heroSelection").objectReferenceValue = heroSelection;
+            serializedSpawner.FindProperty("totalWaves").intValue = 4;
+            serializedSpawner.FindProperty("enemiesPerWave").intValue = 8;
+            serializedSpawner.FindProperty("timeBetweenEnemies").floatValue = 0.7f;
+            serializedSpawner.FindProperty("timeBetweenWaves").floatValue = 3f;
             serializedSpawner.ApplyModifiedPropertiesWithoutUndo();
 
             return spawner;
@@ -552,7 +556,7 @@ namespace MomosDefense.Editor
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             Text livesText = CreateHudText(canvasObject.transform, "Lives Text", "Lives: 20", new Vector2(16f, -16f), TextAnchor.UpperLeft, font);
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
-            Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/3", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
+            Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/4", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
             Text messageText = CreateHudText(canvasObject.transform, "Message Text", string.Empty, new Vector2(0f, -18f), TextAnchor.UpperCenter, font);
             Text objectiveText = CreateHudText(canvasObject.transform, "Objective Text", "Build towers. Start waves. Defend the path.", new Vector2(0f, 18f), TextAnchor.LowerCenter, font);
             Button skillButton = CreateHudButton(canvasObject.transform, "Skill Button", new Vector2(16f, 82f), new Vector2(220f, 54f), font, out Text skillText);
@@ -597,7 +601,7 @@ namespace MomosDefense.Editor
             objectiveRect.anchorMin = new Vector2(0.5f, 0f);
             objectiveRect.anchorMax = new Vector2(0.5f, 0f);
             objectiveRect.pivot = new Vector2(0.5f, 0f);
-            objectiveRect.anchoredPosition = new Vector2(0f, 18f);
+            objectiveRect.anchoredPosition = new Vector2(0f, 84f);
             objectiveRect.sizeDelta = new Vector2(720f, 48f);
             objectiveText.fontSize = 22;
             objectiveText.color = new Color(0.92f, 1f, 0.9f);
