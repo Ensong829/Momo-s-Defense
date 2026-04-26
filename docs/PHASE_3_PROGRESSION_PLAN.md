@@ -68,8 +68,18 @@ Use ScriptableObjects for:
 
 Minimum viable version:
 
-- Completing a battle grants soft currency.
-- Currency can upgrade Momo's skill rank.
-- Upgrade persists between play sessions.
-- Upgrade has a visible effect in battle.
+- [x] Completing a battle grants soft currency.
+- [x] Currency can upgrade Momo's skill rank.
+- [x] Upgrade persists between play sessions.
+- [x] Upgrade has a visible effect in battle.
 
+Implementation notes:
+
+- `ProgressionService` stores prototype progression in `PlayerPrefs`.
+- Victory grants crystals once per battle.
+- Momo Pop rank increases damage and radius while slightly reducing cooldown.
+- The prototype HUD shows crystals, victory reward text, Momo Pop rank text, and an upgrade button.
+
+Detailed task list:
+
+- `docs/PHASE_3_TASKS.md`

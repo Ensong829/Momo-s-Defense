@@ -111,16 +111,26 @@ Goal: add persistent hero, tower, equipment, reward, and save/load systems on to
 - Placeholder procedural background music added.
 - Placeholder SFX added for selection, building, upgrading, skills, wave start, victory, and defeat.
 
+### Progression
+
+- Phase 3 task list added.
+- Prototype `ProgressionService` added with `PlayerPrefs` save/load.
+- Victory grants persistent crystals once per battle.
+- Prototype HUD shows persistent crystals and victory reward text.
+- Momo Pop has a persistent skill rank.
+- Prototype HUD includes a Momo Pop upgrade button.
+- Momo Pop rank persists between sessions and improves damage, radius, cooldown, and rank text in battle.
+
 ## In Progress
 
-- Phase 3 planning and first progression implementation slice.
+- Phase 3 upgrade menu foundation.
 - Prototype-only UI and controls remain acceptable until progression requirements are proven.
 
 ## Next Up
 
-1. Define the smallest Phase 3 progression slice.
-2. Add persistent progression data and save/load foundation.
-3. Connect battle rewards to a simple post-battle upgrade loop.
+1. Split prototype progression controls into a cleaner upgrade screen.
+2. Add debug reset controls for local progression testing.
+3. Add persistent progression for Bulwark, Sprout, and tower families.
 
 ## Remaining Phase 1 Tasks
 
@@ -169,6 +179,7 @@ Planning doc:
 Planning doc:
 
 - `docs/PHASE_3_PROGRESSION_PLAN.md`
+- `docs/PHASE_3_TASKS.md`
 
 ## Testing Standard
 
@@ -238,6 +249,16 @@ Phase 2 final validation:
 - Scene check: generated four-wave Phase 2 prototype with three heroes, three tower families, four enemy types, hero XP leveling, placeholder audio, and bottom HUD guidance moved above the control row for readability.
 - Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
 - Notes: a hands-on feel pass is still useful before locking demo balance, but Phase 2 is complete enough to move into Phase 3 progression systems.
+
+Latest Phase 3 progression slice:
+
+- Date: 2026-04-26
+- Command: `PrototypeSceneBuilder.BuildPrototypeScene`
+- Result: succeeded.
+- Log scan: no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures found.
+- Scene check: generated `Progression Service`, crystal counter, victory reward text, and Momo Pop upgrade button.
+- Android smoke build: succeeded, output `Builds/Android/MomosDefensePrototype.apk`, about 40 MB.
+- Notes: Phase 3 Slice 1 and Slice 2 are implemented as prototype HUD controls; a cleaner upgrade screen is next.
 
 ## Recent Stable Checkpoints
 

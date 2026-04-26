@@ -12,6 +12,7 @@ namespace MomosDefense.UI
     public sealed class PrototypeHud : MonoBehaviour
     {
         [SerializeField] private GameState gameState;
+        [SerializeField] private ProgressionService progressionService;
         [SerializeField] private WaveSpawner waveSpawner;
         [SerializeField] private HeroSelectionManager heroSelection;
         [SerializeField] private TowerBuildManager buildManager;
@@ -21,6 +22,7 @@ namespace MomosDefense.UI
         [SerializeField] private Text livesText;
         [SerializeField] private Text goldText;
         [SerializeField] private Text waveText;
+        [SerializeField] private Text softCurrencyText;
         [SerializeField] private Text skillText;
         [SerializeField] private Button skillButton;
         [SerializeField] private Text momoPortraitText;
@@ -40,6 +42,9 @@ namespace MomosDefense.UI
         [SerializeField] private Button frostBuildButton;
         [SerializeField] private Text startWaveText;
         [SerializeField] private Button startWaveButton;
+        [SerializeField] private Text momoSkillUpgradeText;
+        [SerializeField] private Button momoSkillUpgradeButton;
+        [SerializeField] private Text rewardText;
         [SerializeField] private Text messageText;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
@@ -52,6 +57,7 @@ namespace MomosDefense.UI
         private float messageTimer;
         private bool playedVictoryAudio;
         private bool playedDefeatAudio;
+        private bool grantedVictoryReward;
 
         private void Awake()
         {
@@ -64,6 +70,13 @@ namespace MomosDefense.UI
             {
                 buildManager = FindFirstObjectByType<TowerBuildManager>();
             }
+
+            if (progressionService == null)
+            {
+                progressionService = FindFirstObjectByType<ProgressionService>();
+            }
+
+            ApplyPersistentProgression();
 
             EnsureSkillButton();
 
@@ -106,6 +119,11 @@ namespace MomosDefense.UI
             {
                 restartButton.onClick.AddListener(RestartScene);
                 restartButton.gameObject.SetActive(false);
+            }
+
+            if (momoSkillUpgradeButton != null)
+            {
+                momoSkillUpgradeButton.onClick.AddListener(UpgradeMomoSkill);
             }
 
             if (startWaveButton != null)
@@ -156,6 +174,11 @@ namespace MomosDefense.UI
                 restartButton.onClick.RemoveListener(RestartScene);
             }
 
+            if (momoSkillUpgradeButton != null)
+            {
+                momoSkillUpgradeButton.onClick.RemoveListener(UpgradeMomoSkill);
+            }
+
             if (startWaveButton != null)
             {
                 startWaveButton.onClick.RemoveListener(StartNextWave);
@@ -171,6 +194,7 @@ namespace MomosDefense.UI
 
             livesText.text = $"Lives: {gameState.Lives}";
             goldText.text = $"Gold: {gameState.Gold}";
+            UpdateProgressionText();
 
             if (waveSpawner != null)
             {
@@ -200,6 +224,7 @@ namespace MomosDefense.UI
                 resultText.text = "Victory";
                 if (!playedVictoryAudio)
                 {
+                    GrantVictoryReward();
                     PrototypeAudioDirector.PlayVictory();
                     playedVictoryAudio = true;
                 }
@@ -226,6 +251,25 @@ namespace MomosDefense.UI
         private void UseSelectedSkill()
         {
             heroSelection?.SelectedHero?.TryUseSkill();
+        }
+
+        private void UpgradeMomoSkill()
+        {
+            if (progressionService == null)
+            {
+                ShowMessage("Progression is not ready.");
+                return;
+            }
+
+            if (!progressionService.TryUpgradeMomoSkill())
+            {
+                ShowMessage("Need more crystals for Momo Pop.");
+                return;
+            }
+
+            ApplyPersistentProgression();
+            PrototypeAudioDirector.PlayUpgrade();
+            ShowMessage($"Momo Pop rank {progressionService.MomoSkillRank} unlocked.");
         }
 
         private void SelectMomo()
@@ -274,9 +318,37 @@ namespace MomosDefense.UI
             }
 
             skillButton.interactable = selectedHero.CanUseSkill;
+            string rankText = selectedHero == momoHero && progressionService != null
+                ? $" R{progressionService.MomoSkillRank}"
+                : string.Empty;
             skillText.text = selectedHero.CanUseSkill
-                ? selectedHero.SkillName
-                : $"{selectedHero.SkillName} {selectedHero.SkillCooldownRemaining:0.0}s";
+                ? $"{selectedHero.SkillName}{rankText}"
+                : $"{selectedHero.SkillName}{rankText} {selectedHero.SkillCooldownRemaining:0.0}s";
+        }
+
+        private void UpdateProgressionText()
+        {
+            if (progressionService == null)
+            {
+                return;
+            }
+
+            if (softCurrencyText != null)
+            {
+                softCurrencyText.text = $"Crystals: {progressionService.SoftCurrency}";
+            }
+
+            if (momoSkillUpgradeText != null)
+            {
+                momoSkillUpgradeText.text = progressionService.MomoSkillRank >= progressionService.MaxSkillRank
+                    ? "Momo Pop Max"
+                    : $"Momo Pop R{progressionService.MomoSkillRank + 1} {progressionService.MomoSkillUpgradeCost}c";
+            }
+
+            if (momoSkillUpgradeButton != null)
+            {
+                momoSkillUpgradeButton.interactable = progressionService.CanUpgradeMomoSkill;
+            }
         }
 
         private void UpdatePortraits()
@@ -356,6 +428,30 @@ namespace MomosDefense.UI
             if (restartText != null)
             {
                 restartText.text = "Restart";
+            }
+        }
+
+        private void GrantVictoryReward()
+        {
+            if (grantedVictoryReward || progressionService == null)
+            {
+                return;
+            }
+
+            grantedVictoryReward = true;
+            progressionService.GrantVictoryReward();
+
+            if (rewardText != null)
+            {
+                rewardText.text = $"+{progressionService.VictoryCurrencyReward} crystals";
+            }
+        }
+
+        private void ApplyPersistentProgression()
+        {
+            if (momoHero != null && progressionService != null)
+            {
+                momoHero.ApplyPersistentSkillRank(progressionService.MomoSkillRank);
             }
         }
 

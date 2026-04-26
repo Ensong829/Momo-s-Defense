@@ -45,6 +45,7 @@ namespace MomosDefense.Heroes
         private bool isSelected;
         private int currentExperience;
         private int level = 1;
+        private int appliedPersistentSkillRank = 1;
 
         public string HeroName => heroName;
         public string SkillName => skillName;
@@ -54,6 +55,8 @@ namespace MomosDefense.Heroes
         public int Level => level;
         public int CurrentExperience => currentExperience;
         public int ExperienceToNextLevel => experienceToNextLevel;
+        public int SkillDamage => skillDamage;
+        public float SkillRadius => skillRadius;
 
         private void Awake()
         {
@@ -130,6 +133,21 @@ namespace MomosDefense.Heroes
                 currentExperience -= experienceToNextLevel;
                 LevelUp();
             }
+        }
+
+        public void ApplyPersistentSkillRank(int skillRank)
+        {
+            skillRank = Mathf.Max(1, skillRank);
+            if (skillRank <= appliedPersistentSkillRank)
+            {
+                return;
+            }
+
+            int bonusRanks = skillRank - appliedPersistentSkillRank;
+            skillDamage += bonusRanks * 2;
+            skillRadius += bonusRanks * 0.25f;
+            skillCooldown = Mathf.Max(4f, skillCooldown - (bonusRanks * 0.35f));
+            appliedPersistentSkillRank = skillRank;
         }
 
         private void ReadMoveInput()

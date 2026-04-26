@@ -148,12 +148,13 @@ namespace MomosDefense.Editor
                 5.5f,
                 1,
                 1.75f);
+            ProgressionService progressionService = CreateProgressionService();
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
             TowerBuildManager buildManager = CreateTowerBuildManager(towerPrefab, burstTowerPrefab, frostTowerPrefab);
             CreateBuildNodes(gameState, buildManager);
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, path, gameState, heroSelection);
             CreateEventSystem();
-            CreateHud(gameState, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
+            CreateHud(gameState, progressionService, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -405,6 +406,12 @@ namespace MomosDefense.Editor
             return selectionManager;
         }
 
+        private static ProgressionService CreateProgressionService()
+        {
+            GameObject progressionObject = new GameObject("Progression Service");
+            return progressionObject.AddComponent<ProgressionService>();
+        }
+
         private static GameObject CreateTowerPrefab(
             string towerObjectName,
             string prefabPath,
@@ -536,6 +543,7 @@ namespace MomosDefense.Editor
 
         private static void CreateHud(
             GameState gameState,
+            ProgressionService progressionService,
             WaveSpawner waveSpawner,
             HeroSelectionManager heroSelection,
             TowerBuildManager buildManager,
@@ -556,7 +564,9 @@ namespace MomosDefense.Editor
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             Text livesText = CreateHudText(canvasObject.transform, "Lives Text", "Lives: 20", new Vector2(16f, -16f), TextAnchor.UpperLeft, font);
             Text goldText = CreateHudText(canvasObject.transform, "Gold Text", "Gold: 120", new Vector2(16f, -48f), TextAnchor.UpperLeft, font);
+            Text softCurrencyText = CreateHudText(canvasObject.transform, "Soft Currency Text", "Crystals: 0", new Vector2(16f, -80f), TextAnchor.UpperLeft, font);
             Text waveText = CreateHudText(canvasObject.transform, "Wave Text", "Wave: 0/4", new Vector2(-16f, -16f), TextAnchor.UpperRight, font);
+            Text rewardText = CreateHudText(canvasObject.transform, "Reward Text", string.Empty, new Vector2(0f, 74f), TextAnchor.MiddleCenter, font);
             Text messageText = CreateHudText(canvasObject.transform, "Message Text", string.Empty, new Vector2(0f, -18f), TextAnchor.UpperCenter, font);
             Text objectiveText = CreateHudText(canvasObject.transform, "Objective Text", "Build towers. Start waves. Defend the path.", new Vector2(0f, 18f), TextAnchor.LowerCenter, font);
             Button skillButton = CreateHudButton(canvasObject.transform, "Skill Button", new Vector2(16f, 82f), new Vector2(220f, 54f), font, out Text skillText);
@@ -566,6 +576,7 @@ namespace MomosDefense.Editor
             Button starBuildButton = CreateHudButton(canvasObject.transform, "Star Tower Button", new Vector2(488f, 16f), new Vector2(132f, 54f), font, out Text starBuildText);
             Button burstBuildButton = CreateHudButton(canvasObject.transform, "Burst Tower Button", new Vector2(626f, 16f), new Vector2(132f, 54f), font, out Text burstBuildText);
             Button frostBuildButton = CreateHudButton(canvasObject.transform, "Frost Tower Button", new Vector2(764f, 16f), new Vector2(132f, 54f), font, out Text frostBuildText);
+            Button momoSkillUpgradeButton = CreateHudButton(canvasObject.transform, "Momo Skill Upgrade Button", new Vector2(-256f, -76f), new Vector2(240f, 54f), font, out Text momoSkillUpgradeText);
             Button startWaveButton = CreateHudButton(canvasObject.transform, "Start Wave Button", new Vector2(-216f, 16f), font, out Text startWaveText);
             Button restartButton = CreateHudButton(canvasObject.transform, "Restart Button", new Vector2(0f, -72f), font, out Text restartText);
             Text resultText = CreateHudText(canvasObject.transform, "Result Text", string.Empty, Vector2.zero, TextAnchor.MiddleCenter, font);
@@ -588,6 +599,20 @@ namespace MomosDefense.Editor
             startWaveRect.anchorMax = new Vector2(1f, 0f);
             startWaveRect.pivot = new Vector2(1f, 0f);
             startWaveRect.anchoredPosition = new Vector2(-16f, 16f);
+
+            RectTransform upgradeRect = momoSkillUpgradeButton.GetComponent<RectTransform>();
+            upgradeRect.anchorMin = new Vector2(1f, 1f);
+            upgradeRect.anchorMax = new Vector2(1f, 1f);
+            upgradeRect.pivot = new Vector2(1f, 1f);
+            upgradeRect.anchoredPosition = new Vector2(-16f, -76f);
+
+            RectTransform rewardRect = rewardText.GetComponent<RectTransform>();
+            rewardRect.anchorMin = new Vector2(0.5f, 0.5f);
+            rewardRect.anchorMax = new Vector2(0.5f, 0.5f);
+            rewardRect.pivot = new Vector2(0.5f, 0.5f);
+            rewardRect.anchoredPosition = new Vector2(0f, 74f);
+            rewardRect.sizeDelta = new Vector2(420f, 48f);
+            rewardText.color = new Color(0.58f, 0.9f, 1f);
 
             RectTransform messageRect = messageText.GetComponent<RectTransform>();
             messageRect.anchorMin = new Vector2(0.5f, 1f);
@@ -623,6 +648,7 @@ namespace MomosDefense.Editor
             PrototypeHud hud = canvasObject.AddComponent<PrototypeHud>();
             SerializedObject serializedHud = new SerializedObject(hud);
             serializedHud.FindProperty("gameState").objectReferenceValue = gameState;
+            serializedHud.FindProperty("progressionService").objectReferenceValue = progressionService;
             serializedHud.FindProperty("waveSpawner").objectReferenceValue = waveSpawner;
             serializedHud.FindProperty("heroSelection").objectReferenceValue = heroSelection;
             serializedHud.FindProperty("buildManager").objectReferenceValue = buildManager;
@@ -632,6 +658,7 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("livesText").objectReferenceValue = livesText;
             serializedHud.FindProperty("goldText").objectReferenceValue = goldText;
             serializedHud.FindProperty("waveText").objectReferenceValue = waveText;
+            serializedHud.FindProperty("softCurrencyText").objectReferenceValue = softCurrencyText;
             serializedHud.FindProperty("skillText").objectReferenceValue = skillText;
             serializedHud.FindProperty("skillButton").objectReferenceValue = skillButton;
             serializedHud.FindProperty("momoPortraitText").objectReferenceValue = momoPortraitText;
@@ -651,6 +678,9 @@ namespace MomosDefense.Editor
             serializedHud.FindProperty("frostBuildButton").objectReferenceValue = frostBuildButton;
             serializedHud.FindProperty("startWaveText").objectReferenceValue = startWaveText;
             serializedHud.FindProperty("startWaveButton").objectReferenceValue = startWaveButton;
+            serializedHud.FindProperty("momoSkillUpgradeText").objectReferenceValue = momoSkillUpgradeText;
+            serializedHud.FindProperty("momoSkillUpgradeButton").objectReferenceValue = momoSkillUpgradeButton;
+            serializedHud.FindProperty("rewardText").objectReferenceValue = rewardText;
             serializedHud.FindProperty("messageText").objectReferenceValue = messageText;
             serializedHud.FindProperty("resultText").objectReferenceValue = resultText;
             serializedHud.FindProperty("restartButton").objectReferenceValue = restartButton;
