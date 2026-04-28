@@ -37,12 +37,15 @@ The user should not need to send screenshots for routine errors. Prefer reading 
 
 ## Agent Rule
 
-Sub-agents can be used for bounded tasks once the project has enough surface area.
+Use a manager/supervisor workflow. The main assistant should delegate menial or bounded implementation, repetitive edits, data generation, doc updates, focused searches, and log/test inspection to sub-agents using `gpt-5.3-codex` when appropriate.
 
 The main agent remains responsible for:
 
 - Planning.
 - Integration.
 - Reviewing changes.
+- Validation.
+- Checkpointing.
 - Keeping the docs current.
 - Making sure the test/fix loop happens.
+- Doing urgent blocking work locally when delegation would slow the critical path.
