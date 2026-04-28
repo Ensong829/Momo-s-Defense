@@ -37,15 +37,4 @@ The user should not need to send screenshots for routine errors. Prefer reading 
 
 ## Agent Rule
 
-Use a manager/supervisor workflow. The main assistant should delegate menial or bounded implementation, repetitive edits, data generation, doc updates, focused searches, and log/test inspection to sub-agents using `gpt-5.3-codex` when appropriate.
-
-The main agent remains responsible for:
-
-- Planning.
-- Integration.
-- Reviewing changes.
-- Validation.
-- Checkpointing.
-- Keeping the docs current.
-- Making sure the test/fix loop happens.
-- Doing urgent blocking work locally when delegation would slow the critical path.
+Use a manager/supervisor workflow. The main agent should focus on checkpoints, high-level planning, delegation, supervision/coordination, and final user communication. Delegate most other practical work to `gpt-5.3-codex` sub-agents (implementation, file edits, docs edits, searches, log/test inspection, and detailed review). The main agent may do urgent blocking work locally only when delegation would clearly slow or block progress.

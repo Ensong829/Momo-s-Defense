@@ -251,4 +251,4 @@ First implementation slice should be:
 - Premium or cosmetics-first monetization, not pay-to-win.
 - Upgrade systems are very important: heroes, towers, and equipment.
 - User is okay with placeholder assets while gameplay is proven.
-- Prefer a manager/supervisor workflow: main assistant leads planning/review/integration/validation/checkpoints, delegates bounded implementation/repetitive edits/data generation/doc updates/focused searches/log-and-test inspection to sub-agents using `gpt-5.3-codex` when appropriate, and still handles urgent blocking work locally when delegation would slow the critical path.
+- Prefer a manager/supervisor workflow: the main agent should focus on checkpoints, high-level planning, delegation, supervision/coordination, and final user communication. Delegate most other practical work to `gpt-5.3-codex` sub-agents (implementation, file edits, docs edits, searches, log/test inspection, and detailed review). The main agent may do urgent blocking work locally only when delegation would clearly slow or block progress.
