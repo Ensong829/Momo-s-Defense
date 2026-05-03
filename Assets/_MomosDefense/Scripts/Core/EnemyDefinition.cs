@@ -9,6 +9,7 @@ namespace MomosDefense.Core
         [SerializeField] private string displayName = "Basic Enemy";
         [SerializeField] private int maxHealth = 10;
         [SerializeField] private float moveSpeed = 2f;
+        [SerializeField] private int lifeDamage = 1;
         [SerializeField] private int goldReward = 10;
         [SerializeField] private int experienceReward = 1;
 
@@ -16,6 +17,7 @@ namespace MomosDefense.Core
         public string DisplayName => displayName;
         public int MaxHealth => maxHealth;
         public float MoveSpeed => moveSpeed;
+        public int LifeDamage => lifeDamage;
         public int GoldReward => goldReward;
         public int ExperienceReward => experienceReward;
     }

@@ -69,9 +69,16 @@ namespace MomosDefense.UI
         [SerializeField] private Button resetProgressionButton;
         [SerializeField] private Text rewardText;
         [SerializeField] private Text messageText;
+        [SerializeField] private Text objectiveText;
         [SerializeField] private Text resultText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Text restartText;
+        [SerializeField] private string fallbackShellSceneName = "LevelSelect";
+        [SerializeField] private bool enableKeyboardShellShortcuts = true;
+        [SerializeField] private KeyCode restartFromShellKey = KeyCode.R;
+        [SerializeField] private KeyCode exitToShellKey = KeyCode.Escape;
+        [SerializeField] private bool autoReturnToShellOnBattleEnd = true;
+        [SerializeField] private float autoReturnDelaySeconds = 2f;
 
         private readonly Color idlePortraitColor = new Color(0.42f, 0.36f, 0.42f, 0.9f);
         private readonly Color momoSelectedColor = new Color(1f, 0.7f, 0.88f, 0.95f);
@@ -81,6 +88,8 @@ namespace MomosDefense.UI
         private bool playedVictoryAudio;
         private bool playedDefeatAudio;
         private bool grantedVictoryReward;
+        private bool queuedAutoReturnToShell;
+        private float autoReturnTimer;
 
         private void Awake()
         {
@@ -140,7 +149,7 @@ namespace MomosDefense.UI
 
             if (restartButton != null)
             {
-                restartButton.onClick.AddListener(RestartScene);
+                restartButton.onClick.AddListener(RestartFromShell);
                 restartButton.gameObject.SetActive(false);
             }
 
@@ -244,7 +253,7 @@ namespace MomosDefense.UI
 
             if (restartButton != null)
             {
-                restartButton.onClick.RemoveListener(RestartScene);
+                restartButton.onClick.RemoveListener(RestartFromShell);
             }
 
             if (momoSkillUpgradeButton != null)
@@ -329,6 +338,7 @@ namespace MomosDefense.UI
             UpdateTowerButtons();
             UpdateStartWave();
             UpdateMessage();
+            UpdateObjective();
 
             bool isDefeat = gameState.IsGameOver;
             bool isVictory = waveSpawner != null && waveSpawner.IsComplete;
@@ -358,6 +368,19 @@ namespace MomosDefense.UI
             }
 
             UpdateRestart(isDefeat || isVictory);
+            UpdateAutoReturn(isDefeat || isVictory);
+
+            if (enableKeyboardShellShortcuts)
+            {
+                if (Input.GetKeyDown(exitToShellKey))
+                {
+                    ExitToShell();
+                }
+                else if (Input.GetKeyDown(restartFromShellKey))
+                {
+                    RestartFromShell();
+                }
+            }
         }
 
         public void ShowMessage(string message, float duration = 2f)
@@ -417,7 +440,7 @@ namespace MomosDefense.UI
         {
             progressionService?.ResetPrototypeProgression();
             ShowMessage("Prototype progression reset.");
-            RestartScene();
+            RestartFromShell();
         }
 
         private void ChooseTowerSpecialization(string familyId)
@@ -623,7 +646,18 @@ namespace MomosDefense.UI
 
             if (portraitImage != null)
             {
-                portraitImage.color = hero.IsSelected ? selectedColor : idlePortraitColor;
+                if (hero.PortraitSprite != null)
+                {
+                    portraitImage.sprite = hero.PortraitSprite;
+                    portraitImage.preserveAspect = true;
+                    portraitImage.color = hero.IsSelected
+                        ? Color.white
+                        : new Color(1f, 1f, 1f, 0.82f);
+                }
+                else
+                {
+                    portraitImage.color = hero.IsSelected ? selectedColor : idlePortraitColor;
+                }
             }
         }
 
@@ -642,25 +676,62 @@ namespace MomosDefense.UI
             }
 
             TowerBuildManager.TowerBuildOption option = buildManager.BuildOptions[optionIndex];
-            label.text = $"{option.displayName} {option.buildCost}g";
+            if (option == null || option.towerDefinition == null)
+            {
+                label.text = "Unavailable";
+                button.interactable = false;
+                return;
+            }
+
+            label.text = $"{option.towerDefinition.DisplayName} {option.towerDefinition.BuildCost}g";
             ColorBlock colors = button.colors;
             bool isSelected = buildManager.SelectedOptionIndex == optionIndex;
             colors.normalColor = isSelected ? new Color(0.95f, 0.82f, 0.4f, 1f) : Color.white;
             colors.highlightedColor = isSelected ? new Color(1f, 0.9f, 0.55f, 1f) : new Color(1f, 0.92f, 0.96f, 1f);
             button.colors = colors;
+            button.interactable = true;
         }
 
         private void StartNextWave()
         {
+            if (!BattleSession.HasSeenTutorial)
+            {
+                BattleSession.MarkTutorialSeen();
+            }
+
             PrototypeAudioDirector.PlayWaveStart();
             waveSpawner?.StartNextWave();
         }
 
-        private void RestartScene()
+        private void RestartFromShell()
         {
-            Scene activeScene = SceneManager.GetActiveScene();
-            string sceneToReload = string.IsNullOrEmpty(activeScene.path) ? activeScene.name : activeScene.path;
-            SceneManager.LoadScene(sceneToReload);
+            BattleSession.RequestRestartFromShell();
+            ReturnToShell();
+        }
+
+        private void ExitToShell()
+        {
+            BattleSession.CancelPendingShellRestart();
+            ReturnToShell();
+        }
+
+        private void ReturnToShell()
+        {
+            string shellSceneName = BattleSession.ResolveShellReturnScene(fallbackShellSceneName);
+            if (!string.IsNullOrWhiteSpace(shellSceneName) && Application.CanStreamedLevelBeLoaded(shellSceneName))
+            {
+                SceneManager.LoadScene(shellSceneName);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(fallbackShellSceneName) && Application.CanStreamedLevelBeLoaded(fallbackShellSceneName))
+            {
+                Debug.LogWarning($"Unable to load shell scene '{shellSceneName}'. Falling back to '{fallbackShellSceneName}'.");
+                SceneManager.LoadScene(fallbackShellSceneName);
+                return;
+            }
+
+            Debug.LogWarning($"Unable to load shell scene '{shellSceneName}' and fallback scene '{fallbackShellSceneName}' is not available.");
         }
 
         private void UpdateRestart(bool shouldShow)
@@ -679,6 +750,30 @@ namespace MomosDefense.UI
             {
                 restartText.text = "Restart";
             }
+        }
+
+        private void UpdateAutoReturn(bool hasBattleEnded)
+        {
+            if (!autoReturnToShellOnBattleEnd || !hasBattleEnded)
+            {
+                queuedAutoReturnToShell = false;
+                autoReturnTimer = 0f;
+                return;
+            }
+
+            if (!queuedAutoReturnToShell)
+            {
+                queuedAutoReturnToShell = true;
+                autoReturnTimer = Mathf.Max(0f, autoReturnDelaySeconds);
+            }
+
+            if (autoReturnTimer > 0f)
+            {
+                autoReturnTimer -= Time.deltaTime;
+                return;
+            }
+
+            ExitToShell();
         }
 
         private void GrantVictoryReward()
@@ -719,6 +814,31 @@ namespace MomosDefense.UI
                 sproutHero.ApplyPersistentSkillRank(progressionService.GetHeroSkillRank("Sprout"));
                 sproutHero.ApplyEquipmentBonus(progressionService.EquippedHeroSkillDamageBonus);
             }
+        }
+
+        private void UpdateObjective()
+        {
+            if (objectiveText == null)
+            {
+                return;
+            }
+
+            if (!BattleSession.HasSeenTutorial && waveSpawner != null && waveSpawner.CurrentWave == 0)
+            {
+                objectiveText.text = "Tutorial: build a tower on a node, select a hero, then start the wave.";
+                return;
+            }
+
+            if (!BattleSession.HasSeenTutorial && heroSelection != null && heroSelection.SelectedHero != null && waveSpawner != null && waveSpawner.CurrentWave > 0)
+            {
+                objectiveText.text = $"Tutorial: reposition {heroSelection.SelectedHero.HeroName} and use {heroSelection.SelectedHero.SkillName}.";
+                return;
+            }
+
+            string levelObjective = waveSpawner != null && waveSpawner.ActiveLevel != null
+                ? waveSpawner.ActiveLevel.ObjectiveText
+                : "Build towers. Start waves. Defend the path.";
+            objectiveText.text = levelObjective;
         }
 
         private void UpdateStartWave()

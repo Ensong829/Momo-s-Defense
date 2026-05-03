@@ -15,6 +15,7 @@ MonoBehaviour:
   upgradeId: TowerFamilyRank
   displayName: Tower Family Rank
   targetId: Tower
+  category: 1
   maxRank: 5
   baseCost: 45
   costStep: 30

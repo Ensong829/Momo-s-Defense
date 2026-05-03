@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Basic Enemy
   maxHealth: 10
   moveSpeed: 2
+  lifeDamage: 1
   goldReward: 10
   experienceReward: 1

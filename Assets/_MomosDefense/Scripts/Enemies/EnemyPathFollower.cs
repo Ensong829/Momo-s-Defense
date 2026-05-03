@@ -7,6 +7,7 @@ namespace MomosDefense.Enemies
 {
     public sealed class EnemyPathFollower : MonoBehaviour
     {
+        [SerializeField] private EnemyDefinition definition;
         [SerializeField] private float moveSpeed = 2f;
         [SerializeField] private int lifeDamage = 1;
         [SerializeField] private int goldReward = 10;
@@ -20,6 +21,8 @@ namespace MomosDefense.Enemies
         private float slowTimer;
         private float slowMultiplier = 1f;
 
+        public EnemyDefinition Definition => definition;
+        public Health Health => health;
         public int GoldReward => goldReward;
         public int ExperienceReward => experienceReward;
         public UnityEvent ReachedGoal = new UnityEvent();
@@ -27,18 +30,38 @@ namespace MomosDefense.Enemies
         private void Awake()
         {
             health = GetComponent<Health>();
+            ApplyDefinition();
+
             if (health != null)
             {
                 health.Died.AddListener(HandleDied);
             }
+
+            EnemyRegistry.Register(this);
         }
 
         private void OnDestroy()
         {
+            EnemyRegistry.Unregister(this);
+
             if (health != null)
             {
                 health.Died.RemoveListener(HandleDied);
             }
+        }
+
+        private void ApplyDefinition()
+        {
+            if (definition == null)
+            {
+                return;
+            }
+
+            moveSpeed = definition.MoveSpeed;
+            lifeDamage = definition.LifeDamage;
+            goldReward = definition.GoldReward;
+            experienceReward = definition.ExperienceReward;
+            health?.SetMaxHealth(definition.MaxHealth);
         }
 
         public void Initialize(EnemyPath enemyPath, GameState state)

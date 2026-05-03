@@ -15,6 +15,12 @@ MonoBehaviour:
   skillId: GroundSlam
   displayName: Ground Slam
   ownerHeroId: Bulwark
+  behavior: 0
   baseDamage: 5
   baseRadius: 2.4
   baseCooldown: 10
+  slowDuration: 2.2
+  slowMultiplier: 0.12
+  towerBuffDuration: 5
+  towerBuffDamageBonus: 1
+  towerBuffAttackSpeedMultiplier: 1.6

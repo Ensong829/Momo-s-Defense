@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Armored Enemy
   maxHealth: 28
   moveSpeed: 0.95
+  lifeDamage: 1
   goldReward: 30
   experienceReward: 3

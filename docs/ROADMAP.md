@@ -36,7 +36,7 @@ Done when:
 
 ## Phase 1: First Playable Prototype
 
-Status: in progress.
+Status: implemented, with manual playtest/balance follow-up still pending.
 
 Goal: Prove the basic tower defense loop.
 
@@ -145,7 +145,7 @@ Done when:
 
 ## Phase 5: Demo Content
 
-Status: not started.
+Status: in progress.
 
 Goal: Build a small but polished demo.
 
@@ -157,17 +157,20 @@ Deliverables:
 - 8-12 enemies.
 - 1 boss.
 - Basic tutorial.
-- Main menu.
-- Level select.
+- Main menu. In progress.
+- Level select. In progress.
 - Upgrade menus.
 - Settings.
 - Performance pass.
+- Data-driven runtime cleanup for shell and battle flow. In progress.
+- Better content flow between startup, shell UI, battle, and return states. In progress.
 
 Done when:
 
 - The demo feels like a real small game.
 - New players can understand it.
 - It runs smoothly on a mid-range Android phone.
+- Shell screens and runtime flow no longer depend on prototype-only shortcuts.
 
 ## Phase 6: Commercial Expansion
 

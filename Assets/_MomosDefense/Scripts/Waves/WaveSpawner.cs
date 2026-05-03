@@ -25,6 +25,7 @@ namespace MomosDefense.Waves
         private int aliveEnemies;
         private bool isSpawningWave;
 
+        public LevelDefinition ActiveLevel => levelDefinition;
         public int CurrentWave { get; private set; }
         public int TotalWaves => levelDefinition != null && levelDefinition.Waves != null && levelDefinition.Waves.Length > 0
             ? levelDefinition.Waves.Length
@@ -38,6 +39,11 @@ namespace MomosDefense.Waves
         {
             public string enemyId = "Basic";
             public GameObject prefab;
+        }
+
+        private void Awake()
+        {
+            levelDefinition = BattleSession.ResolveLevel(levelDefinition);
         }
 
         public void StartNextWave()

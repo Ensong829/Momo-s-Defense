@@ -127,18 +127,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dadd9d8dfa90e7441ab960379ff425fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Towers.TowerAttack
-  towerName: Frost Tower
-  towerFamilyId: Frost
-  attackRange: 3.6
-  attacksPerSecond: 1.1
+  definition: {fileID: 11400000, guid: a6ee286cf39bba7409bccd4c9b07e74c, type: 2}
+  towerName: Tower
+  towerFamilyId: Star
+  attackRange: 4
+  attacksPerSecond: 1
   attackDamage: 1
-  upgradeCost: 85
+  upgradeCost: 90
   maxLevel: 3
   damagePerUpgrade: 1
-  rangePerUpgrade: 0.65
-  attackSpeedPerUpgrade: 0.2
-  scaleMultiplierPerUpgrade: 1.14
-  slowDurationOnHit: 1.5
-  slowMultiplierOnHit: 0.65
+  rangePerUpgrade: 0.75
+  attackSpeedPerUpgrade: 0.25
+  scaleMultiplierPerUpgrade: 1.15
+  slowDurationOnHit: 0
+  slowMultiplierOnHit: 1
   upgradedColor: {r: 0.24, g: 0.8, b: 1, a: 1}
   buffedColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}

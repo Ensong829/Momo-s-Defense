@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Tough Enemy
   maxHealth: 18
   moveSpeed: 1.25
+  lifeDamage: 1
   goldReward: 22
   experienceReward: 2

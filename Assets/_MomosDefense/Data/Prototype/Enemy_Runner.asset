@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Runner Enemy
   maxHealth: 6
   moveSpeed: 3.3
+  lifeDamage: 1
   goldReward: 8
   experienceReward: 1

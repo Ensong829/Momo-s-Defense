@@ -1,6 +1,6 @@
 # Agent Handoff: Momo's Defense
 
-Last updated: 2026-04-26
+Last updated: 2026-04-28
 
 ## Read This First
 
@@ -50,7 +50,9 @@ Read these before coding:
 
 ## Current State
 
-Phase 1 first playable prototype is implemented enough for manual playtest. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 is complete for the prototype milestone with persistent crystals, victory rewards, hero skill ranks, persistent hero levels/passives, tower family ranks, tower specialization choices, starter equipment bonuses, and ScriptableObject definition classes. Phase 4 is complete for the prototype milestone with generated content assets, level/wave authoring data, a balance CSV, and editor debug tools.
+Phase 1 is implemented enough for manual playtest, but the hands-on balance pass is still pending. Phase 2 is complete for the prototype milestone with three selectable heroes, multiple tower families, four enemy types, in-battle hero leveling, placeholder audio, a four-wave level pass, and a readable landscape HUD control row. Phase 3 is complete for the prototype milestone with persistent crystals, victory rewards, hero skill ranks, persistent hero levels/passives, tower family ranks, tower specialization choices, starter equipment bonuses, and ScriptableObject definition classes. Phase 4 is complete for the prototype milestone with generated content assets, level/wave authoring data, a balance CSV, and editor debug tools.
+
+Current development focus is the Phase 5 shell around that prototype foundation: data-driven runtime cleanup, a basic main menu, level select, and better content flow between shell screens and the playable scene.
 
 Latest automated scene generation on 2026-04-25 succeeded after a small runtime hardening pass. The log scan found no compile errors, exceptions, null refs, missing refs, fatal errors, or build failures; only the known Unity `abort_threads` shutdown noise appeared.
 
@@ -209,24 +211,25 @@ The APK output is ignored by `.gitignore`.
 
 ## Next Recommended Work
 
-The user asked to finish Phase 2. The prototype milestone is now complete and the next recommended work is Phase 3 progression foundation.
+The project is past the early prototype phases. The immediate work is Phase 5 shell and flow work around the existing content/runtime foundation.
 
 Next steps:
 
-1. Begin Phase 5 demo content work.
-2. Plan 3-5 demo levels using `LevelDefinition` and `WaveDefinition`.
-3. Add a basic main menu and level select.
-4. Add tutorial/onboarding flow for first-time players.
-5. Push checkpoints only with explicit user approval.
+1. Continue data-driven runtime cleanup so shell flow and battle setup depend less on prototype-only wiring.
+2. Add a basic main menu and level select.
+3. Improve content flow between startup, shell UI, battle entry, and post-battle return.
+4. Plan 3-5 demo levels using `LevelDefinition` and `WaveDefinition`.
+5. Keep manual Unity playtest and balance follow-up queued for wave pacing, tower value, and hero progression feel.
+6. Push checkpoints only with explicit user approval.
 
-## Phase 2 Direction
+## Playtest Follow-Up
 
-Use `docs/PHASE_2_VERTICAL_SLICE_PLAN.md`.
+Prototype milestone implementation is ahead of the remaining manual validation. Still useful to playtest:
 
-First implementation slice should be:
-
-- Done in code and automated scene generation: three selectable heroes, three tower families, four enemy types, hero leveling, selected-hero skill HUD, and placeholder audio.
-- Still useful to playtest: tune wave pacing, tower family value, and hero level pacing in live play.
+- Tune wave pacing in live play.
+- Recheck tower family value and upgrade feel.
+- Recheck hero level pacing and skill impact.
+- Validate the new shell flow once menu/level-select work lands.
 
 ## Recent Stable Commits
 

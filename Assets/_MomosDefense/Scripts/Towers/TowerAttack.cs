@@ -1,4 +1,5 @@
 using MomosDefense.Combat;
+using MomosDefense.Core;
 using MomosDefense.Enemies;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace MomosDefense.Towers
 {
     public sealed class TowerAttack : MonoBehaviour
     {
+        [SerializeField] private TowerDefinition definition;
         [SerializeField] private string towerName = "Tower";
         [SerializeField] private string towerFamilyId = "Star";
         [SerializeField] private float attackRange = 4f;
@@ -31,6 +33,7 @@ namespace MomosDefense.Towers
         private Color baseColor;
         private TowerBuildNode ownerNode;
 
+        public TowerDefinition Definition => definition;
         public string TowerName => towerName;
         public string TowerFamilyId => towerFamilyId;
         public int Level => level;
@@ -70,6 +73,7 @@ namespace MomosDefense.Towers
 
         private void Awake()
         {
+            ApplyDefinition();
             cachedRenderer = GetComponent<Renderer>();
 
             if (cachedRenderer != null)
@@ -88,16 +92,16 @@ namespace MomosDefense.Towers
                 return;
             }
 
-            Health target = FindNearestEnemy();
-            if (target == null)
+            EnemyPathFollower target = EnemyRegistry.FindNearest(transform.position, attackRange);
+            if (target == null || target.Health == null)
             {
                 return;
             }
 
-            target.TakeDamage(attackDamage + temporaryDamageBonus);
-            if (slowDurationOnHit > 0f && target.TryGetComponent(out EnemyPathFollower follower))
+            target.Health.TakeDamage(attackDamage + temporaryDamageBonus);
+            if (slowDurationOnHit > 0f)
             {
-                follower.ApplySlow(slowDurationOnHit, slowMultiplierOnHit);
+                target.ApplySlow(slowDurationOnHit, slowMultiplierOnHit);
             }
 
             attackTimer = 1f / (attacksPerSecond * temporaryAttackSpeedMultiplier);
@@ -108,28 +112,26 @@ namespace MomosDefense.Towers
             ownerNode?.TryBuildTower();
         }
 
-        private Health FindNearestEnemy()
+        private void ApplyDefinition()
         {
-            Health nearest = null;
-            float nearestDistance = float.MaxValue;
-            Health[] healthTargets = FindObjectsByType<Health>(FindObjectsInactive.Exclude);
-
-            foreach (Health target in healthTargets)
+            if (definition == null)
             {
-                if (!target.TryGetComponent(out EnemyPathFollower _))
-                {
-                    continue;
-                }
-
-                float distance = Vector3.Distance(transform.position, target.transform.position);
-                if (distance <= attackRange && distance < nearestDistance)
-                {
-                    nearest = target;
-                    nearestDistance = distance;
-                }
+                return;
             }
 
-            return nearest;
+            towerName = definition.DisplayName;
+            towerFamilyId = definition.TowerFamilyId;
+            attackRange = definition.BaseRange;
+            attacksPerSecond = definition.AttacksPerSecond;
+            attackDamage = definition.BaseDamage;
+            upgradeCost = definition.UpgradeCost;
+            maxLevel = definition.MaxLevel;
+            damagePerUpgrade = definition.DamagePerUpgrade;
+            rangePerUpgrade = definition.RangePerUpgrade;
+            attackSpeedPerUpgrade = definition.AttackSpeedPerUpgrade;
+            scaleMultiplierPerUpgrade = definition.ScaleMultiplierPerUpgrade;
+            slowDurationOnHit = definition.SlowDurationOnHit;
+            slowMultiplierOnHit = definition.SlowMultiplierOnHit;
         }
 
         public bool TryUpgrade()

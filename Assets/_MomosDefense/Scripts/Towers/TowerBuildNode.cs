@@ -52,15 +52,15 @@ namespace MomosDefense.Towers
 
             TowerBuildManager.TowerBuildOption selectedOption = buildManager != null ? buildManager.SelectedOption : null;
 
-            if (selectedOption == null || selectedOption.towerPrefab == null || gameState == null)
+            if (selectedOption == null || selectedOption.towerPrefab == null || selectedOption.towerDefinition == null || gameState == null)
             {
                 hud?.ShowMessage("Cannot build here yet.");
                 return;
             }
 
-            if (!gameState.SpendGold(selectedOption.buildCost))
+            if (!gameState.SpendGold(selectedOption.towerDefinition.BuildCost))
             {
-                hud?.ShowMessage($"Need {selectedOption.buildCost} gold to build.");
+                hud?.ShowMessage($"Need {selectedOption.towerDefinition.BuildCost} gold to build.");
                 return;
             }
 
@@ -68,13 +68,13 @@ namespace MomosDefense.Towers
             placedTower = tower.GetComponent<TowerAttack>();
             placedTower?.BindToNode(this);
             placedTower?.ApplyPersistentRank(
-                progressionService != null ? progressionService.GetTowerFamilyRank(selectedOption.displayName) : 1,
+                progressionService != null ? progressionService.GetTowerFamilyRank(selectedOption.towerDefinition.TowerFamilyId) : 1,
                 progressionService != null ? progressionService.EquippedTowerAttackSpeedBonus : 0f);
-            placedTower?.ApplySpecialization(progressionService != null ? progressionService.GetTowerSpecialization(selectedOption.displayName) : string.Empty);
+            placedTower?.ApplySpecialization(progressionService != null ? progressionService.GetTowerSpecialization(selectedOption.towerDefinition.TowerFamilyId) : string.Empty);
             hasTower = true;
             SetNodeColor(occupiedColor);
             PrototypeAudioDirector.PlayBuild();
-            hud?.ShowMessage($"Built {selectedOption.displayName} (-{selectedOption.buildCost} gold).");
+            hud?.ShowMessage($"Built {selectedOption.towerDefinition.DisplayName} (-{selectedOption.towerDefinition.BuildCost} gold).");
         }
 
         private void TryUpgradeTower()

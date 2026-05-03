@@ -2,13 +2,17 @@
 
 Momo's Defense is a cute stylized 3D mobile tower defense game for Android, built in Unity.
 
-The long-term goal is a commercial tower defense game with RPG-style progression across heroes, towers, and equipment. The short-term goal is a small first playable prototype centered on Momo, the first hero and main character.
+The long-term goal is a commercial tower defense game with RPG-style progression across heroes, towers, and equipment. The current milestone is turning the prototype foundation into a small playable demo with cleaner flow, production-facing shell screens, and data-driven content/runtime cleanup.
 
 ## Current Focus
 
-Phase 0: project foundation.
+Phase 5: demo shell and content flow around the existing prototype.
 
-Next milestone: first playable prototype with one test map, one path, one tower, one enemy type, and Momo as the first controllable hero.
+Current work:
+
+- Clean up prototype-only runtime wiring so level/content flow is driven by data where possible.
+- Add the Phase 5 shell around the prototype: main menu, level select, and clearer player progression through content.
+- Keep manual Unity playtest and balance work visible as follow-up, especially for wave pacing, tower value, and hero feel.
 
 ## Project Layout
 
@@ -26,5 +30,4 @@ Next milestone: first playable prototype with one test map, one path, one tower,
 
 Unity editor version: `6000.4.4f1`.
 
-Android is the target platform, but the Android Build Support module still needs to be installed in Unity Hub before Android builds can be produced.
-
+Android is the target platform. The project is already set up for Android-first prototype and smoke-build work in Unity `6000.4.4f1`.

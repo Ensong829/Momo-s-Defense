@@ -1,3 +1,4 @@
+using MomosDefense.Core;
 using UnityEngine;
 
 namespace MomosDefense.Towers
@@ -7,9 +8,8 @@ namespace MomosDefense.Towers
         [System.Serializable]
         public sealed class TowerBuildOption
         {
-            public string displayName = "Tower";
+            public TowerDefinition towerDefinition;
             public GameObject towerPrefab;
-            public int buildCost = 60;
         }
 
         [SerializeField] private TowerBuildOption[] buildOptions;

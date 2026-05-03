@@ -16,3 +16,11 @@ MonoBehaviour:
   displayName: Bulwark
   role: Tank control
   startingLevel: 1
+  moveSpeed: 4.2
+  attackRange: 1.65
+  attacksPerSecond: 0.85
+  attackDamage: 3
+  experienceToNextLevel: 4
+  attackDamagePerLevel: 1
+  skillDamagePerLevel: 1
+  moveSpeedPerLevel: 0.2

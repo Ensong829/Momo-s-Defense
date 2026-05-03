@@ -144,10 +144,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0416f7f04726c649b75b8b34dcb62d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Enemies.EnemyPathFollower
-  moveSpeed: 1.25
+  definition: {fileID: 11400000, guid: 79a4518fafca06a4d9f0b7adac1aeefd, type: 2}
+  moveSpeed: 2
   lifeDamage: 1
-  goldReward: 22
-  experienceReward: 2
+  goldReward: 10
+  experienceReward: 1
   ReachedGoal:
     m_PersistentCalls:
       m_Calls: []

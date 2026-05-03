@@ -127,12 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dadd9d8dfa90e7441ab960379ff425fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Towers.TowerAttack
-  towerName: Star Tower
+  definition: {fileID: 11400000, guid: 8577b4b20b7615844bfe2a0cfcb5d0c0, type: 2}
+  towerName: Tower
   towerFamilyId: Star
   attackRange: 4
   attacksPerSecond: 1
   attackDamage: 1
-  upgradeCost: 80
+  upgradeCost: 90
   maxLevel: 3
   damagePerUpgrade: 1
   rangePerUpgrade: 0.75

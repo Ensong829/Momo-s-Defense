@@ -4,6 +4,7 @@ namespace MomosDefense.Core
 {
     public sealed class GameState : MonoBehaviour
     {
+        [SerializeField] private LevelDefinition defaultLevelDefinition;
         [SerializeField] private int startingLives = 20;
         [SerializeField] private int startingGold = 120;
 
@@ -13,8 +14,9 @@ namespace MomosDefense.Core
 
         private void Awake()
         {
-            Lives = startingLives;
-            Gold = startingGold;
+            LevelDefinition activeLevel = BattleSession.ResolveLevel(defaultLevelDefinition);
+            Lives = activeLevel != null ? activeLevel.StartingLives : startingLives;
+            Gold = activeLevel != null ? activeLevel.StartingGold : startingGold;
         }
 
         public bool SpendGold(int amount)
@@ -48,4 +50,3 @@ namespace MomosDefense.Core
         }
     }
 }
-

@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Core.LevelDefinition
   levelId: PrototypeLevel01
   displayName: Prototype Crossing
+  objectiveText: Hold the center lane and learn the three-hero rhythm.
   waves:
   - {fileID: 11400000, guid: 3518dcf4c02f4d34eb2a9f99ff06fe87, type: 2}
   - {fileID: 11400000, guid: 2811435d7e043cf429c787a4e6299775, type: 2}
   - {fileID: 11400000, guid: ff6eb37535728bc49a3eb810bbb4ac7e, type: 2}
   - {fileID: 11400000, guid: a69ab5bbdafc663448188cd6e578a9df, type: 2}
+  startingLives: 20
+  startingGold: 120
   timeBetweenEnemies: 0.7
   timeBetweenWaves: 3
   victoryCurrencyReward: 35

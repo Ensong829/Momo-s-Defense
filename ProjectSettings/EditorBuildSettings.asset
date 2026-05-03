@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_MomosDefense/Scenes/MainMenu.unity
+    guid: 3b800a3a2e7c73b44a09d61386b95dac
+  - enabled: 1
+    path: Assets/_MomosDefense/Scenes/LevelSelect.unity
+    guid: 96ae82d4c2c02704288ea6b2bcabc197
+  - enabled: 1
+    path: Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity
+    guid: b8faec5bf1b57a845b7b10b13c7cb338
   m_configObjects: {}

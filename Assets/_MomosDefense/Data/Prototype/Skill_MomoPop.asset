@@ -15,6 +15,12 @@ MonoBehaviour:
   skillId: MomoPop
   displayName: Momo Pop
   ownerHeroId: Momo
+  behavior: 0
   baseDamage: 4
   baseRadius: 3
   baseCooldown: 8
+  slowDuration: 2.5
+  slowMultiplier: 0.45
+  towerBuffDuration: 5
+  towerBuffDamageBonus: 1
+  towerBuffAttackSpeedMultiplier: 1.6

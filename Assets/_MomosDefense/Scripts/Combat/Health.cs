@@ -18,6 +18,19 @@ namespace MomosDefense.Combat
             CurrentHealth = maxHealth;
         }
 
+        public void SetMaxHealth(int value, bool resetCurrentHealth = true)
+        {
+            maxHealth = Mathf.Max(1, value);
+
+            if (resetCurrentHealth)
+            {
+                CurrentHealth = maxHealth;
+                return;
+            }
+
+            CurrentHealth = Mathf.Clamp(CurrentHealth, 0, maxHealth);
+        }
+
         public void TakeDamage(int amount)
         {
             if (!IsAlive || amount <= 0)

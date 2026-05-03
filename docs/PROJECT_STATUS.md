@@ -1,12 +1,14 @@
 # Project Status
 
-Last updated: 2026-04-26
+Last updated: 2026-04-28
 
 ## Current Milestone
 
 Phase 5: Demo Content
 
 Goal: turn the prototype systems into a small playable demo with multiple levels, clearer onboarding, and production-facing menus.
+
+Current focus inside Phase 5: build the shell around the existing prototype, clean up prototype-only runtime wiring, and make scene/content flow work cleanly through main menu, level select, battle, and return paths.
 
 ## Completed
 
@@ -144,19 +146,25 @@ Goal: turn the prototype systems into a small playable demo with multiple levels
 
 ## In Progress
 
-- Phase 5 demo content planning.
+- Phase 5 shell implementation around the prototype battle scene.
+- Data-driven runtime cleanup for scene bootstrapping and content flow.
+- Main menu and level select work.
+- Better shell-to-battle-to-shell flow.
 - Prototype-only UI and controls remain acceptable until demo flow requirements are proven.
 
 ## Next Up
 
-1. Plan 3-5 demo levels using the new level/wave data.
+1. Finish the runtime cleanup needed to support shell screens cleanly.
 2. Add a basic main menu and level select.
-3. Add tutorial/onboarding flow for first-time players.
+3. Improve battle entry, completion, and return flow.
+4. Plan 3-5 demo levels using the new level/wave data.
+5. Add tutorial/onboarding flow for first-time players.
 
-## Remaining Phase 1 Tasks
+## Remaining Manual Validation
 
-- Manual playtest pass in Unity Editor.
-- Phase 1 balance pass after playtest.
+- Manual Unity playtest pass.
+- Balance pass after playtest.
+- Recheck wave pacing, tower family value, and hero progression feel once the current shell work is in place.
 
 Phase 1 playtest checklist:
 

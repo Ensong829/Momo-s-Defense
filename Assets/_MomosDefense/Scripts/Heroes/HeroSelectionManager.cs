@@ -1,5 +1,6 @@
 using MomosDefense.Audio;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace MomosDefense.Heroes
 {
@@ -42,6 +43,16 @@ namespace MomosDefense.Heroes
             }
         }
 
+        private void LateUpdate()
+        {
+            if (!DidReceiveMoveCommandThisFrame() || IsPointerOverUi())
+            {
+                return;
+            }
+
+            SelectedHero?.TryMoveToPointer();
+        }
+
         public void SelectHero(PrototypeHeroController hero)
         {
             if (hero == null)
@@ -82,6 +93,47 @@ namespace MomosDefense.Heroes
             {
                 hero?.GainExperience(experience);
             }
+        }
+
+        private static bool IsPointerOverUi()
+        {
+            if (EventSystem.current == null)
+            {
+                return false;
+            }
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return true;
+            }
+
+            for (int touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+            {
+                if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(touchIndex).fingerId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool DidReceiveMoveCommandThisFrame()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                return true;
+            }
+
+            for (int touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+            {
+                if (Input.GetTouch(touchIndex).phase == TouchPhase.Began)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

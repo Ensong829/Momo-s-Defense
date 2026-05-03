@@ -16,23 +16,26 @@ namespace MomosDefense.Core
         private const int StartingRank = 1;
         private const int MaxRank = 5;
 
-        [SerializeField] private int victoryCurrencyReward = 35;
-        [SerializeField] private int baseHeroSkillUpgradeCost = 50;
-        [SerializeField] private int heroSkillUpgradeCostStep = 35;
-        [SerializeField] private int baseTowerUpgradeCost = 45;
-        [SerializeField] private int towerUpgradeCostStep = 30;
+        [SerializeField] private int fallbackVictoryCurrencyReward = 35;
+        [SerializeField] private UpgradeDefinition heroSkillUpgradeDefinition;
+        [SerializeField] private UpgradeDefinition towerFamilyUpgradeDefinition;
+        [SerializeField] private EquipmentDefinition starterCharmDefinition;
 
         public int SoftCurrency { get; private set; }
         public int MomoSkillRank => GetHeroSkillRank("Momo");
-        public int VictoryCurrencyReward => victoryCurrencyReward;
-        public int MaxSkillRank => MaxRank;
+        public int VictoryCurrencyReward => BattleSession.ResolveLevel(null) != null
+            ? BattleSession.ResolveLevel(null).VictoryCurrencyReward
+            : fallbackVictoryCurrencyReward;
+        public int MaxSkillRank => heroSkillUpgradeDefinition != null ? heroSkillUpgradeDefinition.MaxRank : MaxRank;
         public bool CanUpgradeMomoSkill => CanUpgradeHeroSkill("Momo");
         public int MomoSkillUpgradeCost => GetHeroSkillUpgradeCost("Momo");
         public string EquippedWeapon { get; private set; }
         public string EquippedCharm { get; private set; }
         public string EquippedRelic { get; private set; }
-        public int EquippedHeroSkillDamageBonus => EquippedCharm == StarterCharmId ? 1 : 0;
-        public float EquippedTowerAttackSpeedBonus => EquippedCharm == StarterCharmId ? 0.05f : 0f;
+        public int EquippedHeroSkillDamageBonus =>
+            EquippedCharm == GetStarterCharmId() && starterCharmDefinition != null ? starterCharmDefinition.HeroSkillDamageBonus : 0;
+        public float EquippedTowerAttackSpeedBonus =>
+            EquippedCharm == GetStarterCharmId() && starterCharmDefinition != null ? starterCharmDefinition.TowerAttackSpeedBonus : 0f;
 
         private readonly string[] heroIds = { "Momo", "Bulwark", "Sprout" };
         private readonly string[] towerFamilyIds = { "Star", "Burst", "Frost" };
@@ -48,7 +51,7 @@ namespace MomosDefense.Core
 
         public void GrantVictoryReward()
         {
-            AddSoftCurrency(victoryCurrencyReward);
+            AddSoftCurrency(VictoryCurrencyReward);
         }
 
         public int GetHeroSkillRank(string heroId)
@@ -79,8 +82,8 @@ namespace MomosDefense.Core
         {
             int rank = GetHeroSkillRank(heroId);
             return rank >= MaxRank
-            ? 0
-                : baseHeroSkillUpgradeCost + ((rank - StartingRank) * heroSkillUpgradeCostStep);
+                ? 0
+                : GetUpgradeCost(heroSkillUpgradeDefinition, rank);
         }
 
         public int GetTowerFamilyUpgradeCost(string familyId)
@@ -88,7 +91,7 @@ namespace MomosDefense.Core
             int rank = GetTowerFamilyRank(familyId);
             return rank >= MaxRank
                 ? 0
-                : baseTowerUpgradeCost + ((rank - StartingRank) * towerUpgradeCostStep);
+                : GetUpgradeCost(towerFamilyUpgradeDefinition, rank);
         }
 
         public bool CanUpgradeHeroSkill(string heroId)
@@ -190,7 +193,7 @@ namespace MomosDefense.Core
             }
 
             EquippedWeapon = string.Empty;
-            EquippedCharm = StarterCharmId;
+            EquippedCharm = GetStarterCharmId();
             EquippedRelic = string.Empty;
             Save();
         }
@@ -223,7 +226,7 @@ namespace MomosDefense.Core
             }
 
             EquippedWeapon = PlayerPrefs.GetString(EquippedWeaponKey, string.Empty);
-            EquippedCharm = PlayerPrefs.GetString(EquippedCharmKey, StarterCharmId);
+            EquippedCharm = PlayerPrefs.GetString(EquippedCharmKey, GetStarterCharmId());
             EquippedRelic = PlayerPrefs.GetString(EquippedRelicKey, string.Empty);
         }
 
@@ -251,6 +254,21 @@ namespace MomosDefense.Core
         private static int LoadRank(string key)
         {
             return Mathf.Clamp(PlayerPrefs.GetInt(key, StartingRank), StartingRank, MaxRank);
+        }
+
+        private int GetUpgradeCost(UpgradeDefinition definition, int currentRank)
+        {
+            if (definition == null)
+            {
+                return 0;
+            }
+
+            return definition.BaseCost + ((currentRank - StartingRank) * definition.CostStep);
+        }
+
+        private string GetStarterCharmId()
+        {
+            return starterCharmDefinition != null ? starterCharmDefinition.EquipmentId : StarterCharmId;
         }
 
         private static int IndexOf(string[] ids, string id)

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9135f6b6e67fdee4aab9eda105070a88, type: 3}
+  m_Name: PrototypeLevel02
+  m_EditorClassIdentifier: Assembly-CSharp::MomosDefense.Core.LevelDefinition
+  levelId: PrototypeLevel02
+  displayName: Orchard Rush
+  objectiveText: Answer faster runner pressure without starving your economy.
+  waves:
+  - {fileID: 11400000, guid: 2811435d7e043cf429c787a4e6299775, type: 2}
+  - {fileID: 11400000, guid: 70faa0bfafd668449be1b9a8d214d3fc, type: 2}
+  - {fileID: 11400000, guid: d1c764ca751e8d64eab95eda5b70234e, type: 2}
+  - {fileID: 11400000, guid: d0d1a471125449a448e4d49eeb84ac5e, type: 2}
+  startingLives: 18
+  startingGold: 135
+  timeBetweenEnemies: 0.62
+  timeBetweenWaves: 2.75
+  victoryCurrencyReward: 45

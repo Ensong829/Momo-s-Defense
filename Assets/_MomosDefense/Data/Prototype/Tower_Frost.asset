@@ -18,3 +18,11 @@ MonoBehaviour:
   baseDamage: 1
   baseRange: 3.6
   attacksPerSecond: 1.1
+  upgradeCost: 85
+  maxLevel: 3
+  damagePerUpgrade: 1
+  rangePerUpgrade: 0.65
+  attackSpeedPerUpgrade: 0.2
+  scaleMultiplierPerUpgrade: 1.14
+  slowDurationOnHit: 1.5
+  slowMultiplierOnHit: 0.65

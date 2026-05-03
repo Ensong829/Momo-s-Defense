@@ -15,6 +15,12 @@ MonoBehaviour:
   skillId: BloomSong
   displayName: Bloom Song
   ownerHeroId: Sprout
+  behavior: 1
   baseDamage: 0
   baseRadius: 3.75
   baseCooldown: 12
+  slowDuration: 0
+  slowMultiplier: 1
+  towerBuffDuration: 5.5
+  towerBuffDamageBonus: 1
+  towerBuffAttackSpeedMultiplier: 1.75

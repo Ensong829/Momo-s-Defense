@@ -16,3 +16,11 @@ MonoBehaviour:
   displayName: Momo
   role: Flexible control
   startingLevel: 1
+  moveSpeed: 5
+  attackRange: 2
+  attacksPerSecond: 1
+  attackDamage: 2
+  experienceToNextLevel: 4
+  attackDamagePerLevel: 1
+  skillDamagePerLevel: 1
+  moveSpeedPerLevel: 0.2

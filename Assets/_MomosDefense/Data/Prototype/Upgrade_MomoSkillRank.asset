@@ -15,6 +15,7 @@ MonoBehaviour:
   upgradeId: MomoSkillRank
   displayName: Momo Pop Rank
   targetId: Momo
+  category: 0
   maxRank: 5
   baseCost: 50
   costStep: 35
