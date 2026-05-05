@@ -16,10 +16,10 @@ MonoBehaviour:
   displayName: Sprout
   role: Support
   startingLevel: 1
-  moveSpeed: 5.4
-  attackRange: 2.4
-  attacksPerSecond: 1.15
-  attackDamage: 1
+  moveSpeed: 5
+  attackRange: 2
+  attacksPerSecond: 1
+  attackDamage: 2
   experienceToNextLevel: 4
   attackDamagePerLevel: 1
   skillDamagePerLevel: 1

@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
 #endif
 
 namespace MomosDefense.Heroes
@@ -64,6 +65,10 @@ namespace MomosDefense.Heroes
         private int walkFrameIndex;
         private FacingDirection facingDirection = FacingDirection.Right;
 
+#if UNITY_EDITOR
+        private static bool isSyncingSceneEditsToDefinition;
+#endif
+
         private enum FacingDirection
         {
             Left,
@@ -96,7 +101,10 @@ namespace MomosDefense.Heroes
         protected virtual void OnValidate()
         {
 #if UNITY_EDITOR
-            if (Application.isPlaying || heroDefinition == null)
+            if (Application.isPlaying
+                || heroDefinition == null
+                || isSyncingSceneEditsToDefinition
+                || EditorSceneManager.IsPreviewSceneObject(gameObject))
             {
                 return;
             }
@@ -549,20 +557,70 @@ namespace MomosDefense.Heroes
         private void SyncSceneEditsToHeroDefinition()
         {
             SerializedObject serializedHeroDefinition = new SerializedObject(heroDefinition);
-            serializedHeroDefinition.FindProperty("moveSpeed").floatValue = moveSpeed;
-            serializedHeroDefinition.FindProperty("attackRange").floatValue = attackRange;
-            serializedHeroDefinition.FindProperty("attacksPerSecond").floatValue = attacksPerSecond;
-            serializedHeroDefinition.FindProperty("attackDamage").intValue = attackDamage;
-            serializedHeroDefinition.FindProperty("worldScale").vector3Value = transform.localScale;
+            bool changed = false;
 
+            changed |= SetFloatIfDifferent(serializedHeroDefinition.FindProperty("moveSpeed"), moveSpeed);
+            changed |= SetFloatIfDifferent(serializedHeroDefinition.FindProperty("attackRange"), attackRange);
+            changed |= SetFloatIfDifferent(serializedHeroDefinition.FindProperty("attacksPerSecond"), attacksPerSecond);
+            changed |= SetIntIfDifferent(serializedHeroDefinition.FindProperty("attackDamage"), attackDamage);
+            changed |= SetVector3IfDifferent(serializedHeroDefinition.FindProperty("worldScale"), transform.localScale);
+
+            Vector3 desiredSpriteScale = movementSpriteRenderer != null
+                ? movementSpriteRenderer.transform.localScale
+                : Vector3.zero;
             if (movementSpriteRenderer != null)
             {
-                serializedHeroDefinition.FindProperty("spriteScale").vector3Value = movementSpriteRenderer.transform.localScale;
+                changed |= SetVector3IfDifferent(serializedHeroDefinition.FindProperty("spriteScale"), desiredSpriteScale);
             }
 
+            if (!changed)
+            {
+                return;
+            }
+
+            isSyncingSceneEditsToDefinition = true;
             serializedHeroDefinition.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(heroDefinition);
-            AssetDatabase.SaveAssetIfDirty(heroDefinition);
+            EditorApplication.delayCall += SaveDirtyHeroDefinitions;
+            isSyncingSceneEditsToDefinition = false;
+        }
+
+        private static bool SetFloatIfDifferent(SerializedProperty property, float value)
+        {
+            if (property == null || Mathf.Approximately(property.floatValue, value))
+            {
+                return false;
+            }
+
+            property.floatValue = value;
+            return true;
+        }
+
+        private static bool SetIntIfDifferent(SerializedProperty property, int value)
+        {
+            if (property == null || property.intValue == value)
+            {
+                return false;
+            }
+
+            property.intValue = value;
+            return true;
+        }
+
+        private static bool SetVector3IfDifferent(SerializedProperty property, Vector3 value)
+        {
+            if (property == null || property.vector3Value == value)
+            {
+                return false;
+            }
+
+            property.vector3Value = value;
+            return true;
+        }
+
+        private static void SaveDirtyHeroDefinitions()
+        {
+            AssetDatabase.SaveAssets();
         }
 #endif
     }
