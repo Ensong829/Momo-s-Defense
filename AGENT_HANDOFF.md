@@ -85,6 +85,26 @@ Android smoke build output:
 - `Builds/Android/MomosDefensePrototype.apk`
 - Latest Phase 2 Android smoke build succeeded; output is about 40 MB.
 
+## Unity Authoring Rule
+
+Unity editor changes are the source of truth for prototype layout and tuning.
+
+Treat these as authorable in Unity and preserve them across tooling changes:
+
+- `Enemy Path` waypoint positions in `Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity`
+- hero positions in the prototype scene
+- build node positions in the prototype scene
+- hero stats and presentation values in `Assets/_MomosDefense/Data/Prototype/Hero_*.asset`
+  - examples: move speed, attack values, `worldScale`, `spriteScale`
+
+Rules for future agents:
+
+1. Do not hard-reset those values during scene rebuilds.
+2. If a scene builder or editor script would overwrite Unity-authored values, change the script so it preserves existing saved values.
+3. Save the Unity scene before rebuilds when the user has edited layout.
+4. Prefer ScriptableObject assets and saved scene objects as the editable source of truth over hardcoded defaults once those assets/objects already exist.
+5. Do not regenerate the prototype scene if the user explicitly wants to keep manual waypoint/layout edits unless they clearly approve that rebuild behavior.
+
 ## Implemented Features
 
 ### Foundation
@@ -167,6 +187,10 @@ Before committing:
 2. Inspect logs for compile errors, exceptions, null refs, missing refs, and fatal errors.
 3. Fix blocking issues before moving forward.
 4. Commit and push stable checkpoints.
+
+Extra rule for this repo:
+
+- If the user has manually edited prototype scene layout in Unity, confirm that rebuild-safe preservation is in place before running scene generation.
 
 Scene generation command:
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MomosDefense.Combat;
 using MomosDefense.Core;
 using MomosDefense.Enemies;
@@ -17,6 +18,13 @@ namespace MomosDefense.Editor
 {
     public static class PrototypeSceneBuilder
     {
+        private sealed class PrototypeSceneLayoutSnapshot
+        {
+            public Vector3[] WaypointPositions { get; set; }
+            public Vector3[] BuildNodePositions { get; set; }
+            public Dictionary<string, Vector3> HeroPositions { get; } = new Dictionary<string, Vector3>();
+        }
+
         private const string ScenePath = "Assets/_MomosDefense/Scenes/Prototype_MomoDefense.unity";
         private const string EnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeEnemy.prefab";
         private const string ToughEnemyPrefabPath = "Assets/_MomosDefense/Prefabs/Enemies/PrototypeToughEnemy.prefab";
@@ -32,10 +40,43 @@ namespace MomosDefense.Editor
         private const float HeroSpriteTargetHeight = 1.35f;
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
         private const string ContentFolder = "Assets/_MomosDefense/Data/Prototype";
+        private static readonly Vector3[] DefaultWaypointPositions =
+        {
+            new Vector3(11f, 0.1f, 2.6f),
+            new Vector3(8.2f, 0.1f, 2.75f),
+            new Vector3(6.1f, 0.1f, 2.2f),
+            new Vector3(5.4f, 0.1f, 0.5f),
+            new Vector3(4.4f, 0.1f, -1.15f),
+            new Vector3(2.25f, 0.1f, -2.35f),
+            new Vector3(-1.4f, 0.1f, -2.1f),
+            new Vector3(-3.65f, 0.1f, -1.0f),
+            new Vector3(-5.3f, 0.1f, 0.85f),
+            new Vector3(-6.1f, 0.1f, 2.35f)
+        };
+        private static readonly Vector3[] DefaultBuildNodePositions =
+        {
+            new Vector3(-6.45f, 0.08f, 0.25f),
+            new Vector3(-3.45f, 0.08f, 2.65f),
+            new Vector3(-1.55f, 0.08f, 0.95f),
+            new Vector3(-1.8f, 0.08f, -3.15f),
+            new Vector3(1.7f, 0.08f, -0.8f),
+            new Vector3(2.55f, 0.08f, -3.8f),
+            new Vector3(4.25f, 0.08f, 3.4f),
+            new Vector3(5.1f, 0.08f, 1.1f),
+            new Vector3(6.75f, 0.08f, -2.1f),
+            new Vector3(8.2f, 0.08f, 0.7f)
+        };
+        private static readonly Dictionary<string, Vector3> DefaultHeroPositions = new Dictionary<string, Vector3>
+        {
+            { "Momo", new Vector3(-5f, 1f, 0.3f) },
+            { "Bulwark", new Vector3(-6.8f, 1f, -1.9f) },
+            { "Sprout", new Vector3(-3.1f, 1f, -2.1f) }
+        };
 
         [MenuItem("Momo's Defense/Build Prototype Scene")]
         public static void BuildPrototypeScene()
         {
+            PrototypeSceneLayoutSnapshot layoutSnapshot = CaptureExistingSceneLayout();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             GameObject gameStateObject = new GameObject("Game State");
@@ -46,7 +87,7 @@ namespace MomosDefense.Editor
             CreateCamera();
             CreateLight();
             CreateGround();
-            EnemyPath path = CreatePath();
+            EnemyPath path = CreatePath(layoutSnapshot);
             LevelDefinition levelDefinition = CreatePrototypeContentAssets();
             HeroDefinition momoDefinition = LoadOrCreateAsset<HeroDefinition>($"{ContentFolder}/Hero_Momo.asset");
             HeroDefinition bulwarkDefinition = LoadOrCreateAsset<HeroDefinition>($"{ContentFolder}/Hero_Bulwark.asset");
@@ -95,7 +136,7 @@ namespace MomosDefense.Editor
                 new Color(0.95f, 0.58f, 0.74f),
                 "Prototype_MomoSelection",
                 new Color(1f, 0.94f, 0.35f),
-                new Vector3(-5f, 1f, 0.3f),
+                GetHeroPosition(layoutSnapshot, "Momo"),
                 momoDefinition,
                 momoSkillDefinition,
                 MomoSpritePath);
@@ -105,7 +146,7 @@ namespace MomosDefense.Editor
                 new Color(0.92f, 0.72f, 0.38f),
                 "Prototype_BulwarkSelection",
                 new Color(1f, 0.84f, 0.3f),
-                new Vector3(-6.8f, 1f, -1.9f),
+                GetHeroPosition(layoutSnapshot, "Bulwark"),
                 bulwarkDefinition,
                 bulwarkSkillDefinition,
                 BulwarkSpritePath);
@@ -115,7 +156,7 @@ namespace MomosDefense.Editor
                 new Color(0.54f, 0.88f, 0.58f),
                 "Prototype_SproutSelection",
                 new Color(0.72f, 1f, 0.56f),
-                new Vector3(-3.1f, 1f, -2.1f),
+                GetHeroPosition(layoutSnapshot, "Sprout"),
                 sproutDefinition,
                 sproutSkillDefinition,
                 SproutSpritePath);
@@ -128,7 +169,7 @@ namespace MomosDefense.Editor
                 starTowerDefinition,
                 burstTowerDefinition,
                 frostTowerDefinition);
-            CreateBuildNodes(gameState, progressionService, buildManager);
+            CreateBuildNodes(gameState, progressionService, buildManager, layoutSnapshot);
             WaveSpawner waveSpawner = CreateWaveSpawner(enemyPrefab, toughEnemyPrefab, runnerEnemyPrefab, armoredEnemyPrefab, levelDefinition, path, gameState, heroSelection);
             CreateEventSystem();
             CreateHud(gameState, progressionService, waveSpawner, heroSelection, buildManager, momo, bulwark, sprout);
@@ -167,23 +208,13 @@ namespace MomosDefense.Editor
             ground.GetComponent<Renderer>().sharedMaterial = GetOrCreateTexturedMaterial("Map_1_Background", MapOneTexturePath);
         }
 
-        private static EnemyPath CreatePath()
+        private static EnemyPath CreatePath(PrototypeSceneLayoutSnapshot layoutSnapshot)
         {
             GameObject pathObject = new GameObject("Enemy Path");
             List<Transform> waypoints = new List<Transform>();
-            Vector3[] points =
-            {
-                new Vector3(11f, 0.1f, 2.6f),
-                new Vector3(8.2f, 0.1f, 2.75f),
-                new Vector3(6.1f, 0.1f, 2.2f),
-                new Vector3(5.4f, 0.1f, 0.5f),
-                new Vector3(4.4f, 0.1f, -1.15f),
-                new Vector3(2.25f, 0.1f, -2.35f),
-                new Vector3(-1.4f, 0.1f, -2.1f),
-                new Vector3(-3.65f, 0.1f, -1.0f),
-                new Vector3(-5.3f, 0.1f, 0.85f),
-                new Vector3(-6.1f, 0.1f, 2.35f)
-            };
+            Vector3[] points = layoutSnapshot?.WaypointPositions != null && layoutSnapshot.WaypointPositions.Length > 0
+                ? layoutSnapshot.WaypointPositions
+                : DefaultWaypointPositions;
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -492,21 +523,11 @@ namespace MomosDefense.Editor
             optionProperty.FindPropertyRelative("towerPrefab").objectReferenceValue = towerPrefab;
         }
 
-        private static void CreateBuildNodes(GameState gameState, ProgressionService progressionService, TowerBuildManager buildManager)
+        private static void CreateBuildNodes(GameState gameState, ProgressionService progressionService, TowerBuildManager buildManager, PrototypeSceneLayoutSnapshot layoutSnapshot)
         {
-            Vector3[] nodePositions =
-            {
-                new Vector3(-6.45f, 0.08f, 0.25f),
-                new Vector3(-3.45f, 0.08f, 2.65f),
-                new Vector3(-1.55f, 0.08f, 0.95f),
-                new Vector3(-1.8f, 0.08f, -3.15f),
-                new Vector3(1.7f, 0.08f, -0.8f),
-                new Vector3(2.55f, 0.08f, -3.8f),
-                new Vector3(4.25f, 0.08f, 3.4f),
-                new Vector3(5.1f, 0.08f, 1.1f),
-                new Vector3(6.75f, 0.08f, -2.1f),
-                new Vector3(8.2f, 0.08f, 0.7f)
-            };
+            Vector3[] nodePositions = layoutSnapshot?.BuildNodePositions != null && layoutSnapshot.BuildNodePositions.Length > 0
+                ? layoutSnapshot.BuildNodePositions
+                : DefaultBuildNodePositions;
 
             for (int i = 0; i < nodePositions.Length; i++)
             {
@@ -984,7 +1005,12 @@ namespace MomosDefense.Editor
             Vector3 spriteScale)
         {
             string assetPath = $"{ContentFolder}/Hero_{heroId}.asset";
-            bool assetAlreadyExists = AssetDatabase.LoadAssetAtPath<HeroDefinition>(assetPath) != null;
+            HeroDefinition existingHero = AssetDatabase.LoadAssetAtPath<HeroDefinition>(assetPath);
+            if (existingHero != null)
+            {
+                return;
+            }
+
             HeroDefinition hero = LoadOrCreateAsset<HeroDefinition>(assetPath);
             SerializedObject serializedHero = new SerializedObject(hero);
             serializedHero.FindProperty("heroId").stringValue = heroId;
@@ -999,15 +1025,70 @@ namespace MomosDefense.Editor
             serializedHero.FindProperty("attackDamagePerLevel").intValue = attackDamagePerLevel;
             serializedHero.FindProperty("skillDamagePerLevel").intValue = skillDamagePerLevel;
             serializedHero.FindProperty("moveSpeedPerLevel").floatValue = moveSpeedPerLevel;
-
-            if (!assetAlreadyExists)
-            {
-                serializedHero.FindProperty("worldScale").vector3Value = worldScale;
-                serializedHero.FindProperty("spriteScale").vector3Value = spriteScale;
-            }
-
+            serializedHero.FindProperty("worldScale").vector3Value = worldScale;
+            serializedHero.FindProperty("spriteScale").vector3Value = spriteScale;
             serializedHero.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(hero);
+        }
+
+        private static PrototypeSceneLayoutSnapshot CaptureExistingSceneLayout()
+        {
+            if (!AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath))
+            {
+                return null;
+            }
+
+            Scene existingScene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            PrototypeSceneLayoutSnapshot snapshot = new PrototypeSceneLayoutSnapshot();
+
+            EnemyPath existingPath = Object.FindFirstObjectByType<EnemyPath>();
+            if (existingPath != null && existingPath.Waypoints != null)
+            {
+                List<Vector3> waypointPositions = new List<Vector3>();
+                foreach (Transform waypoint in existingPath.Waypoints)
+                {
+                    if (waypoint != null)
+                    {
+                        waypointPositions.Add(waypoint.position);
+                    }
+                }
+
+                snapshot.WaypointPositions = waypointPositions.ToArray();
+            }
+
+            TowerBuildNode[] existingBuildNodes = Object.FindObjectsByType<TowerBuildNode>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            if (existingBuildNodes != null && existingBuildNodes.Length > 0)
+            {
+                snapshot.BuildNodePositions = existingBuildNodes
+                    .OrderBy(node => node.name, System.StringComparer.Ordinal)
+                    .Select(node => node.transform.position)
+                    .ToArray();
+            }
+
+            MomoHeroController[] existingHeroes = Object.FindObjectsByType<MomoHeroController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            foreach (MomoHeroController hero in existingHeroes)
+            {
+                if (hero == null || string.IsNullOrWhiteSpace(hero.HeroName))
+                {
+                    continue;
+                }
+
+                snapshot.HeroPositions[hero.HeroName] = hero.transform.position;
+            }
+
+            return snapshot;
+        }
+
+        private static Vector3 GetHeroPosition(PrototypeSceneLayoutSnapshot layoutSnapshot, string heroName)
+        {
+            if (layoutSnapshot != null && layoutSnapshot.HeroPositions.TryGetValue(heroName, out Vector3 savedPosition))
+            {
+                return savedPosition;
+            }
+
+            return DefaultHeroPositions.TryGetValue(heroName, out Vector3 defaultPosition)
+                ? defaultPosition
+                : Vector3.zero;
         }
 
         private static void CreateSkillDefinition(

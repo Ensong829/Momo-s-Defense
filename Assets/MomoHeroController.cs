@@ -5,6 +5,9 @@ using MomosDefense.Towers;
 using System;
 using System.Linq;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MomosDefense.Heroes
 {
@@ -56,7 +59,7 @@ namespace MomosDefense.Heroes
         private Sprite[] walkRightSprites = Array.Empty<Sprite>();
         private Sprite idleSprite;
         private Vector3 configuredSpriteScale = Vector3.one;
-        private float referenceSpriteHeight = 1f;
+        private float idleSpriteUnitsHeight = 1f;
         private float walkAnimationTimer;
         private int walkFrameIndex;
         private FacingDirection facingDirection = FacingDirection.Right;
@@ -88,6 +91,23 @@ namespace MomosDefense.Heroes
             RefreshFromDefinition();
             destination = transform.position;
             UpdateSelectionVisual();
+        }
+
+        protected virtual void OnValidate()
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying || heroDefinition == null)
+            {
+                return;
+            }
+
+            if (movementSpriteRenderer == null)
+            {
+                movementSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
+            SyncSceneEditsToHeroDefinition();
+#endif
         }
 
         protected virtual void Update()
@@ -274,10 +294,7 @@ namespace MomosDefense.Heroes
             }
 
             idleSprite = movementSpriteRenderer.sprite != null ? movementSpriteRenderer.sprite : portraitSprite;
-            if (idleSprite != null && idleSprite.bounds.size.y > 0f)
-            {
-                referenceSpriteHeight = idleSprite.bounds.size.y;
-            }
+            idleSpriteUnitsHeight = GetSpriteUnitsHeight(idleSprite);
 
             ApplyConfiguredSpriteScale();
 
@@ -368,15 +385,14 @@ namespace MomosDefense.Heroes
             }
 
             movementSpriteRenderer.sprite = sprite;
-
-            if (referenceSpriteHeight <= 0f || sprite.bounds.size.y <= 0f)
+            float spriteUnitsHeight = GetSpriteUnitsHeight(sprite);
+            if (idleSpriteUnitsHeight > 0f && spriteUnitsHeight > 0f)
             {
-                movementSpriteRenderer.transform.localScale = configuredSpriteScale;
+                movementSpriteRenderer.transform.localScale = configuredSpriteScale * (idleSpriteUnitsHeight / spriteUnitsHeight);
                 return;
             }
 
-            float scaleMultiplier = referenceSpriteHeight / sprite.bounds.size.y;
-            movementSpriteRenderer.transform.localScale = configuredSpriteScale * scaleMultiplier;
+            movementSpriteRenderer.transform.localScale = configuredSpriteScale;
         }
 
         private void ApplyConfiguredSpriteScale()
@@ -440,6 +456,16 @@ namespace MomosDefense.Heroes
                 100f);
             runtimeSprite.name = texture.name;
             return new[] { runtimeSprite };
+        }
+
+        private static float GetSpriteUnitsHeight(Sprite sprite)
+        {
+            if (sprite == null || sprite.pixelsPerUnit <= 0f)
+            {
+                return 0f;
+            }
+
+            return sprite.rect.height / sprite.pixelsPerUnit;
         }
 
         private void UseFallbackMomoPop()
@@ -518,5 +544,26 @@ namespace MomosDefense.Heroes
                 + equipmentSkillDamageBonus
                 + Mathf.Max(0, persistentSkillRank - 1);
         }
+
+#if UNITY_EDITOR
+        private void SyncSceneEditsToHeroDefinition()
+        {
+            SerializedObject serializedHeroDefinition = new SerializedObject(heroDefinition);
+            serializedHeroDefinition.FindProperty("moveSpeed").floatValue = moveSpeed;
+            serializedHeroDefinition.FindProperty("attackRange").floatValue = attackRange;
+            serializedHeroDefinition.FindProperty("attacksPerSecond").floatValue = attacksPerSecond;
+            serializedHeroDefinition.FindProperty("attackDamage").intValue = attackDamage;
+            serializedHeroDefinition.FindProperty("worldScale").vector3Value = transform.localScale;
+
+            if (movementSpriteRenderer != null)
+            {
+                serializedHeroDefinition.FindProperty("spriteScale").vector3Value = movementSpriteRenderer.transform.localScale;
+            }
+
+            serializedHeroDefinition.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(heroDefinition);
+            AssetDatabase.SaveAssetIfDirty(heroDefinition);
+        }
+#endif
     }
 }

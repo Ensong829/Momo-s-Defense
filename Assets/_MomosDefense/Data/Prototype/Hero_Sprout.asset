@@ -25,4 +25,4 @@ MonoBehaviour:
   skillDamagePerLevel: 1
   moveSpeedPerLevel: 0.2
   worldScale: {x: 0.82, y: 1, z: 0.82}
-  spriteScale: {x: 0.15, y: 0.15, z: 0.15}
+  spriteScale: {x: 0.1, y: 0.1, z: 0.1}

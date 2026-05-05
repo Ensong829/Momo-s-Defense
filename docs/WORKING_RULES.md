@@ -35,6 +35,25 @@ Before moving to the next feature:
 
 The user should not need to send screenshots for routine errors. Prefer reading Unity logs directly whenever possible.
 
+## Unity Editing Rule
+
+This project is meant to stay editable in Unity.
+
+Treat saved Unity edits as the authoring source of truth for:
+
+- waypoint positions
+- prototype hero positions
+- build node positions
+- hero stats
+- hero width/height/scale values such as `worldScale` and `spriteScale`
+
+When changing builder/editor automation:
+
+- Do not overwrite existing scene-authored layout values on rebuild.
+- Do not overwrite existing hero definition tuning values once the asset already exists.
+- Preserve saved scene and ScriptableObject values unless the user explicitly asks to reset them.
+- If a rebuild could wipe manual Unity edits, stop and protect those edits first.
+
 ## Agent Rule
 
 Use a manager/supervisor workflow. The main agent should focus on checkpoints, high-level planning, delegation, supervision/coordination, and final user communication. Delegate most other practical work to `gpt-5.3-codex` sub-agents (implementation, file edits, docs edits, searches, log/test inspection, and detailed review). The main agent may do urgent blocking work locally only when delegation would clearly slow or block progress.
