@@ -25,6 +25,11 @@ namespace MomosDefense.Editor
         private const string TowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeStarterTower.prefab";
         private const string BurstTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeBurstTower.prefab";
         private const string FrostTowerPrefabPath = "Assets/_MomosDefense/Prefabs/Towers/PrototypeFrostTower.prefab";
+        private const string MomoSpritePath = "Assets/Resources/Momo/momo.png";
+        private const string BulwarkSpritePath = "Assets/Resources/Bulwark/bulwark.png";
+        private const string SproutSpritePath = "Assets/Resources/Sprout/sprout.png";
+        private const string MapOneTexturePath = "Assets/MD TD Map 1.png";
+        private const float HeroSpriteTargetHeight = 1.35f;
         private const string MaterialFolder = "Assets/_MomosDefense/Materials";
         private const string ContentFolder = "Assets/_MomosDefense/Data/Prototype";
 
@@ -35,6 +40,7 @@ namespace MomosDefense.Editor
 
             GameObject gameStateObject = new GameObject("Game State");
             GameState gameState = gameStateObject.AddComponent<GameState>();
+            CreateRuntimeSettings();
 
             EnsureMaterialFolder();
             CreateCamera();
@@ -83,36 +89,36 @@ namespace MomosDefense.Editor
                 "Prototype_FrostTower",
                 new Color(0.48f, 0.85f, 0.95f),
                 frostTowerDefinition);
-            PrototypeHeroController momo = CreateHero(
+            MomoHeroController momo = CreateHero(
                 "Momo",
                 "Prototype_Momo",
                 new Color(0.95f, 0.58f, 0.74f),
                 "Prototype_MomoSelection",
                 new Color(1f, 0.94f, 0.35f),
                 new Vector3(-5f, 1f, 0.3f),
-                new Vector3(0.9f, 1.1f, 0.9f),
                 momoDefinition,
-                momoSkillDefinition);
-            PrototypeHeroController bulwark = CreateHero(
+                momoSkillDefinition,
+                MomoSpritePath);
+            MomoHeroController bulwark = CreateHero(
                 "Bulwark",
                 "Prototype_Bulwark",
                 new Color(0.92f, 0.72f, 0.38f),
                 "Prototype_BulwarkSelection",
                 new Color(1f, 0.84f, 0.3f),
                 new Vector3(-6.8f, 1f, -1.9f),
-                new Vector3(1.15f, 1.3f, 1.15f),
                 bulwarkDefinition,
-                bulwarkSkillDefinition);
-            PrototypeHeroController sprout = CreateHero(
+                bulwarkSkillDefinition,
+                BulwarkSpritePath);
+            MomoHeroController sprout = CreateHero(
                 "Sprout",
                 "Prototype_Sprout",
                 new Color(0.54f, 0.88f, 0.58f),
                 "Prototype_SproutSelection",
                 new Color(0.72f, 1f, 0.56f),
                 new Vector3(-3.1f, 1f, -2.1f),
-                new Vector3(0.82f, 1f, 0.82f),
                 sproutDefinition,
-                sproutSkillDefinition);
+                sproutSkillDefinition,
+                SproutSpritePath);
             ProgressionService progressionService = CreateProgressionService(heroSkillUpgradeDefinition, towerUpgradeDefinition, starterCharmDefinition);
             HeroSelectionManager heroSelection = CreateHeroSelectionManager(momo, bulwark, sprout);
             TowerBuildManager buildManager = CreateTowerBuildManager(
@@ -136,11 +142,12 @@ namespace MomosDefense.Editor
         {
             GameObject cameraObject = new GameObject("Main Camera");
             Camera camera = cameraObject.AddComponent<Camera>();
+            cameraObject.AddComponent<AudioListener>();
             cameraObject.tag = "MainCamera";
-            cameraObject.transform.position = new Vector3(0f, 14f, -12f);
-            cameraObject.transform.rotation = Quaternion.Euler(55f, 0f, 0f);
+            cameraObject.transform.position = new Vector3(0f, 18f, 0f);
+            cameraObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             camera.orthographic = true;
-            camera.orthographicSize = 7.8f;
+            camera.orthographicSize = 6.2f;
         }
 
         private static void CreateLight()
@@ -155,23 +162,27 @@ namespace MomosDefense.Editor
         private static void CreateGround()
         {
             GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            ground.name = "Prototype Ground";
-            ground.transform.localScale = new Vector3(2f, 1f, 2f);
-            AssignMaterial(ground, "Prototype_Ground", new Color(0.42f, 0.72f, 0.38f));
+            ground.name = "Map 1 Background";
+            ground.transform.localScale = new Vector3(2.2f, 1f, 1.2375f);
+            ground.GetComponent<Renderer>().sharedMaterial = GetOrCreateTexturedMaterial("Map_1_Background", MapOneTexturePath);
         }
 
         private static EnemyPath CreatePath()
         {
             GameObject pathObject = new GameObject("Enemy Path");
-            Material pathMaterial = GetOrCreateMaterial("Prototype_Path", new Color(0.68f, 0.52f, 0.34f));
             List<Transform> waypoints = new List<Transform>();
             Vector3[] points =
             {
-                new Vector3(-8f, 0.1f, 4f),
-                new Vector3(-3f, 0.1f, 4f),
-                new Vector3(-3f, 0.1f, -2f),
-                new Vector3(4f, 0.1f, -2f),
-                new Vector3(8f, 0.1f, 2f)
+                new Vector3(11f, 0.1f, 2.6f),
+                new Vector3(8.2f, 0.1f, 2.75f),
+                new Vector3(6.1f, 0.1f, 2.2f),
+                new Vector3(5.4f, 0.1f, 0.5f),
+                new Vector3(4.4f, 0.1f, -1.15f),
+                new Vector3(2.25f, 0.1f, -2.35f),
+                new Vector3(-1.4f, 0.1f, -2.1f),
+                new Vector3(-3.65f, 0.1f, -1.0f),
+                new Vector3(-5.3f, 0.1f, 0.85f),
+                new Vector3(-6.1f, 0.1f, 2.35f)
             };
 
             for (int i = 0; i < points.Length; i++)
@@ -180,18 +191,6 @@ namespace MomosDefense.Editor
                 waypoint.transform.SetParent(pathObject.transform);
                 waypoint.transform.position = points[i];
                 waypoints.Add(waypoint.transform);
-
-                GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                marker.name = $"Path Marker {i + 1}";
-                marker.transform.SetParent(pathObject.transform);
-                marker.transform.position = points[i] + Vector3.up * 0.01f;
-                marker.transform.localScale = new Vector3(0.7f, 0.03f, 0.7f);
-                marker.GetComponent<Renderer>().sharedMaterial = pathMaterial;
-
-                if (i > 0)
-                {
-                    CreatePathSegment(pathObject.transform, points[i - 1], points[i], pathMaterial, i);
-                }
             }
 
             EnemyPath path = pathObject.AddComponent<EnemyPath>();
@@ -252,9 +251,9 @@ namespace MomosDefense.Editor
         {
             EnsureContentFolder();
 
-            CreateHeroDefinition("Momo", "Momo", "Flexible control", 1, 5f, 2f, 1f, 2, 4, 1, 1, 0.2f);
-            CreateHeroDefinition("Bulwark", "Bulwark", "Tank control", 1, 4.2f, 1.65f, 0.85f, 3, 4, 1, 1, 0.2f);
-            CreateHeroDefinition("Sprout", "Sprout", "Support", 1, 5.4f, 2.4f, 1.15f, 1, 4, 1, 1, 0.2f);
+            CreateHeroDefinition("Momo", "Momo", "Flexible control", 1, 5f, 2f, 1f, 2, 4, 1, 1, 0.2f, new Vector3(0.9f, 1.1f, 0.9f), new Vector3(2f, 2f, 2f));
+            CreateHeroDefinition("Bulwark", "Bulwark", "Tank control", 1, 4.2f, 1.65f, 0.85f, 3, 4, 1, 1, 0.2f, new Vector3(1.15f, 1.3f, 1.15f), new Vector3(2f, 2f, 2f));
+            CreateHeroDefinition("Sprout", "Sprout", "Support", 1, 5.4f, 2.4f, 1.15f, 1, 4, 1, 1, 0.2f, new Vector3(0.82f, 1f, 0.82f), new Vector3(2f, 2f, 2f));
             CreateSkillDefinition("MomoPop", "Momo Pop", "Momo", SkillDefinition.SkillBehavior.DamageSlowArea, 4, 3f, 8f, 2.5f, 0.45f, 5f, 1, 1.6f);
             CreateSkillDefinition("GroundSlam", "Ground Slam", "Bulwark", SkillDefinition.SkillBehavior.DamageSlowArea, 5, 2.4f, 10f, 2.2f, 0.12f, 5f, 1, 1.6f);
             CreateSkillDefinition("BloomSong", "Bloom Song", "Sprout", SkillDefinition.SkillBehavior.TowerBuffArea, 0, 3.75f, 12f, 0f, 1f, 5.5f, 1, 1.75f);
@@ -323,21 +322,23 @@ namespace MomosDefense.Editor
             return level;
         }
 
-        private static PrototypeHeroController CreateHero(
+        private static MomoHeroController CreateHero(
             string heroName,
             string materialName,
             Color bodyColor,
             string selectionMaterialName,
             Color selectionColor,
             Vector3 position,
-            Vector3 scale,
             HeroDefinition heroDefinition,
-            SkillDefinition skillDefinition)
+            SkillDefinition skillDefinition,
+            string spritePath)
         {
             GameObject hero = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             hero.name = $"{heroName} Prototype Hero";
             hero.transform.position = position;
-            hero.transform.localScale = scale;
+            hero.transform.localScale = heroDefinition != null && heroDefinition.WorldScale != Vector3.zero
+                ? heroDefinition.WorldScale
+                : Vector3.one;
             AssignMaterial(hero, materialName, bodyColor);
 
             GameObject selectionRing = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -348,20 +349,66 @@ namespace MomosDefense.Editor
             AssignMaterial(selectionRing, selectionMaterialName, selectionColor);
             Object.DestroyImmediate(selectionRing.GetComponent<Collider>());
 
-            PrototypeHeroController controller = hero.AddComponent<PrototypeHeroController>();
+            MomoHeroController controller = hero.AddComponent<MomoHeroController>();
+            Sprite heroSprite = LoadSprite(spritePath);
+            CreateHeroSprite(hero.transform, heroSprite, heroDefinition);
+
             SerializedObject serializedHero = new SerializedObject(controller);
             serializedHero.FindProperty("heroDefinition").objectReferenceValue = heroDefinition;
             serializedHero.FindProperty("skillDefinition").objectReferenceValue = skillDefinition;
             serializedHero.FindProperty("selectionIndicator").objectReferenceValue = selectionRing;
+            serializedHero.FindProperty("portraitSprite").objectReferenceValue = heroSprite;
             serializedHero.ApplyModifiedPropertiesWithoutUndo();
 
             return controller;
         }
 
+        private static void CreateHeroSprite(Transform hero, Sprite sprite, HeroDefinition heroDefinition)
+        {
+            if (sprite == null)
+            {
+                return;
+            }
+
+            Renderer capsuleRenderer = hero.GetComponent<Renderer>();
+            if (capsuleRenderer != null)
+            {
+                capsuleRenderer.enabled = false;
+            }
+
+            GameObject spriteObject = new GameObject("Hero Sprite");
+            spriteObject.transform.SetParent(hero);
+            spriteObject.transform.localPosition = new Vector3(0f, 0.05f, -0.1f);
+            spriteObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            Vector3 configuredSpriteScale = heroDefinition != null && heroDefinition.SpriteScale != Vector3.zero
+                ? heroDefinition.SpriteScale
+                : Vector3.one * (sprite.bounds.size.y > 0f ? HeroSpriteTargetHeight / sprite.bounds.size.y : 0.2f);
+            spriteObject.transform.localScale = configuredSpriteScale;
+
+            SpriteRenderer spriteRenderer = spriteObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = sprite;
+            spriteRenderer.sortingOrder = 10;
+        }
+
+        private static Sprite LoadSprite(string path)
+        {
+            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer != null && importer.textureType != TextureImporterType.Sprite)
+            {
+                importer.textureType = TextureImporterType.Sprite;
+                importer.spriteImportMode = SpriteImportMode.Single;
+                importer.alphaIsTransparency = true;
+                importer.mipmapEnabled = false;
+                importer.SaveAndReimport();
+            }
+
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
         private static HeroSelectionManager CreateHeroSelectionManager(
-            PrototypeHeroController momo,
-            PrototypeHeroController bulwark,
-            PrototypeHeroController sprout)
+            MomoHeroController momo,
+            MomoHeroController bulwark,
+            MomoHeroController sprout)
         {
             GameObject selectionObject = new GameObject("Hero Selection Manager");
             HeroSelectionManager selectionManager = selectionObject.AddComponent<HeroSelectionManager>();
@@ -449,10 +496,16 @@ namespace MomosDefense.Editor
         {
             Vector3[] nodePositions =
             {
-                new Vector3(-5.6f, 0.08f, 1.3f),
-                new Vector3(-0.2f, 0.08f, 1.5f),
-                new Vector3(2.2f, 0.08f, -4.2f),
-                new Vector3(5.5f, 0.08f, 0.4f)
+                new Vector3(-6.45f, 0.08f, 0.25f),
+                new Vector3(-3.45f, 0.08f, 2.65f),
+                new Vector3(-1.55f, 0.08f, 0.95f),
+                new Vector3(-1.8f, 0.08f, -3.15f),
+                new Vector3(1.7f, 0.08f, -0.8f),
+                new Vector3(2.55f, 0.08f, -3.8f),
+                new Vector3(4.25f, 0.08f, 3.4f),
+                new Vector3(5.1f, 0.08f, 1.1f),
+                new Vector3(6.75f, 0.08f, -2.1f),
+                new Vector3(8.2f, 0.08f, 0.7f)
             };
 
             for (int i = 0; i < nodePositions.Length; i++)
@@ -460,8 +513,13 @@ namespace MomosDefense.Editor
                 GameObject node = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 node.name = $"Build Node {i + 1}";
                 node.transform.position = nodePositions[i];
-                node.transform.localScale = new Vector3(1.25f, 0.08f, 1.25f);
-                AssignMaterial(node, "Prototype_BuildNode", new Color(0.95f, 0.82f, 0.24f));
+                node.transform.localScale = new Vector3(0.95f, 0.08f, 0.95f);
+
+                Renderer nodeRenderer = node.GetComponent<Renderer>();
+                if (nodeRenderer != null)
+                {
+                    Object.DestroyImmediate(nodeRenderer);
+                }
 
                 TowerBuildNode buildNode = node.AddComponent<TowerBuildNode>();
                 SerializedObject serializedNode = new SerializedObject(buildNode);
@@ -519,7 +577,15 @@ namespace MomosDefense.Editor
         {
             GameObject eventSystemObject = new GameObject("EventSystem");
             eventSystemObject.AddComponent<EventSystem>();
-            eventSystemObject.AddComponent<StandaloneInputModule>();
+            StandaloneInputModule inputModule = eventSystemObject.AddComponent<StandaloneInputModule>();
+            inputModule.inputActionsPerSecond = 60f;
+            inputModule.repeatDelay = 0.05f;
+        }
+
+        private static void CreateRuntimeSettings()
+        {
+            GameObject runtimeSettingsObject = new GameObject("Prototype Runtime Settings");
+            runtimeSettingsObject.AddComponent<PrototypeRuntimeSettings>();
         }
 
         private static void CreateHud(
@@ -528,9 +594,9 @@ namespace MomosDefense.Editor
             WaveSpawner waveSpawner,
             HeroSelectionManager heroSelection,
             TowerBuildManager buildManager,
-            PrototypeHeroController momo,
-            PrototypeHeroController bulwark,
-            PrototypeHeroController sprout)
+            MomoHeroController momo,
+            MomoHeroController bulwark,
+            MomoHeroController sprout)
         {
             GameObject canvasObject = new GameObject("Prototype HUD");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
@@ -913,9 +979,13 @@ namespace MomosDefense.Editor
             int experienceToNextLevel,
             int attackDamagePerLevel,
             int skillDamagePerLevel,
-            float moveSpeedPerLevel)
+            float moveSpeedPerLevel,
+            Vector3 worldScale,
+            Vector3 spriteScale)
         {
-            HeroDefinition hero = LoadOrCreateAsset<HeroDefinition>($"{ContentFolder}/Hero_{heroId}.asset");
+            string assetPath = $"{ContentFolder}/Hero_{heroId}.asset";
+            bool assetAlreadyExists = AssetDatabase.LoadAssetAtPath<HeroDefinition>(assetPath) != null;
+            HeroDefinition hero = LoadOrCreateAsset<HeroDefinition>(assetPath);
             SerializedObject serializedHero = new SerializedObject(hero);
             serializedHero.FindProperty("heroId").stringValue = heroId;
             serializedHero.FindProperty("displayName").stringValue = displayName;
@@ -929,6 +999,13 @@ namespace MomosDefense.Editor
             serializedHero.FindProperty("attackDamagePerLevel").intValue = attackDamagePerLevel;
             serializedHero.FindProperty("skillDamagePerLevel").intValue = skillDamagePerLevel;
             serializedHero.FindProperty("moveSpeedPerLevel").floatValue = moveSpeedPerLevel;
+
+            if (!assetAlreadyExists)
+            {
+                serializedHero.FindProperty("worldScale").vector3Value = worldScale;
+                serializedHero.FindProperty("spriteScale").vector3Value = spriteScale;
+            }
+
             serializedHero.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(hero);
         }
@@ -1169,6 +1246,31 @@ namespace MomosDefense.Editor
             material = new Material(shader);
             material.color = color;
             AssetDatabase.CreateAsset(material, path);
+            return material;
+        }
+
+        private static Material GetOrCreateTexturedMaterial(string materialName, string texturePath)
+        {
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            string path = $"{MaterialFolder}/{materialName}.mat";
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+
+            if (material == null)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+                if (shader == null)
+                {
+                    shader = Shader.Find("Unlit/Texture");
+                }
+
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            material.mainTexture = texture;
+            material.mainTextureScale = new Vector2(-1f, -1f);
+            material.mainTextureOffset = new Vector2(1f, 1f);
+            EditorUtility.SetDirty(material);
             return material;
         }
     }

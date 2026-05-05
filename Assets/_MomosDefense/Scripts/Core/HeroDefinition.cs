@@ -1,4 +1,5 @@
 using UnityEngine;
+using MomosDefense.Heroes;
 
 namespace MomosDefense.Core
 {
@@ -17,6 +18,8 @@ namespace MomosDefense.Core
         [SerializeField] private int attackDamagePerLevel = 1;
         [SerializeField] private int skillDamagePerLevel = 1;
         [SerializeField] private float moveSpeedPerLevel = 0.2f;
+        [SerializeField] private Vector3 worldScale = Vector3.one;
+        [SerializeField] private Vector3 spriteScale = new Vector3(2f, 2f, 2f);
 
         public string HeroId => heroId;
         public string DisplayName => displayName;
@@ -30,5 +33,24 @@ namespace MomosDefense.Core
         public int AttackDamagePerLevel => attackDamagePerLevel;
         public int SkillDamagePerLevel => skillDamagePerLevel;
         public float MoveSpeedPerLevel => moveSpeedPerLevel;
+        public Vector3 WorldScale => worldScale;
+        public Vector3 SpriteScale => spriteScale;
+
+        private void OnValidate()
+        {
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
+            MomoHeroController[] heroes = Resources.FindObjectsOfTypeAll<MomoHeroController>();
+            foreach (MomoHeroController hero in heroes)
+            {
+                if (hero != null && hero.HeroDefinition == this)
+                {
+                    hero.RefreshFromDefinition();
+                }
+            }
+        }
     }
 }

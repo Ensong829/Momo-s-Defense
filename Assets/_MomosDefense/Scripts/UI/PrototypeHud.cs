@@ -4,6 +4,7 @@ using MomosDefense.Heroes;
 using MomosDefense.Towers;
 using MomosDefense.Waves;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -16,9 +17,9 @@ namespace MomosDefense.UI
         [SerializeField] private WaveSpawner waveSpawner;
         [SerializeField] private HeroSelectionManager heroSelection;
         [SerializeField] private TowerBuildManager buildManager;
-        [SerializeField] private PrototypeHeroController momoHero;
-        [SerializeField] private PrototypeHeroController bulwarkHero;
-        [SerializeField] private PrototypeHeroController sproutHero;
+        [SerializeField] private MomoHeroController momoHero;
+        [SerializeField] private MomoHeroController bulwarkHero;
+        [SerializeField] private MomoHeroController sproutHero;
         [SerializeField] private Text livesText;
         [SerializeField] private Text goldText;
         [SerializeField] private Text waveText;
@@ -119,16 +120,19 @@ namespace MomosDefense.UI
 
             if (momoPortraitButton != null)
             {
+                RegisterPointerDownSelection(momoPortraitButton, SelectMomo);
                 momoPortraitButton.onClick.AddListener(SelectMomo);
             }
 
             if (bulwarkPortraitButton != null)
             {
+                RegisterPointerDownSelection(bulwarkPortraitButton, SelectBulwark);
                 bulwarkPortraitButton.onClick.AddListener(SelectBulwark);
             }
 
             if (sproutPortraitButton != null)
             {
+                RegisterPointerDownSelection(sproutPortraitButton, SelectSprout);
                 sproutPortraitButton.onClick.AddListener(SelectSprout);
             }
 
@@ -499,7 +503,7 @@ namespace MomosDefense.UI
                 return;
             }
 
-            PrototypeHeroController selectedHero = heroSelection != null ? heroSelection.SelectedHero : null;
+            MomoHeroController selectedHero = heroSelection != null ? heroSelection.SelectedHero : null;
 
             if (selectedHero == null)
             {
@@ -630,7 +634,7 @@ namespace MomosDefense.UI
             UpdatePortrait(sproutHero, sproutPortraitText, sproutPortraitImage, sproutSelectedColor);
         }
 
-        private void UpdatePortrait(PrototypeHeroController hero, Text label, Image portraitImage, Color selectedColor)
+        private void UpdatePortrait(MomoHeroController hero, Text label, Image portraitImage, Color selectedColor)
         {
             if (hero == null)
             {
@@ -917,6 +921,22 @@ namespace MomosDefense.UI
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
+        }
+
+        private static void RegisterPointerDownSelection(Button button, UnityEngine.Events.UnityAction action)
+        {
+            EventTrigger trigger = button.GetComponent<EventTrigger>();
+            if (trigger == null)
+            {
+                trigger = button.gameObject.AddComponent<EventTrigger>();
+            }
+
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerDown
+            };
+            entry.callback.AddListener(_ => action());
+            trigger.triggers.Add(entry);
         }
     }
 }

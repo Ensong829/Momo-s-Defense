@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 275dee68d70f89f4fa757c049725c516
+guid: 85050a4b43990ab4b8c12f4edda9673b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bulwark_walk_left_0
+      name: sprout_walk_right_0
       rect:
         serializedVersion: 2
         x: 0
@@ -138,17 +138,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f7fb1d46235c43c4a8b21ef3f88137c6
-      internalID: -198499820
+      spriteID: 48908c8526776a549bde4e229ac0d264
+      internalID: -1586249966
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulwark_walk_left_1
+      name: sprout_walk_right_1
       rect:
         serializedVersion: 2
-        x: 100
+        x: 103
         y: 0
         width: 100
         height: 100
@@ -160,17 +160,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cfd451dc5be9446458373877059c1bea
-      internalID: -1769534992
+      spriteID: 9c5c874e2b6c4034fb7604142c701846
+      internalID: -1563934250
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulwark_walk_left_2
+      name: sprout_walk_right_2
       rect:
         serializedVersion: 2
-        x: 200
+        x: 202
         y: 0
         width: 100
         height: 100
@@ -182,17 +182,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8775aad1e2505ec4484b914028a354b3
-      internalID: -1982280080
+      spriteID: e49c8cdeca11942409eb9606d45daade
+      internalID: 942951767
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulwark_walk_left_3
+      name: sprout_walk_right_3
       rect:
         serializedVersion: 2
-        x: 300
+        x: 301
         y: 0
         width: 100
         height: 100
@@ -204,14 +204,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 22ce1594658b786409e9c8da57df74bb
-      internalID: 1287686921
+      spriteID: ae4a0ca4c58ed28419cbcfca01b40e22
+      internalID: -971807141
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulwark_walk_left_4
+      name: sprout_walk_right_4
       rect:
         serializedVersion: 2
         x: 400
@@ -226,14 +226,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6d820f80023f5374a9c2094847e07fc1
-      internalID: 1364791096
+      spriteID: f34f33a9b6f16ef4f8d4ba609c151076
+      internalID: -826879934
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulwark_walk_left_5
+      name: sprout_walk_right_5
       rect:
         serializedVersion: 2
         x: 500
@@ -248,8 +248,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f90b95d797b032f41b5ea3c4741f8853
-      internalID: -754356240
+      spriteID: 00f8155a01f023e448a946b9bf9d3e79
+      internalID: -1307426369
       vertices: []
       indices: 
       edges: []
@@ -258,7 +258,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1c8d51ecf7ade6a4aa2ad7781395b7a2
+    spriteID: bad169ee48d343f45a8ace637cdb3c72
     internalID: 0
     vertices: []
     indices: 
@@ -270,12 +270,12 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":100.0,"y":100.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      bulwark_walk_left_0: -198499820
-      bulwark_walk_left_1: -1769534992
-      bulwark_walk_left_2: -1982280080
-      bulwark_walk_left_3: 1287686921
-      bulwark_walk_left_4: 1364791096
-      bulwark_walk_left_5: -754356240
+      sprout_walk_right_0: -1586249966
+      sprout_walk_right_1: -1563934250
+      sprout_walk_right_2: 942951767
+      sprout_walk_right_3: -971807141
+      sprout_walk_right_4: -826879934
+      sprout_walk_right_5: -1307426369
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
